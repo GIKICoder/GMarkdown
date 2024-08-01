@@ -85,12 +85,12 @@ func parseMarkdown(_ content: String) async -> [GMarkChunk] {
 
 ## Screenshots
 
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/1.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/1.png" alt="Screenshot 1" width="100"/></a>
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/2.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/2.png" alt="Screenshot 2" width="100"/></a>
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/3.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/3.png" alt="Screenshot 3" width="100"/></a>
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/4.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/4.png" alt="Screenshot 4" width="100"/></a>
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/5.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/5.png" alt="Screenshot 5" width="100"/></a>
-<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/6.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/6.png" alt="Screenshot 6" width="100"/></a>
+<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/1.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/1.png" alt="Screenshot 1" width="300"/></a>
+<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/2.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/2.png" alt="Screenshot 2" width="300"/></a>
+<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/3.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/3.png" alt="Screenshot 3" width="300"/></a>
+<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/4.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/4.png" alt="Screenshot 4" width="300"/></a>
+<a href="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/5.png"><img src="https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/5.png" alt="Screenshot 5" width="300"/></a>
+
 
 ## License
 
