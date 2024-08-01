@@ -82,6 +82,17 @@ func parseMarkdown(_ content: String) async -> [GMarkChunk] {
 }
 ```
 
+## screenshot
+==============
+
+[![Alt][screenshot1_thumb]]   [![Alt][screenshot2_thumb]]    [![Alt][screenshot3_thumb]]  [![Alt][screenshot4_thumb]]  [![Alt][screenshot5_thumb]]  [![Alt][screenshot6_thumb]]
+
+[screenshot1_thumb]: https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/1.png
+[screenshot2_thumb]:  https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/2.png
+[screenshot3_thumb]: https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/3.png
+[screenshot4_thumb]: https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/4.png
+[screenshot5_thumb]: https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/5.png
+[screenshot6_thumb]: https://github.com/GIKICoder/GMarkdown/blob/main/screenshot/6.png
 
 ## License
 
@@ -92,5 +103,7 @@ GMarkdown is released under the MIT license. See [LICENSE](./LICENSE) for detail
 Contributions are welcome! Please submit pull requests or open issues to help improve GMarkdown.
 
 ---
+
+
 
 Happy coding!
