@@ -1,0 +1,117 @@
+Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成有效的 XHTML（或 HTML）文档。以下是一个包含尽可能多Markdown元素的示例文档：
+# 一级标题
+
+## 二级标题
+
+### 三级标题
+
+#### 四级标题
+
+##### 五级标题
+
+###### 六级标题
+
+### 段落文本
+普通的段落文本应该直接书写，段落之间通过空白行分隔。
+
+### 强调文本
+*斜体文本* 或 _斜体文本_
+**粗体文本** 或 __粗体文本__
+***粗斜体文本*** 或 ___粗斜体文本___
+
+### 列表
+
+#### 无序列表
+- 项目1
+- 项目2
+  - 子项目2.1
+  - 子项目2.2
+
+#### 有序列表
+1. 第一项
+2. 第二项
+   1. 第二项的第一个子项
+   2. 第二项的第二个子项
+
+### 链接
+[OpenAI官网](https://www.openai.com)
+
+### 图片
+![这是图片](https://productdev-dora-static-prod-sh.oss-cn-shanghai.aliyuncs.com/static/image/aHR0cDovL3BvcHNvZnQuY29tL3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDI0LzAxL3VubmFtZWQtZmlsZS0xMC5qcGVn.jpg)
+
+### 代码
+`代码` 写在反引号之间。
+
+### 代码块
+```python
+print("Hello, Markdown!")
+```
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Page Title</title>
+</head>
+<body>
+    <h1>This is a Heading</h1>
+    <p>This is a paragraph.</p>
+</body>
+</html>
+```
+
+### 引用
+> 这是一段引用文本。
+
+### 水平线
+---
+
+
+
+### 任务列表
+- [x] 已完成任务
+- [ ] 未完成任务
+
+### 脚注
+这是一个脚注的例子[^1].
+
+[^1]: 这是脚注的内容。
+
+### HTML元素
+<div style="color:red">这是HTML元素的红色文本</div>
+
+### 表格
+| 标题1 | 标题2 | 标题3 |标题4 | 标题5 | 标题6 |
+|-------|-------|-------|-------|-------|-------|
+| 单元格1 | 单元格2 | 单元格3 |单元格4 | 单元格5 | 单元格6 |
+| 单元格1 | 单元格2 | 单元格3 |单元格4 | 单元格5 | 单元格6 |
+
+### 复杂表格
+
+| 玫瑰花品种 | 产地     | 相关链接                           | 玫瑰图片                       |
+|------------|---------|----------------------------------|----------------------------|
+| 红玫瑰     | 中国昆明 | [点击查看](https://example.com/red-rose) | ![红玫瑰](https://img2.baidu.com/it/u=1839116310,3112824827&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500) |
+| 粉玫瑰     | 法国普罗旺斯 | [点击查看](https://example.com/pink-rose) | ![粉玫瑰](https://img2.baidu.com/it/u=1839116310,3112824827&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500) |
+| 白玫瑰     | 厄瓜多尔 | [点击查看](https://example.com/white-rose) | ![白玫瑰](https://img2.baidu.com/it/u=1839116310,3112824827&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500) |
+| 黄玫瑰     | 荷兰     | [点击查看](https://example.com/yellow-rose) | ![黄玫瑰](https://img2.baidu.com/it/u=1839116310,3112824827&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=500) |
+
+### LaTex 数学公式：
+
+BM25的打分函数可以表示为：
+
+\[ \text{Score}(D, Q) = \sum_{i=1}^{n} IDF(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})} \]
+
+其中：
+- \( D \) 是文档
+- \( Q \) 是查询，包含多个查询词 \( q_i \)
+- \( f(q_i, D) \) 是词 \( q_i \) 在文档 \( D \) 中的频率
+- \( |D| \) 是文档 \( D \) 的长度（即词数）
+- \( \text{avgdl} \) 是所有文档的平均长度
+- \( k_1 \) 和 \( b \) 是自由参数，通常 \( k_1 \) 在1.2到2.0之间，\( b \) 通常为0.75
+
+### IDF的计算：
+IDF（逆文档频率）的计算公式是：
+
+\[ IDF(q_i) = \log \left( \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5} + 1 \right) \]
+
+- \( N \) 是文档总数
+- \( n(q_i) \) 是包含词 \( q_i \) 的文档数量
