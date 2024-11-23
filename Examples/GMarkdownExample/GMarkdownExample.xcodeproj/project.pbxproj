@@ -37,6 +37,7 @@
 		2B1CA0382C5BC6AF00F85195 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0372C5BC6AF00F85195 /* NukeUI */; };
 		2B1CA03A2C5BC6AF00F85195 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0392C5BC6AF00F85195 /* NukeVideo */; };
 		2B1CA03C2C5BC6D400F85195 /* NukeImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */; };
+		2BF5E58C2CF18D8700F5733B /* GMarkupHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF5E58B2CF18D8700F5733B /* GMarkupHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +68,7 @@
 		2B1CA01E2C5BC66D00F85195 /* GMarkTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableView.swift; sourceTree = "<group>"; };
 		2B1CA01F2C5BC66D00F85195 /* GMarkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableViewCell.swift; sourceTree = "<group>"; };
 		2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NukeImageLoader.swift; sourceTree = "<group>"; };
+		2BF5E58B2CF18D8700F5733B /* GMarkupHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkupHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +139,7 @@
 				2B1CA0132C5BC66D00F85195 /* GMarkProcessor.swift */,
 				2B1CA0142C5BC66D00F85195 /* GMarkupTableVisitor.swift */,
 				2B1CA0152C5BC66D00F85195 /* GMarkupVisitor.swift */,
+				2BF5E58B2CF18D8700F5733B /* GMarkupHelper.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
@@ -263,6 +266,7 @@
 				2B1CA02A2C5BC66D00F85195 /* GMarkdownMultiView.swift in Sources */,
 				2B1CA0232C5BC66D00F85195 /* GMarkdownCodeView.swift in Sources */,
 				2B1CA02F2C5BC66D00F85195 /* GMarkTableStyle.swift in Sources */,
+				2BF5E58C2CF18D8700F5733B /* GMarkupHelper.swift in Sources */,
 				2B1CA02B2C5BC66D00F85195 /* GMarkHandlerChain.swift in Sources */,
 				2B1CA0222C5BC66D00F85195 /* GMarkCodeHighlight.swift in Sources */,
 				2B1CA02C2C5BC66D00F85195 /* GMarkHandlers.swift in Sources */,
