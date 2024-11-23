@@ -11,18 +11,16 @@ import UIKit
 
 // MARK: - MarkdownProcessor
 
-class GMarkProcessor {
-    private let parser: GMarkParser
-    private let chunkGenerator: ChunkGenerator
-    
-    init(parser: GMarkParser = GMarkParser(), chunkGenerator: ChunkGenerator = GMarkChunkGenerator()) {
+public class GMarkProcessor {
+    public let parser: GMarkParser
+    public let chunkGenerator: ChunkGenerator
+    public init(parser: GMarkParser, chunkGenerator: ChunkGenerator) {
         self.parser = parser
         self.chunkGenerator = chunkGenerator
     }
-    
-    func process(markdown: String) -> [GMarkChunk] {
+
+    public func process(markdown: String) -> [GMarkChunk] {
         let markups = parser.parseMarkdownToMarkups(markdown: markdown)
         return chunkGenerator.generateChunks(from: markups)
     }
 }
-

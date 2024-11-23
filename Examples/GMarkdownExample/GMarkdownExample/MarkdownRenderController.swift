@@ -40,7 +40,7 @@ class MarkdownRenderController: UIViewController {
   func parseMarkdown(_ content: String) async -> [GMarkChunk] {
       return await withCheckedContinuation { continuation in
           DispatchQueue.global(qos: .userInitiated).async {
-              let processor = GMarkProcessor()
+              let processor = GMarkProcessor(parser: GMarkParser(), chunkGenerator: GMarkChunkGenerator())
               let chunks = processor.process(markdown: content)
               continuation.resume(returning: chunks)
           }
