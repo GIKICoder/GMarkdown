@@ -146,6 +146,14 @@ public struct GMarkupVisitor: MarkupVisitor {
         return defaultVisit(blockDirective)
     }
     
+    mutating public func visitInlineAttributes(_ attributes: InlineAttributes) -> NSAttributedString {
+        return defaultVisit(attributes)
+    }
+    
+    public func visitTable(_ table: Table) -> NSAttributedString {
+        return defaultVisit(table)
+    }
+    
 }
 
 // MARK: - Default Attribute Implementation
