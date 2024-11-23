@@ -146,11 +146,6 @@ public struct GMarkupVisitor: MarkupVisitor {
         return defaultVisit(blockDirective)
     }
     
-    
-    
-    
-    
-    
 }
 
 // MARK: - Default Attribute Implementation
@@ -183,7 +178,6 @@ extension GMarkupVisitor {
 // MARK: - Apply Helper Methods
 
 extension GMarkupVisitor {
-    // MARK: - Helper Methods
     
     private mutating func processChildren(of markup: Markup) -> NSMutableAttributedString {
         let result = NSMutableAttributedString()

@@ -34,7 +34,6 @@ public class GMarkParser {
         let markups = node.children.reduce(into: [Markup]()) { result, item in
             result.append(item)
         }
-        //        print("markups: \(markups)")
         return markups
     }
 
@@ -60,8 +59,6 @@ public class GMarkParser {
                 /// 加个保护. 超过300 默认不匹配
                 let wrappedString = "<LaTex>\(matchedString)</LaTex>"
                 result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
-            } else {
-                print("asdfsda")
             }
         }
 
@@ -94,26 +91,5 @@ public class GMarkParser {
     func replaceSubstring(in originalString: String, target: String, replacement: String) -> String {
         let resultString = originalString.replacingOccurrences(of: target, with: replacement)
         return resultString
-    }
-
-    func split(_ node: Markup) -> [[Markup]] {
-        let splitLists = node.children.reduce(into: [[Markup]]()) { result, item in
-            switch item {
-            case is Table, is CodeBlock: /// , is BlockQuote, is ThematicBreak
-                result.append([item])
-            default:
-                if result.isEmpty || isSplitPoint(result.last!.last!) {
-                    result.append([item])
-                } else {
-                    result[result.count - 1].append(item)
-                }
-            }
-        }
-        // print("Split lists: \(splitLists)")
-        return splitLists
-    }
-
-    public func isSplitPoint(_ item: Any) -> Bool {
-        return item is Table || item is CodeBlock
     }
 }
