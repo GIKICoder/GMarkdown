@@ -7,16 +7,28 @@
 
 import Foundation
 import Highlightr
+open class GMarkCodeHighlight: NSObject {
+    override init() {
+        highlightr?.setTheme(to: "github")
+    }
 
-open class GMarkCodeHighlight : NSObject {
     /// Highlightr instance used internally for highlighting. Use this for configuring the theme.
     public let highlightr = Highlightr()
 
     /// Shared instance of CodeHighlightShared
     public static let shared = GMarkCodeHighlight()
+    
+    public func changeDark(_ dark: Bool) {
+        let theme = dark ? "dark" : "github"
+        setTheme(to: theme)
+    }
 
+    public func setTheme(to name: String) {
+        highlightr?.setTheme(to: name)
+    }
+    
     public func generateAttributeText(_ string: String, language: String) -> NSAttributedString? {
-        let highlightedText = highlightr?.highlight(string, as: language)
+        let highlightedText = highlightr?.highlight(string, as: language, fastRender: true)
         return highlightedText
     }
 }
