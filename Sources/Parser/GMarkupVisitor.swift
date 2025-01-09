@@ -13,6 +13,7 @@ import MPITextKit
 import SwiftMath
 
 public struct GMarkupVisitor: MarkupVisitor {
+    
     // MARK: - Properties
     
     public var ignoreLatex: Bool = false
@@ -44,7 +45,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         }
         
         if beginSupTag {
-            return generateSupTag(from: text)
+            return handleSupTag(from: text)
         }
         
         return defaultAttribute(from: text.plainText)
@@ -138,54 +139,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         return NSAttributedString.singleNewline(withStyle: style)
     }
     
-    public mutating func visitThematicBreak(_ thematicBreak: ThematicBreak) -> NSAttributedString {
-        return defaultVisit(thematicBreak)
-    }
-    
-    public mutating func visitBlockDirective(_ blockDirective: BlockDirective) -> NSAttributedString {
-        return defaultVisit(blockDirective)
-    }
-    
-    mutating public func visitInlineAttributes(_ attributes: InlineAttributes) -> NSAttributedString {
-        return defaultVisit(attributes)
-    }
-    
-    public func visitTable(_ table: Table) -> NSAttributedString {
-        return defaultVisit(table)
-    }
-    
-}
-
-// MARK: - Default Attribute Implementation
-
-extension GMarkupVisitor {
-    
-    func defaultAttribute(from text: String) -> NSMutableAttributedString {
-        let attributedString = NSMutableAttributedString(string: text)
-        
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        
-        attributes[.font] = style.fonts.current
-        attributes[.foregroundColor] = style.colors.current
-        
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-        paragraphStyle.paragraphSpacing = 16 // 段落间距为16
-        // 设置文本方向和对齐方式
-        let isRTL = isRTLLanguage(text: text)
-        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
-        paragraphStyle.alignment = isRTL ? .right : .left
-        attributes[.paragraphStyle] = paragraphStyle
-        
-        attributedString.addAttributes(attributes, range: NSRange(location: 0, length: text.utf16.count))
-        
-        return attributedString
-    }
-}
-
-// MARK: - Apply Helper Methods
-
-extension GMarkupVisitor {
+    // MARK: - Helper Methods
     
     private mutating func processChildren(of markup: Markup) -> NSMutableAttributedString {
         let result = NSMutableAttributedString()
@@ -259,23 +213,226 @@ extension GMarkupVisitor {
         }
     }
     
-    private mutating func applyDefaultParagraphStyle(to attributedString: NSMutableAttributedString) {
-        let paragraphStyle = NSMutableParagraphStyle()
-        paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-        paragraphStyle.paragraphSpacing = 16
-        let isRTL = isRTLLanguage(text: attributedString.string)
-        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
-        paragraphStyle.alignment = isRTL ? .right : .left
-        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle)
-        attributedString.addAttribute(.font, value: style.fonts.current)
-        attributedString.addAttribute(.foregroundColor, value: style.colors.current)
+    private mutating func handleLatexText(_ text: Text) -> NSAttributedString {
+        guard text.plainText != "[" && text.plainText != "]" else {
+            return defaultAttribute(from: "")
+        }
+        let trimmedText = trimBrackets(from: text.plainText)
+        var mathImage = MathImage(latex: trimmedText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
+        mathImage.font = MathFont.xitsFont
         
+        let (_, image) = mathImage.asImage()
+
+        if let image = image {
+            let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
+            let result = NSMutableAttributedString(string: "")
+            let attachment = MPITextAttachment()
+            attachment.content = resizedImage
+            attachment.contentSize = resizedImage.size
+            attachment.contentMode = .left
+            attachment.verticalAligment = .center
+            let attrString = NSMutableAttributedString(attachment: attachment)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+            paragraphStyle.paragraphSpacing = 16 // 段落间距为16
+            attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
+            attrString.addAttribute(.font, value: style.fonts.current)
+            attrString.addAttribute(.foregroundColor, value: style.colors.current)
+            
+            result.append(attrString)
+            return result
+        }
+        return defaultAttribute(from: text.plainText)
     }
-}
+    
+    private mutating func renderLatexSynchronously(image: UIImage) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        if image.size.width > style.maxContainerWidth {
+            let sv = UIScrollView()
+            sv.contentSize = image.size
+            let iv = UIImageView(image: image)
+            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            sv.addSubview(iv)
+            
+            let attachment = MPITextAttachment()
+            attachment.content = sv
+            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
+            attachment.verticalAligment = .center
+            let attrString = NSMutableAttributedString(attachment: attachment)
+            applyDefaultParagraphStyle(to: attrString)
+            result.append(attrString)
+        } else {
+            let attachment = MPITextAttachment()
+            attachment.image = image
+            attachment.contentSize = image.size
+            attachment.contentMode = .left
+            attachment.verticalAligment = .center
+            let attrString = NSMutableAttributedString(attachment: attachment)
+            applyDefaultParagraphStyle(to: attrString)
+            result.append(attrString)
+        }
+        return result
+    }
+    
+    private mutating func renderLatexAsynchronously(image: UIImage) -> NSAttributedString {
+        let semaphore = DispatchSemaphore(value: 0)
+        let result = NSMutableAttributedString()
+        loadLatexAsync(from: image, style: style) { attrString in
+            result.append(attrString)
+            semaphore.signal()
+        }
+        semaphore.wait()
+        return result
+    }
+    
+    private mutating func handleSupTag(from text: Text) -> NSAttributedString {
+        guard let referLoader = referLoader,
+              let link = referLoader.referQuoteLink(from: text.plainText),
+              let webSite = referLoader.referQuoteWebSite(from: text.plainText),
+              !webSite.isEmpty else {
+            return defaultAttribute(from: "")
+        }
+        
+        let tagImage = Renderer().drawTagImage(
+            text: webSite,
+            font: style.fonts.quoteFont,
+            width: calculateTagWidth(for: webSite),
+            height: 28,
+            backgroundColor: style.colors.quoteBackground,
+            textColor: style.colors.quoteForeground,
+            cornerRadius: 14
+        )
+        
+        guard let image = tagImage else {
+            return defaultAttribute(from: "")
+        }
+        
+        let attachment = MPITextAttachment()
+        attachment.image = image
+        attachment.bounds = CGRect(x: 0, y: -7, width: image.size.width, height: image.size.height)
+        let attrString = NSMutableAttributedString(attachment: attachment)
+        attrString.insert(NSAttributedString(string: " "), at: 0)
+        
+        if let url = URL(string: link) {
+            let mpiLink = MPITextLink()
+            mpiLink.value = url as any NSObjectProtocol
+            attrString.addAttribute(.MPILink, value: mpiLink)
+        }
+        
+        return attrString
+    }
+    
+    private func calculateTagWidth(for text: String) -> CGFloat {
+        let textWidth = (text as NSString).size(withAttributes: [.font: style.fonts.quoteFont]).width
+        let padding: CGFloat = 12
+        return min(textWidth + 18 + padding * 2, 180)
+    }
+    
+    private mutating func handleBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
+        let attributedString = NSMutableAttributedString()
+        // 设置基准缩进为 10.0，深度偏移也为 10.0，最大深度为 5
+        let config = BlockQuoteConfig(baseLeftMargin: 15.0, depthOffset: 20.0, maxDepth: 5)
+        
+        for child in blockQuote.children {
+            let attributes = createQuoteAttributes(depth: blockQuote.quoteDepth, config: config)
+            if let childAttributed = processChildInBlockQuote(child, attributes: attributes) {
+                attributedString.append(childAttributed)
+            }
+        }
+        
+        if blockQuote.hasSuccessor {
+            attributedString.append(blockQuote.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
+        }
+        
+        return attributedString
+    }
 
-// MARK: - CodeBlock
+    private func createQuoteAttributes(depth: Int, config: BlockQuoteConfig) -> [NSAttributedString.Key: Any] {
+        var attributes: [NSAttributedString.Key: Any] = [:]
+        let paragraphStyle = NSMutableParagraphStyle()
+        
+        // 计算有效深度，防止超过最大深度
+        let effectiveDepth = min(depth, config.maxDepth)
+        // 每一级深度增加 10.0 的缩进
+        let leftIndent = config.baseLeftMargin + (config.depthOffset * CGFloat(effectiveDepth))
+        
+        // 统一首行和其他行的缩进为 leftIndent
+        paragraphStyle.firstLineHeadIndent = leftIndent
+        paragraphStyle.headIndent = leftIndent
+        
+        // 设置行间距，可以根据需要调整
+        paragraphStyle.lineSpacing = max(5, 25 - style.fonts.current.pointSize)
+        paragraphStyle.paragraphSpacing = 16
+        attributes[.paragraphStyle] = paragraphStyle
+        attributes[.font] = style.blockquoteStyle.font
+        attributes[.foregroundColor] = style.blockquoteStyle.textColor // 确保文字颜色正确
+        // 移除 .quoteDepth，如果没有使用，可以删除
+        // attributes[.quoteDepth] = depth
+        
+        return attributes
+    }
 
-extension GMarkupVisitor {
+    private mutating func processChildInBlockQuote(_ child: Markup, attributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
+        guard let childAttributed = visit(child) as? NSMutableAttributedString else { return nil }
+        
+        // 应用引用块的段落样式和其它属性
+        let range = NSRange(location: 0, length: childAttributed.length)
+        childAttributed.addAttributes(attributes, range: range)
+        
+        applyQuoteStyle(to: childAttributed)
+        return childAttributed
+    }
+
+    private mutating func applyQuoteStyle(to attributedString: NSMutableAttributedString) {
+        // 这里已经在 createQuoteAttributes 中设置了 foregroundColor，所以可以选择去除这部分
+        // 如果需要额外的样式，可以保留或调整
+        /*
+        attributedString.addAttribute(.foregroundColor, value: style.blockquoteStyle.textColor)
+        */
+        if style.useMPTextKit {
+            let background = MPITextBackground(fill: style.blockquoteStyle.backgroundColor, cornerRadius: 1)
+            background.borderEdges = .left
+            background.borderColor = style.blockquoteStyle.borderColor
+            background.borderWidth = style.blockquoteStyle.borderWidth
+            attributedString.addAttribute(.MPIBlockBackground, value: background)
+        } else {
+            attributedString.addAttribute(.backgroundColor, value: style.blockquoteStyle.backgroundColor.withAlphaComponent(0.1))
+        }
+    }
+
+    
+
+    private mutating func handleInlineHTML(_ inlineHTML: InlineHTML) -> Result {
+        
+        if !ignoreLatex {
+            switch inlineHTML.plainText {
+            case "<LaTex>":
+                beginLatex = true
+            case "</LaTex>":
+                beginLatex = false
+            default:
+                break
+            }
+        }
+        switch inlineHTML.plainText {
+        case "<br>":
+            return .singleNewline(withStyle: style)
+        case "<sup>":
+            beginSupTag = true
+            return defaultVisit(inlineHTML)
+        case "</sup>":
+            beginSupTag = false
+            return defaultVisit(inlineHTML)
+        default:
+            return defaultVisit(inlineHTML)
+        }
+    }
+    
+    private mutating func handleHTMLBlock(_ html: HTMLBlock) -> Result {
+       
+        return defaultAttribute(from: html.rawHTML)
+
+    }
     
     private mutating func handleCodeBlock(_ codeBlock: CodeBlock) -> NSAttributedString {
         let code = codeBlock.code.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -339,168 +496,6 @@ extension GMarkupVisitor {
         return attributed
     }
     
-}
-
-// MARK: - LaTex
-
-extension GMarkupVisitor {
-    
-    private mutating func handleLatexText(_ text: Text) -> NSAttributedString {
-        guard text.plainText != "[" && text.plainText != "]" else {
-            return defaultAttribute(from: "")
-        }
-        let trimmedText = trimBrackets(from: text.plainText)
-        var mathImage = MathImage(latex: trimmedText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
-        mathImage.font = MathFont.kpMathSansFont
-        //        let (_, image) = mathImage.asImage()
-        
-        var mImage = MathImage(latex: text.plainText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
-        mImage.font = MathFont.termesFont
-        let (_, image) = mImage.asImage()
-        
-        if let image = image {
-            let result = NSMutableAttributedString(string: "")
-            if Thread.isMainThread == false, image.size.width > style.maxContainerWidth - 40 {
-                let semaphore = DispatchSemaphore(value: 0)
-                loadLatexAsync(from: image, style: style) { attrString in
-                    result.append(attrString)
-                    semaphore.signal()
-                }
-                semaphore.wait()
-                return result
-            } else if Thread.isMainThread, image.size.width > style.maxContainerWidth {
-                let sv = UIScrollView()
-                sv.contentSize = image.size
-                let iv = UIImageView()
-                iv.image = image
-                iv.frame = CGRectMake(0, 0, image.size.width, image.size.height)
-                sv.addSubview(iv)
-                
-                let attachment = MPITextAttachment()
-                attachment.content = sv
-                attachment.contentSize = CGSizeMake(style.maxContainerWidth, image.size.height)
-                //                print("imagesize: \(image.size)")
-                attachment.verticalAligment = .center
-                let attrString = NSMutableAttributedString(attachment: attachment)
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-                paragraphStyle.paragraphSpacing = 16 // 段落间距为16
-                attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
-                attrString.addAttribute(.font, value: style.fonts.current)
-                attrString.addAttribute(.foregroundColor, value: style.colors.current)
-                
-                result.append(attrString)
-                return result
-            } else {
-                let attachment = MPITextAttachment()
-                attachment.content = image
-                attachment.contentSize = image.size
-                attachment.contentMode = .left
-                attachment.verticalAligment = .center
-                let attrString = NSMutableAttributedString(attachment: attachment)
-                let paragraphStyle = NSMutableParagraphStyle()
-                paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-                paragraphStyle.paragraphSpacing = 16 // 段落间距为16
-                attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
-                attrString.addAttribute(.font, value: style.fonts.current)
-                attrString.addAttribute(.foregroundColor, value: style.colors.current)
-                
-                result.append(attrString)
-                return result
-            }
-        }
-        return defaultAttribute(from: text.plainText)
-        //        guard let image = image else {
-        //            return defaultAttribute(from: text.plainText)
-        //        }
-        //
-        //        if Thread.isMainThread {
-        //            return renderLatexSynchronously(image: image)
-        //        } else {
-        //            return renderLatexAsynchronously(image: image)
-        //        }
-    }
-    
-    private mutating func renderLatexSynchronously(image: UIImage) -> NSAttributedString {
-        let result = NSMutableAttributedString()
-        if image.size.width > style.maxContainerWidth {
-            let sv = UIScrollView()
-            sv.contentSize = image.size
-            let iv = UIImageView(image: image)
-            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            sv.addSubview(iv)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = sv
-            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
-            attachment.verticalAligment = .center
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            applyDefaultParagraphStyle(to: attrString)
-            result.append(attrString)
-        } else {
-            let attachment = MPITextAttachment()
-            attachment.image = image
-            attachment.contentSize = image.size
-            attachment.contentMode = .left
-            attachment.verticalAligment = .center
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            applyDefaultParagraphStyle(to: attrString)
-            result.append(attrString)
-        }
-        return result
-    }
-    
-    private mutating func renderLatexAsynchronously(image: UIImage) -> NSAttributedString {
-        let semaphore = DispatchSemaphore(value: 0)
-        let result = NSMutableAttributedString()
-        loadLatexAsync(from: image, style: style) { attrString in
-            result.append(attrString)
-            semaphore.signal()
-        }
-        semaphore.wait()
-        return result
-    }
-    
-    private func loadLatexAsync(from image: UIImage, style: Style, completion: @escaping (NSAttributedString) -> Void) {
-        DispatchQueue.main.async {
-            let sv = UIScrollView()
-            sv.contentSize = image.size
-            let iv = UIImageView(image: image)
-            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            sv.addSubview(iv)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = sv
-            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
-            attachment.verticalAligment = .center
-            
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-            paragraphStyle.paragraphSpacing = 16
-            attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
-            attrString.addAttribute(.font, value: style.fonts.current)
-            attrString.addAttribute(.foregroundColor, value: style.colors.current)
-            completion(attrString)
-        }
-    }
-    
-    
-    /// 去掉Latex 前后的[]
-    /// - Parameter string: <#string description#>
-    /// - Returns: <#description#>
-    func trimBrackets(from string: String) -> String {
-        let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedString.hasPrefix("[") && (trimmedString.hasSuffix("]")) {
-            return String(trimmedString.dropFirst().dropLast())
-        }
-        return trimmedString
-    }
-}
-
-// MARK: - List Container
-
-extension GMarkupVisitor {
     public mutating func handleOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
         let result = defaultAttribute(from: "")
         
@@ -542,13 +537,13 @@ extension GMarkupVisitor {
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = orderedList.listDepth
             
-            
+         
             
             // Same as the normal list attributes, but for prettiness in formatting we want to use the cool monospaced numeral font
             var numberAttributes = listItemAttributes
             numberAttributes[.font] = numeralFont
             numberAttributes[.foregroundColor] = style.colors.current
-            
+           
             let taps = isRTL ? " " : "\t"
             
             if Int(orderedList.startIndex) > 0 {
@@ -600,7 +595,7 @@ extension GMarkupVisitor {
             listItemAttributes[.font] = font
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = unorderedList.listDepth
-            
+           
             let taps = isRTL ? " " : "\t"
             listItemAttributedString.insert(NSAttributedString(string: "\t•\(taps)", attributes: listItemAttributes), at: 0)
             
@@ -613,268 +608,194 @@ extension GMarkupVisitor {
         
         return result
     }
-}
 
-// MARK: - BlockQuote
-
-extension GMarkupVisitor {
-    
-    // MARK: - Block Quote Configuration
-    private struct BlockQuoteConfig {
-        let baseLeftMargin: CGFloat
-        let depthOffset: CGFloat
-        let maxDepth: Int
-    }
-    
-    private mutating func handleBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
-        // 设置基准缩进为 10.0，深度偏移也为 10.0，最大深度为 5
-        let config = BlockQuoteConfig(baseLeftMargin: 15.0, depthOffset: 20.0, maxDepth: 5)
-        
-        for child in blockQuote.children {
-            let attributes = createQuoteAttributes(depth: blockQuote.quoteDepth, config: config)
-            if let childAttributed = processChildInBlockQuote(child, attributes: attributes) {
-                attributedString.append(childAttributed)
-            }
-        }
-        
-        if blockQuote.hasSuccessor {
-            attributedString.append(blockQuote.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
-        }
-        
-        return attributedString
-    }
-    
-    private func createQuoteAttributes(depth: Int, config: BlockQuoteConfig) -> [NSAttributedString.Key: Any] {
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        let paragraphStyle = NSMutableParagraphStyle()
-        
-        // 计算有效深度，防止超过最大深度
-        let effectiveDepth = min(depth, config.maxDepth)
-        // 每一级深度增加 10.0 的缩进
-        let leftIndent = config.baseLeftMargin + (config.depthOffset * CGFloat(effectiveDepth))
-        
-        // 统一首行和其他行的缩进为 leftIndent
-        paragraphStyle.firstLineHeadIndent = leftIndent
-        paragraphStyle.headIndent = leftIndent
-        
-        // 设置行间距，可以根据需要调整
-        paragraphStyle.lineSpacing = max(5, 25 - style.fonts.current.pointSize)
-        paragraphStyle.paragraphSpacing = 16
-        attributes[.paragraphStyle] = paragraphStyle
-        attributes[.font] = style.blockquoteStyle.font
-        attributes[.foregroundColor] = style.blockquoteStyle.textColor // 确保文字颜色正确
-        // 移除 .quoteDepth，如果没有使用，可以删除
-        // attributes[.quoteDepth] = depth
-        
-        return attributes
-    }
-    
-    private mutating func processChildInBlockQuote(_ child: Markup, attributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
-        guard let childAttributed = visit(child) as? NSMutableAttributedString else { return nil }
-        
-        // 应用引用块的段落样式和其它属性
-        let range = NSRange(location: 0, length: childAttributed.length)
-        childAttributed.addAttributes(attributes, range: range)
-        
-        applyQuoteStyle(to: childAttributed)
-        return childAttributed
-    }
-    
-    private mutating func applyQuoteStyle(to attributedString: NSMutableAttributedString) {
-        // 这里已经在 createQuoteAttributes 中设置了 foregroundColor，所以可以选择去除这部分
-        // 如果需要额外的样式，可以保留或调整
-        /*
-         attributedString.addAttribute(.foregroundColor, value: style.blockquoteStyle.textColor)
-         */
-        if style.useMPTextKit {
-            let background = MPITextBackground(fill: style.blockquoteStyle.backgroundColor, cornerRadius: 1)
-            background.borderEdges = .left
-            background.borderColor = style.blockquoteStyle.borderColor
-            background.borderWidth = style.blockquoteStyle.borderWidth
-            attributedString.addAttribute(.MPIBlockBackground, value: background)
-        } else {
-            attributedString.addAttribute(.backgroundColor, value: style.blockquoteStyle.backgroundColor.withAlphaComponent(0.1))
-        }
-    }
-}
-
-// MARK: - Sup Tag
-
-extension GMarkupVisitor {
-    
-    private mutating func generateSupTag(from text: Text) -> NSAttributedString {
-        guard let referLoader = referLoader,
-              let link = referLoader.referQuoteLink(from: text.plainText),
-              let webSite = referLoader.referQuoteWebSite(from: text.plainText),
-              !webSite.isEmpty else {
-            return defaultAttribute(from: "")
-        }
-        
-        let tagImage = Renderer().drawTagImage(
-            text: webSite,
-            font: style.fonts.quoteFont,
-            width: calculateTagWidth(for: webSite),
-            height: 28,
-            backgroundColor: style.colors.quoteBackground,
-            textColor: style.colors.quoteForeground,
-            cornerRadius: 14
-        )
-        
-        guard let image = tagImage else {
-            return defaultAttribute(from: "")
-        }
-        
-        let attachment = MPITextAttachment()
-        attachment.image = image
-        attachment.bounds = CGRect(x: 0, y: -7, width: image.size.width, height: image.size.height)
-        let attrString = NSMutableAttributedString(attachment: attachment)
-        attrString.insert(NSAttributedString(string: " "), at: 0)
-        
-        if let url = URL(string: link) {
-            let mpiLink = MPITextLink()
-            mpiLink.value = url as any NSObjectProtocol
-            attrString.addAttribute(.MPILink, value: mpiLink)
-        }
-        
-        return attrString
-    }
-    
-    private func calculateTagWidth(for text: String) -> CGFloat {
-        let textWidth = (text as NSString).size(withAttributes: [.font: style.fonts.quoteFont]).width
-        let padding: CGFloat = 12
-        return min(textWidth + 18 + padding * 2, 180)
-    }
-    
-}
-
-// MARK: - InlineHTML & HTML Block
-
-extension GMarkupVisitor {
-    private mutating func handleInlineHTML(_ inlineHTML: InlineHTML) -> Result {
-        if !ignoreLatex {
-            switch inlineHTML.plainText {
-            case "<LaTex>":
-                beginLatex = true
-            case "</LaTex>":
-                beginLatex = false
-            default:
-                break
-            }
-        }
-        
-        switch inlineHTML.plainText {
-        case "<br>":
-            return .singleNewline(withStyle: style)
-        case "<sup>":
-            beginSupTag = true
-            return defaultVisit(inlineHTML)
-        case "</sup>":
-            beginSupTag = false
-            return defaultVisit(inlineHTML)
-        default:
-            return defaultVisit(inlineHTML)
-        }
-    }
-    
-    private mutating func handleHTMLBlock(_ html: HTMLBlock) -> Result {
-        if html.rawHTML.contains("dotline-") {
-            return defaultAttribute(from: "")
-        }
-        return defaultAttribute(from: html.rawHTML)
-        /*
-         let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
-         .documentType: NSAttributedString.DocumentType.html,
-         .characterEncoding: String.Encoding.utf8.rawValue
-         ]
-         
-         guard let data = html.rawHTML.data(using: .utf8),
-         let attributed = try? NSMutableAttributedString(data: data, options: options, documentAttributes: nil) else {
-         return defaultAttribute(from: html.rawHTML)
-         }
-         
-         if html.hasSuccessor {
-         attributed.append(html.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
-         }
-         
-         return attributed
-         */
-    }
-    
-}
-
-// MARK: - Image
-
-extension GMarkupVisitor {
-    
     private mutating func handleImage(source: String) -> NSAttributedString {
-        let result = NSMutableAttributedString()
-        
-        if Thread.isMainThread == false {
+        if Thread.isMainThread {
+            return createImageAttributedString(source: source)
+        } else {
             let semaphore = DispatchSemaphore(value: 0)
-            loadImageAsync(from: source) { attrString in
-                result.append(attrString)
+            var resultString: NSAttributedString!
+            let currentStyle = self.style // 在主线程之前获取所需的值
+            
+            DispatchQueue.main.async {
+                resultString = Self.createImageAttributedStringStatic(source: source, style: currentStyle)
                 semaphore.signal()
             }
+            
             semaphore.wait()
-            return result
-        } else {
-            let imageView = createImageView()
-            GMarkPluginManager.shared.imageLoader?.loadImage(from: source, into: imageView)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = imageView
-            attachment.contentSize = style.imageStyle.size
-            attachment.contentInsets = style.imageStyle.padding
-            attachment.verticalAligment = .center
-            
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            addLinkAttributes(to: attrString, with: source)
-            
-            result.append(attrString)
-            return result
+            return resultString
         }
     }
 
-    private func loadImageAsync(from source: String, completion: @escaping (NSAttributedString) -> Void) {
-        DispatchQueue.main.async {
-            let imageView = createImageView()
-            
-            GMarkPluginManager.shared.imageLoader?.loadImage(from: source, into: imageView)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = imageView
-            attachment.contentSize = style.imageStyle.size
-            attachment.contentInsets = style.imageStyle.padding
-            attachment.verticalAligment = .center
-            
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            addLinkAttributes(to: attrString, with: source)
-            
-            completion(attrString)
-        }
+    // 原来的实例方法
+    private func createImageAttributedString(source: String) -> NSAttributedString {
+        return Self.createImageAttributedStringStatic(source: source, style: self.style)
     }
 
-    private func createImageView() -> UIImageView {
+    // 静态方法，不需要访问实例属性
+    private static func createImageAttributedStringStatic(source: String, style: Style) -> NSAttributedString {
+        let result = NSMutableAttributedString()
+        
         let imageView = UIImageView()
         imageView.backgroundColor = style.imageStyle.backgroundColor
         imageView.layer.cornerRadius = style.imageStyle.cornerRadius
         imageView.clipsToBounds = true
         imageView.contentMode = style.imageStyle.contentMode
-        return imageView
-    }
-
-    private func addLinkAttributes(to attrString: NSMutableAttributedString, with source: String) {
+        
+        GMarkPluginManager.shared.imageLoader?.loadImage(from: source, into: imageView)
+        
+        let attachment = MPITextAttachment()
+        attachment.content = imageView
+        attachment.contentSize = style.imageStyle.size
+        attachment.contentInsets = style.imageStyle.padding
+        attachment.verticalAligment = .center
+        
+        let attrString = NSMutableAttributedString(attachment: attachment)
         if let url = URL(string: source) {
             attrString.addAttribute(.link, value: url)
             let mpiLink = MPITextLink()
             mpiLink.value = url as any NSObjectProtocol
             attrString.addAttribute(.MPILink, value: mpiLink)
         }
+        
+        result.append(attrString)
+        return result
+    }
+    
+    private func loadLatexAsync(from image: UIImage, style: Style, completion: @escaping (NSAttributedString) -> Void) {
+        DispatchQueue.main.async {
+            let sv = UIScrollView()
+            sv.contentSize = image.size
+            let iv = UIImageView(image: image)
+            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            sv.addSubview(iv)
+            
+            let attachment = MPITextAttachment()
+            attachment.content = sv
+            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
+            attachment.verticalAligment = .center
+            
+            let attrString = NSMutableAttributedString(attachment: attachment)
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+            paragraphStyle.paragraphSpacing = 16
+            attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
+            attrString.addAttribute(.font, value: style.fonts.current)
+            attrString.addAttribute(.foregroundColor, value: style.colors.current)
+            completion(attrString)
+        }
+    }
+    
+    func trimBrackets(from string: String) -> String {
+        let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedString.hasPrefix("[") && (trimmedString.hasSuffix("]")) {
+            return String(trimmedString.dropFirst().dropLast())
+        }
+        if trimmedString.hasPrefix("(") && (trimmedString.hasSuffix(")")) {
+            return String(trimmedString.dropFirst().dropLast())
+        }
+        return trimmedString
+    }
+    
+    private func calculateWidth(of text: String, withFont font: UIFont) -> CGFloat {
+        return (text as NSString).size(withAttributes: [.font: font]).width
+    }
+    
+    // MARK: - Rendering Helpers
+    
+    private mutating func renderHTML(_ htmlData: Data, options: [NSAttributedString.DocumentReadingOptionKey: Any]) -> NSAttributedString {
+        if let attributedString = try? NSMutableAttributedString(data: htmlData, options: options, documentAttributes: nil) {
+            return attributedString
+        }
+        return defaultAttribute(from: String(data: htmlData, encoding: .utf8) ?? "")
+    }
+    
+    private mutating func renderLatexImage(_ image: UIImage) -> NSAttributedString {
+        let attachment = MPITextAttachment()
+        attachment.image = image
+        attachment.contentSize = image.size
+        attachment.contentMode = .left
+        attachment.verticalAligment = .center
+        
+        let attrString = NSMutableAttributedString(attachment: attachment)
+        applyDefaultParagraphStyle(to: attrString)
+        return attrString
+    }
+    
+    private mutating func renderLatexScrollView(_ image: UIImage) -> NSAttributedString {
+        let sv = UIScrollView()
+        sv.contentSize = image.size
+        let iv = UIImageView(image: image)
+        iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+        sv.addSubview(iv)
+        
+        let attachment = MPITextAttachment()
+        attachment.content = sv
+        attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
+        attachment.verticalAligment = .center
+        
+        let attrString = NSMutableAttributedString(attachment: attachment)
+        applyDefaultParagraphStyle(to: attrString)
+        return attrString
+    }
+    
+    private mutating func renderImageAsAttachment(_ image: UIImage) -> NSAttributedString {
+        let attachment = MPITextAttachment()
+        attachment.image = image
+        attachment.contentSize = image.size
+        attachment.contentMode = .left
+        attachment.verticalAligment = .center
+        let attrString = NSMutableAttributedString(attachment: attachment)
+        applyDefaultParagraphStyle(to: attrString)
+        return attrString
+    }
+    
+    private mutating func applyDefaultParagraphStyle(to attributedString: NSMutableAttributedString) {
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+        paragraphStyle.paragraphSpacing = 16
+        let isRTL = isRTLLanguage(text: attributedString.string)
+        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
+        paragraphStyle.alignment = isRTL ? .right : .left
+        attributedString.addAttribute(.paragraphStyle, value: paragraphStyle)
+        attributedString.addAttribute(.font, value: style.fonts.current)
+        attributedString.addAttribute(.foregroundColor, value: style.colors.current)
+        
+    }
+    
+    // MARK: - Block Quote Configuration
+    
+    private struct BlockQuoteConfig {
+        let baseLeftMargin: CGFloat
+        let depthOffset: CGFloat
+        let maxDepth: Int
     }
 }
 
-// MARK: - RTL
+// MARK: - Default Attribute Implementation
+extension GMarkupVisitor {
+    func defaultAttribute(from text: String) -> NSMutableAttributedString {
+        let attributedString = NSMutableAttributedString(string: text)
+        
+        var attributes: [NSAttributedString.Key: Any] = [:]
+        
+        attributes[.font] = style.fonts.current
+        attributes[.foregroundColor] = style.colors.current
+        
+        let paragraphStyle = NSMutableParagraphStyle()
+        paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+        paragraphStyle.paragraphSpacing = 16 // 段落间距为16
+        // 设置文本方向和对齐方式
+        let isRTL = isRTLLanguage(text: text)
+        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
+        paragraphStyle.alignment = isRTL ? .right : .left
+        attributes[.paragraphStyle] = paragraphStyle
+        
+        attributedString.addAttributes(attributes, range: NSRange(location: 0, length: text.utf16.count))
+        
+        return attributedString
+    }
+}
 
 extension GMarkupVisitor {
     /// 检测文本是否为RTL语言
@@ -899,9 +820,9 @@ extension GMarkupVisitor {
                 // 阿拉伯语和希伯来语的Unicode范围
                 switch codePoint {
                 case 0x0590...0x08FF,   // 包含希伯来语、阿拉伯语等
-                    0xFB1D...0xFDFF,
-                    0xFE70...0xFEFF,
-                    0x1EE00...0x1EEFF:
+                     0xFB1D...0xFDFF,
+                     0xFE70...0xFEFF,
+                     0x1EE00...0x1EEFF:
                     return true
                 default:
                     return false
@@ -917,3 +838,219 @@ extension GMarkupVisitor {
     }
 }
 
+
+
+// MARK: - Renderer Helper
+
+private struct Renderer {
+    
+    func drawTagImage(text: String, font: UIFont, width: CGFloat, height: CGFloat, backgroundColor: UIColor, textColor: UIColor, cornerRadius: CGFloat) -> UIImage? {
+        let size = CGSize(width: width, height: height)
+        let iconName = "detail_quote_ic"
+        let iconSize = CGSize(width: 16, height: 16)
+        let iconTextSpacing: CGFloat = 2
+        
+        let renderer = UIGraphicsImageRenderer(size: size)
+        return renderer.image { context in
+            // Draw background
+            let rect = CGRect(origin: .zero, size: size)
+            let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+            backgroundColor.setFill()
+            path.fill()
+            
+            // Draw icon
+            if let icon = UIImage(named: iconName) {
+                let iconY = (size.height - iconSize.height) / 2
+                let iconRect = CGRect(x: 10, y: iconY, width: iconSize.width, height: iconSize.height)
+                icon.draw(in: iconRect)
+            }
+            
+            // Draw text
+            let paragraphStyle = NSMutableParagraphStyle()
+            paragraphStyle.lineBreakMode = .byTruncatingTail
+            paragraphStyle.alignment = .left
+            
+            let attributes: [NSAttributedString.Key: Any] = [
+                .font: font,
+                .foregroundColor: textColor,
+                .paragraphStyle: paragraphStyle
+            ]
+            
+            let textX: CGFloat = 10 + iconSize.width + iconTextSpacing
+            let availableWidth = size.width - textX - 10
+            let textRect = CGRect(
+                x: textX,
+                y: (size.height - font.lineHeight) / 2,
+                width: availableWidth,
+                height: font.lineHeight
+            )
+            
+            (text as NSString).draw(in: textRect, withAttributes: attributes)
+        }
+    }
+}
+
+
+// MARK: - Helper Extensions
+
+extension UIFont {
+    var italic: UIFont? {
+        return apply(newTraits: .traitItalic)
+    }
+    
+    var bold: UIFont? {
+        return apply(newTraits: .traitBold)
+    }
+    
+    func apply(newTraits: UIFontDescriptor.SymbolicTraits) -> UIFont? {
+        var existingTraits = self.fontDescriptor.symbolicTraits
+        existingTraits.insert(newTraits)
+        
+        guard let newDescriptor = self.fontDescriptor.withSymbolicTraits(existingTraits) else { return nil }
+        return UIFont(descriptor: newDescriptor, size: self.pointSize)
+    }
+}
+
+extension NSMutableAttributedString.Key {
+    static let listDepth = NSAttributedString.Key("ListDepth")
+    static let quoteDepth = NSAttributedString.Key("QuoteDepth")
+}
+
+extension NSMutableAttributedString {
+    func addAttribute(_ name: NSAttributedString.Key, value: Any) {
+        addAttribute(name, value: value, range: NSRange(location: 0, length: length))
+    }
+    
+    func addAttributes(_ attrs: [NSAttributedString.Key: Any]) {
+        addAttributes(attrs, range: NSRange(location: 0, length: length))
+    }
+    
+    func applyEmphasis() {
+        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
+            guard let font = value as? UIFont else { return }
+            if let italicFont = font.italic {
+                addAttribute(.font, value: italicFont, range: range)
+            }
+        }
+    }
+    
+    func applyStrong() {
+        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
+            guard let font = value as? UIFont else { return }
+            if let boldFont = font.bold {
+                addAttribute(.font, value: boldFont, range: range)
+            }
+        }
+    }
+}
+
+extension NSAttributedString {
+    static func singleNewline(withStyle style: Style) -> NSAttributedString {
+        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
+    }
+    
+    static func doubleNewline(withStyle style: Style) -> NSAttributedString {
+        return NSAttributedString(string: "\n\n", attributes: [.font: style.fonts.current])
+    }
+}
+
+extension ListItemContainer {
+    var listDepth: Int {
+        var depth = 0
+        var current = parent
+        while let currentElement = current {
+            if currentElement is ListItemContainer {
+                depth += 1
+            }
+            current = currentElement.parent
+        }
+        return depth
+    }
+}
+
+extension BlockQuote {
+    var quoteDepth: Int {
+        var depth = 0
+        var current = parent
+        while let currentElement = current {
+            if currentElement is BlockQuote {
+                depth += 1
+            }
+            current = currentElement.parent
+        }
+        return depth
+    }
+}
+
+extension Markup {
+    var hasSuccessor: Bool {
+        let siblingIndex = indexInParent
+        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return false }
+        guard let nextSibling = parent.child(at: siblingIndex + 1) else { return false }
+        return !isSplitPoint(nextSibling)
+    }
+    
+    var isContainedInList: Bool {
+        var current = parent
+        while let currentElement = current {
+            if currentElement is ListItemContainer {
+                return true
+            }
+            current = currentElement.parent
+        }
+        return false
+    }
+    
+    var subTag: String? {
+        let siblingIndex = indexInParent
+        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return nil }
+        let nextSibling = parent.child(at: siblingIndex + 1)
+        if let inlineHTML = nextSibling as? InlineHTML, inlineHTML.plainText == "<sup>",
+           let tagText = parent.child(at: siblingIndex + 2) as? Text {
+            return tagText.plainText
+        }
+        return nil
+    }
+    
+    func isSplitPoint(_ item: Markup) -> Bool {
+        switch item {
+        case is Table, is CodeBlock, is ThematicBreak, is Image:
+            return true
+        case let paragraph as Paragraph:
+            if paragraph.child(at: 0) is Image { return true }
+            if paragraph.childCount == 3,let inlineHTML = paragraph.child(at: 0) as? InlineHTML, inlineHTML.plainText == "<LaTex>" {
+                return true
+            }
+            return false
+        default:
+            return false
+        }
+    }
+}
+
+extension UIImage {
+    /// 根据给定的最大宽度调整图片大小，同时保持比例不变。
+    /// - Parameter maxWidth: 图片的最大宽度。
+    /// - Returns: 调整后的UIImage实例。如果原始宽度小于或等于maxWidth，则返回原图。
+    func resized(toMaxWidth maxWidth: CGFloat) -> UIImage {
+        // 检查是否需要调整大小
+        if self.size.width <= maxWidth {
+            return self
+        }
+        
+        // 计算缩放比例以保持纵横比
+        let scaleFactor = maxWidth / self.size.width
+        let newHeight = self.size.height * scaleFactor
+        let newSize = CGSize(width: maxWidth, height: newHeight)
+        
+        // 开始图形上下文并绘制调整后的图片
+        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
+        self.draw(in: CGRect(origin: .zero, size: newSize))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        if let resizedImage {
+            return resizedImage
+        }
+        return self
+    }
+}

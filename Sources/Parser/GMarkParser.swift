@@ -43,8 +43,8 @@ public class GMarkParser {
         // \\$\\$(.+?)\\$\\$|\\$(.+?)\\$|
         /// |\\\\\\[\n(.+?)\\\\\\\n]
         //       let pattern = "\\\\\\[(.+?)\\\\\\]|\\\\\\((.+?)\\\\\\)"
-
-        let pattern = "\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
+        // let pattern = "\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
+        let pattern = "\\$\\$(.+?)\\$\\$|\\$(.+?)\\$|\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
 
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
         let nsString = result as NSString
@@ -56,34 +56,19 @@ public class GMarkParser {
             let matchRange = match.range
             let matchedString = nsString.substring(with: matchRange)
             if matchedString.count < 300 {
-                /// 加个保护. 超过300 默认不匹配
+                /// Add a safeguard.
                 let wrappedString = "<LaTex>\(matchedString)</LaTex>"
                 result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
+            } else {
+                
             }
         }
-
-        result = replaceSubstring(in: result, target: "<img>", replacement: "\n ![](")
-        result = replaceSubstring(in: result, target: "</img>", replacement: ") \n")
+        /// Ensure that each code block image stands alone on a separate line.
+        result = replaceSubstring(in: result, target: "```", replacement: "\n```")
         
-        /// <dotline-card-type>
-        result = replaceSubstring(in: result, target: "<dotline-card-type>", replacement: "\n<dotline-card-type>")
-        result = replaceSubstring(in: result, target: "</dotline-card-type>", replacement: "</dotline-card-type>\n")
-        /// <dotline-summary>
-        result = replaceSubstring(in: result, target: "<dotline-summary>", replacement: "\n<dotline-summary>")
-        result = replaceSubstring(in: result, target: "</dotline-summary>", replacement: "</dotline-summary>\n")
+        result = replaceSubstring(in: result, target: "<img>", replacement: "\n\n ![](")
+        result = replaceSubstring(in: result, target: "</img>", replacement: ") \n\n")
         
-        
-        /// <dotline-card-title>
-        result = replaceSubstring(in: result, target: "<dotline-card-title>", replacement: "\n<dotline-card-title>")
-        result = replaceSubstring(in: result, target: "</dotline-card-title>", replacement: "</dotline-card-title>\n")
-        
-        /// <dotline-highlight>
-        result = replaceSubstring(in: result, target: "<dotline-highlight>", replacement: "\n<dotline-highlight>")
-        result = replaceSubstring(in: result, target: "</dotline-highlight>", replacement: "</dotline-highlight>\n")
-        
-        /// <dotline-card-images>
-        result = replaceSubstring(in: result, target: "<dotline-card-images>", replacement: "\n<dotline-card-images>")
-        result = replaceSubstring(in: result, target: "</dotline-card-images>", replacement: "</dotline-card-images>\n")
         
         return result
     }

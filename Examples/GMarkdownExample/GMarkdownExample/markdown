@@ -98,7 +98,7 @@ print("Hello, Markdown!")
 
 BM25的打分函数可以表示为：
 
-\[ \text{Score}(D, Q) = \sum_{i=1}^{n} IDF(q_i) \cdot \frac{f(q_i, D) \cdot (k_1 + 1)}{f(q_i, D) + k_1 \cdot (1 - b + b \cdot \frac{|D|}{\text{avgdl}})} \]
+\[ \frac{d\zeta}{dt} = -\zeta \left( \frac{\partial u}{\partial x} + \frac{\partial v}{\partial y} \right) \]
 
 其中：
 - \( D \) 是文档

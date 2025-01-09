@@ -67,7 +67,7 @@ open class GMarkdownCodeView: UIView {
         topView.backgroundColor = UIColor(hex: "#FFFFFF")
         container.addSubview(topView)
 
-        var paragraphStyle = NSMutableParagraphStyle()
+        _ = NSMutableParagraphStyle()
         languageLabel = UILabel()
         languageLabel.font = UIFont(name: "PingFangSC-Medium", size: 14)
         languageLabel.textColor = UIColor(hex: "#000000")
