@@ -37,6 +37,8 @@
 		2B1CA0382C5BC6AF00F85195 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0372C5BC6AF00F85195 /* NukeUI */; };
 		2B1CA03A2C5BC6AF00F85195 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0392C5BC6AF00F85195 /* NukeVideo */; };
 		2B1CA03C2C5BC6D400F85195 /* NukeImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */; };
+		2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */; };
+		2BCFA9692D57AD3600EEE6A7 /* markdownv2 in Resources */ = {isa = PBXBuildFile; fileRef = 2BCFA9682D57AD3600EEE6A7 /* markdownv2 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -67,6 +69,8 @@
 		2B1CA01E2C5BC66D00F85195 /* GMarkTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableView.swift; sourceTree = "<group>"; };
 		2B1CA01F2C5BC66D00F85195 /* GMarkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableViewCell.swift; sourceTree = "<group>"; };
 		2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NukeImageLoader.swift; sourceTree = "<group>"; };
+		2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
+		2BCFA9682D57AD3600EEE6A7 /* markdownv2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv2; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,8 +113,10 @@
 				2B1C9FEE2C5BC20B00F85195 /* SceneDelegate.swift */,
 				2B1C9FF02C5BC20B00F85195 /* ViewController.swift */,
 				2B1CA0072C5BC3CD00F85195 /* MarkdownRenderController.swift */,
+				2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */,
 				2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */,
 				2B1CA0052C5BC38D00F85195 /* markdown */,
+				2BCFA9682D57AD3600EEE6A7 /* markdownv2 */,
 				2B1C9FF22C5BC20B00F85195 /* Main.storyboard */,
 				2B1C9FF52C5BC20D00F85195 /* Assets.xcassets */,
 				2B1C9FF72C5BC20D00F85195 /* LaunchScreen.storyboard */,
@@ -245,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B1C9FF62C5BC20D00F85195 /* Assets.xcassets in Resources */,
+				2BCFA9692D57AD3600EEE6A7 /* markdownv2 in Resources */,
 				2B1C9FF92C5BC20D00F85195 /* Base in Resources */,
 				2B1CA0062C5BC38D00F85195 /* markdown in Resources */,
 				2B1C9FF42C5BC20B00F85195 /* Base in Resources */,
@@ -264,6 +271,7 @@
 				2B1CA0232C5BC66D00F85195 /* GMarkdownCodeView.swift in Sources */,
 				2B1CA02F2C5BC66D00F85195 /* GMarkTableStyle.swift in Sources */,
 				2B1CA02B2C5BC66D00F85195 /* GMarkHandlerChain.swift in Sources */,
+				2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */,
 				2B1CA0222C5BC66D00F85195 /* GMarkCodeHighlight.swift in Sources */,
 				2B1CA02C2C5BC66D00F85195 /* GMarkHandlers.swift in Sources */,
 				2B1CA02E2C5BC66D00F85195 /* GMarkStyle.swift in Sources */,

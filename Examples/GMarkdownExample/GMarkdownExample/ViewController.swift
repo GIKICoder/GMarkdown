@@ -10,7 +10,7 @@ import UIKit
 class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     var collectionView: UICollectionView!
-    let items = ["Markdown Render"]
+    let items = ["Markdown Render","Markdown Render -> UITextView"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -62,8 +62,11 @@ class ViewController: UIViewController, UICollectionViewDataSource, UICollection
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         // 点击某一行后的处理
         print("Selected item: \(items[indexPath.item])")
-      if indexPath.item == 0 {
-        self.navigationController?.pushViewController(MarkdownRenderController(), animated: true)
-      }
+        if indexPath.item == 0 {
+            self.navigationController?.pushViewController(MarkdownRenderController(), animated: true)
+        } else if indexPath.item == 1 {
+            self.navigationController?.pushViewController(TextViewViewController(), animated: true)
+            
+        }
     }
 }
