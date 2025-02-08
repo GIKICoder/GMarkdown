@@ -365,9 +365,8 @@ public struct GMarkupVisitor: MarkupVisitor {
         paragraphStyle.paragraphSpacing = 16
         attributes[.paragraphStyle] = paragraphStyle
         attributes[.font] = style.blockquoteStyle.font
-        attributes[.foregroundColor] = style.blockquoteStyle.textColor // 确保文字颜色正确
-        // 移除 .quoteDepth，如果没有使用，可以删除
-        // attributes[.quoteDepth] = depth
+        attributes[.foregroundColor] = style.blockquoteStyle.textColor
+        attributes[.quoteDepth] = depth
         
         return attributes
     }
@@ -396,7 +395,7 @@ public struct GMarkupVisitor: MarkupVisitor {
             background.borderWidth = style.blockquoteStyle.borderWidth
             attributedString.addAttribute(.MPIBlockBackground, value: background)
         } else {
-            attributedString.addAttribute(.backgroundColor, value: style.blockquoteStyle.backgroundColor.withAlphaComponent(0.1))
+            attributedString.addAttribute(.backgroundColor, value: style.blockquoteStyle.backgroundColor)
         }
     }
 
@@ -774,6 +773,7 @@ public struct GMarkupVisitor: MarkupVisitor {
 
 // MARK: - Default Attribute Implementation
 extension GMarkupVisitor {
+    
     func defaultAttribute(from text: String) -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString(string: text)
         
@@ -914,6 +914,8 @@ extension UIFont {
 extension NSMutableAttributedString.Key {
     static let listDepth = NSAttributedString.Key("ListDepth")
     static let quoteDepth = NSAttributedString.Key("QuoteDepth")
+    static let indent = NSAttributedString.Key("Indent")
+    static let blockQuote = NSAttributedString.Key("BlockQuote")
 }
 
 extension NSMutableAttributedString {
@@ -1054,3 +1056,4 @@ extension UIImage {
         return self
     }
 }
+
