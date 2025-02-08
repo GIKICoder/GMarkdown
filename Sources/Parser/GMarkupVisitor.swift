@@ -174,6 +174,8 @@ public struct GMarkupVisitor: MarkupVisitor {
             let mpiLink = MPITextLink()
             mpiLink.value = url as any NSObjectProtocol
             attributedString.addAttribute(.MPILink, value: mpiLink)
+        } else {
+            attributedString.addAttribute(.link, value: url)
         }
     }
     
@@ -222,24 +224,44 @@ public struct GMarkupVisitor: MarkupVisitor {
         mathImage.font = MathFont.xitsFont
         
         let (_, image) = mathImage.asImage()
-
+        
         if let image = image {
             let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
             let result = NSMutableAttributedString(string: "")
-            let attachment = MPITextAttachment()
-            attachment.content = resizedImage
-            attachment.contentSize = resizedImage.size
-            attachment.contentMode = .left
-            attachment.verticalAligment = .center
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-            paragraphStyle.paragraphSpacing = 16 // 段落间距为16
-            attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
-            attrString.addAttribute(.font, value: style.fonts.current)
-            attrString.addAttribute(.foregroundColor, value: style.colors.current)
             
-            result.append(attrString)
+            if style.useMPTextKit {
+                // 使用 MPITextAttachment
+                let attachment = MPITextAttachment()
+                attachment.content = resizedImage
+                attachment.contentSize = resizedImage.size
+                attachment.contentMode = .left
+                attachment.verticalAligment = .center
+                let attrString = NSMutableAttributedString(attachment: attachment)
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+                paragraphStyle.paragraphSpacing = 16
+                attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
+                attrString.addAttribute(.font, value: style.fonts.current)
+                attrString.addAttribute(.foregroundColor, value: style.colors.current)
+                
+                result.append(attrString)
+            } else {
+                // 使用 NSTextAttachment
+                let attachment = NSTextAttachment()
+                attachment.image = resizedImage
+                attachment.bounds = CGRect(x: 0, y: 0, width: resizedImage.size.width, height: resizedImage.size.height)
+                
+                let attrString = NSMutableAttributedString(attachment: attachment)
+                let paragraphStyle = NSMutableParagraphStyle()
+                paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
+                paragraphStyle.paragraphSpacing = 16
+                attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
+                attrString.addAttribute(.font, value: style.fonts.current)
+                attrString.addAttribute(.foregroundColor, value: style.colors.current)
+                
+                result.append(attrString)
+            }
+            
             return result
         }
         return defaultAttribute(from: text.plainText)
@@ -346,7 +368,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         
         return attributedString
     }
-
+    
     private func createQuoteAttributes(depth: Int, config: BlockQuoteConfig) -> [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [:]
         let paragraphStyle = NSMutableParagraphStyle()
@@ -370,7 +392,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         
         return attributes
     }
-
+    
     private mutating func processChildInBlockQuote(_ child: Markup, attributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
         guard let childAttributed = visit(child) as? NSMutableAttributedString else { return nil }
         
@@ -381,13 +403,13 @@ public struct GMarkupVisitor: MarkupVisitor {
         applyQuoteStyle(to: childAttributed)
         return childAttributed
     }
-
+    
     private mutating func applyQuoteStyle(to attributedString: NSMutableAttributedString) {
         // 这里已经在 createQuoteAttributes 中设置了 foregroundColor，所以可以选择去除这部分
         // 如果需要额外的样式，可以保留或调整
         /*
-        attributedString.addAttribute(.foregroundColor, value: style.blockquoteStyle.textColor)
-        */
+         attributedString.addAttribute(.foregroundColor, value: style.blockquoteStyle.textColor)
+         */
         if style.useMPTextKit {
             let background = MPITextBackground(fill: style.blockquoteStyle.backgroundColor, cornerRadius: 1)
             background.borderEdges = .left
@@ -398,9 +420,9 @@ public struct GMarkupVisitor: MarkupVisitor {
             attributedString.addAttribute(.backgroundColor, value: style.blockquoteStyle.backgroundColor)
         }
     }
-
     
-
+    
+    
     private mutating func handleInlineHTML(_ inlineHTML: InlineHTML) -> Result {
         
         if !ignoreLatex {
@@ -428,9 +450,9 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     private mutating func handleHTMLBlock(_ html: HTMLBlock) -> Result {
-       
+        
         return defaultAttribute(from: html.rawHTML)
-
+        
     }
     
     private mutating func handleCodeBlock(_ codeBlock: CodeBlock) -> NSAttributedString {
@@ -438,7 +460,6 @@ public struct GMarkupVisitor: MarkupVisitor {
         if style.codeBlockStyle.customRender {
             return renderCustomCodeBlock(code, language: codeBlock.language)
         }
-        
         if style.codeBlockStyle.useHighlight {
             return renderHighlightedCodeBlock(code, language: codeBlock.language, hasSuccessor: codeBlock.hasSuccessor)
         }
@@ -468,16 +489,21 @@ public struct GMarkupVisitor: MarkupVisitor {
             return renderDefaultCodeBlock(code, hasSuccessor: hasSuccessor)
         }
         
-        let attributed = NSMutableAttributedString(string: "\n")
+        let attributed = NSMutableAttributedString(string: "")
+        attributed.append(.singleNewline(withStyle: style))
         attributed.append(highlighted)
         attributed.addAttribute(.font, value: style.codeBlockStyle.font)
-        
-        let background = MPITextBackground(fill: style.codeBlockStyle.backgroundColor, cornerRadius: 4)
-        attributed.addAttribute(.MPIBlockBackground, value: background)
-        
+        if style.useMPTextKit {
+            let background = MPITextBackground(fill: style.codeBlockStyle.backgroundColor, cornerRadius: 4)
+            attributed.addAttribute(.MPIBlockBackground, value: background)
+        } else {
+            attributed.addAttribute(.backgroundColor, value: style.codeBlockStyle.backgroundColor)
+        }
+    
         if hasSuccessor {
             attributed.append(.singleNewline(withStyle: style))
         }
+        attributed.append(.singleNewline(withStyle: style))
         return attributed
     }
     
@@ -486,8 +512,12 @@ public struct GMarkupVisitor: MarkupVisitor {
         attributed.addAttribute(.font, value: style.codeBlockStyle.font)
         attributed.addAttribute(.foregroundColor, value: style.codeBlockStyle.foregroundColor)
         
-        let background = MPITextBackground(fill: style.codeBlockStyle.backgroundColor, cornerRadius: 4)
-        attributed.addAttribute(.MPIBlockBackground, value: background)
+        if style.useMPTextKit {
+            let background = MPITextBackground(fill: style.codeBlockStyle.backgroundColor, cornerRadius: 4)
+            attributed.addAttribute(.MPIBlockBackground, value: background)
+        } else {
+            attributed.addAttribute(.backgroundColor, value: style.codeBlockStyle.backgroundColor)
+        }
         
         if hasSuccessor {
             attributed.append(.singleNewline(withStyle: style))
@@ -536,13 +566,13 @@ public struct GMarkupVisitor: MarkupVisitor {
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = orderedList.listDepth
             
-         
+            
             
             // Same as the normal list attributes, but for prettiness in formatting we want to use the cool monospaced numeral font
             var numberAttributes = listItemAttributes
             numberAttributes[.font] = numeralFont
             numberAttributes[.foregroundColor] = style.colors.current
-           
+            
             let taps = isRTL ? " " : "\t"
             
             if Int(orderedList.startIndex) > 0 {
@@ -594,7 +624,7 @@ public struct GMarkupVisitor: MarkupVisitor {
             listItemAttributes[.font] = font
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = unorderedList.listDepth
-           
+            
             let taps = isRTL ? " " : "\t"
             listItemAttributedString.insert(NSAttributedString(string: "\t•\(taps)", attributes: listItemAttributes), at: 0)
             
@@ -607,7 +637,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         
         return result
     }
-
+    
     private mutating func handleImage(source: String) -> NSAttributedString {
         if Thread.isMainThread {
             return createImageAttributedString(source: source)
@@ -625,12 +655,12 @@ public struct GMarkupVisitor: MarkupVisitor {
             return resultString
         }
     }
-
+    
     // 原来的实例方法
     private func createImageAttributedString(source: String) -> NSAttributedString {
         return Self.createImageAttributedStringStatic(source: source, style: self.style)
     }
-
+    
     // 静态方法，不需要访问实例属性
     private static func createImageAttributedStringStatic(source: String, style: Style) -> NSAttributedString {
         let result = NSMutableAttributedString()
@@ -820,9 +850,9 @@ extension GMarkupVisitor {
                 // 阿拉伯语和希伯来语的Unicode范围
                 switch codePoint {
                 case 0x0590...0x08FF,   // 包含希伯来语、阿拉伯语等
-                     0xFB1D...0xFDFF,
-                     0xFE70...0xFEFF,
-                     0x1EE00...0x1EEFF:
+                    0xFB1D...0xFDFF,
+                    0xFE70...0xFEFF,
+                    0x1EE00...0x1EEFF:
                     return true
                 default:
                     return false
