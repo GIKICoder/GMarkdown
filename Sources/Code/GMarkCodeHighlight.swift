@@ -6,7 +6,7 @@
 //
 
 import Foundation
-import Highlightr
+
 open class GMarkCodeHighlight: NSObject {
     override init() {
         highlightr?.setTheme(to: "github")

@@ -16,27 +16,123 @@
 		2B1CA0022C5BC24C00F85195 /* Local in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0012C5BC24C00F85195 /* Local */; };
 		2B1CA0062C5BC38D00F85195 /* markdown in Resources */ = {isa = PBXBuildFile; fileRef = 2B1CA0052C5BC38D00F85195 /* markdown */; };
 		2B1CA0082C5BC3CD00F85195 /* MarkdownRenderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0072C5BC3CD00F85195 /* MarkdownRenderController.swift */; };
-		2B1CA0222C5BC66D00F85195 /* GMarkCodeHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA00D2C5BC66D00F85195 /* GMarkCodeHighlight.swift */; };
-		2B1CA0232C5BC66D00F85195 /* GMarkdownCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA00E2C5BC66D00F85195 /* GMarkdownCodeView.swift */; };
-		2B1CA0242C5BC66D00F85195 /* GMarkChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0102C5BC66D00F85195 /* GMarkChunk.swift */; };
-		2B1CA0252C5BC66D00F85195 /* GMarkChunkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0112C5BC66D00F85195 /* GMarkChunkGenerator.swift */; };
-		2B1CA0262C5BC66D00F85195 /* GMarkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0122C5BC66D00F85195 /* GMarkParser.swift */; };
-		2B1CA0272C5BC66D00F85195 /* GMarkProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0132C5BC66D00F85195 /* GMarkProcessor.swift */; };
-		2B1CA0282C5BC66D00F85195 /* GMarkupTableVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0142C5BC66D00F85195 /* GMarkupTableVisitor.swift */; };
-		2B1CA0292C5BC66D00F85195 /* GMarkupVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0152C5BC66D00F85195 /* GMarkupVisitor.swift */; };
-		2B1CA02A2C5BC66D00F85195 /* GMarkdownMultiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0172C5BC66D00F85195 /* GMarkdownMultiView.swift */; };
-		2B1CA02B2C5BC66D00F85195 /* GMarkHandlerChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0182C5BC66D00F85195 /* GMarkHandlerChain.swift */; };
-		2B1CA02C2C5BC66D00F85195 /* GMarkHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA0192C5BC66D00F85195 /* GMarkHandlers.swift */; };
-		2B1CA02D2C5BC66D00F85195 /* GMarkPluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA01A2C5BC66D00F85195 /* GMarkPluginManager.swift */; };
-		2B1CA02E2C5BC66D00F85195 /* GMarkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA01B2C5BC66D00F85195 /* GMarkStyle.swift */; };
-		2B1CA02F2C5BC66D00F85195 /* GMarkTableStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA01D2C5BC66D00F85195 /* GMarkTableStyle.swift */; };
-		2B1CA0302C5BC66D00F85195 /* GMarkTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA01E2C5BC66D00F85195 /* GMarkTableView.swift */; };
-		2B1CA0312C5BC66D00F85195 /* GMarkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA01F2C5BC66D00F85195 /* GMarkTableViewCell.swift */; };
 		2B1CA0342C5BC6AF00F85195 /* Nuke in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0332C5BC6AF00F85195 /* Nuke */; };
 		2B1CA0362C5BC6AF00F85195 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0352C5BC6AF00F85195 /* NukeExtensions */; };
 		2B1CA0382C5BC6AF00F85195 /* NukeUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0372C5BC6AF00F85195 /* NukeUI */; };
 		2B1CA03A2C5BC6AF00F85195 /* NukeVideo in Frameworks */ = {isa = PBXBuildFile; productRef = 2B1CA0392C5BC6AF00F85195 /* NukeVideo */; };
 		2B1CA03C2C5BC6D400F85195 /* NukeImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */; };
+		2B54BE0D2D57B4D2000C8D63 /* ascetic.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9C2D57B4D2000C8D63 /* ascetic.min.css */; };
+		2B54BE0E2D57B4D2000C8D63 /* atelier-lakeside-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA72D57B4D2000C8D63 /* atelier-lakeside-dark.min.css */; };
+		2B54BE0F2D57B4D2000C8D63 /* foundation.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBE2D57B4D2000C8D63 /* foundation.min.css */; };
+		2B54BE102D57B4D2000C8D63 /* github.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC02D57B4D2000C8D63 /* github.min.css */; };
+		2B54BE112D57B4D2000C8D63 /* darcula.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB72D57B4D2000C8D63 /* darcula.min.css */; };
+		2B54BE122D57B4D2000C8D63 /* darkula.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB92D57B4D2000C8D63 /* darkula.min.css */; };
+		2B54BE132D57B4D2000C8D63 /* idea.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC82D57B4D2000C8D63 /* idea.min.css */; };
+		2B54BE142D57B4D2000C8D63 /* dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB82D57B4D2000C8D63 /* dark.min.css */; };
+		2B54BE152D57B4D2000C8D63 /* hopscotch.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC62D57B4D2000C8D63 /* hopscotch.min.css */; };
+		2B54BE162D57B4D2000C8D63 /* default.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBA2D57B4D2000C8D63 /* default.min.css */; };
+		2B54BE172D57B4D2000C8D63 /* obsidian.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD42D57B4D2000C8D63 /* obsidian.min.css */; };
+		2B54BE182D57B4D2000C8D63 /* highlight.min.js in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD932D57B4D2000C8D63 /* highlight.min.js */; };
+		2B54BE192D57B4D2000C8D63 /* school-book.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDF2D57B4D2000C8D63 /* school-book.min.css */; };
+		2B54BE1A2D57B4D2000C8D63 /* gruvbox-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC52D57B4D2000C8D63 /* gruvbox-light.min.css */; };
+		2B54BE1B2D57B4D2000C8D63 /* paraiso-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD72D57B4D2000C8D63 /* paraiso-light.min.css */; };
+		2B54BE1C2D57B4D2000C8D63 /* isbl-editor-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCB2D57B4D2000C8D63 /* isbl-editor-light.min.css */; };
+		2B54BE1D2D57B4D2000C8D63 /* atelier-cave-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9E2D57B4D2000C8D63 /* atelier-cave-light.min.css */; };
+		2B54BE1E2D57B4D2000C8D63 /* atom-one-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB22D57B4D2000C8D63 /* atom-one-dark.min.css */; };
+		2B54BE1F2D57B4D2000C8D63 /* vs2015.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDEA2D57B4D2000C8D63 /* vs2015.min.css */; };
+		2B54BE202D57B4D2000C8D63 /* docco.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBB2D57B4D2000C8D63 /* docco.min.css */; };
+		2B54BE212D57B4D2000C8D63 /* atom-one-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB32D57B4D2000C8D63 /* atom-one-light.min.css */; };
+		2B54BE222D57B4D2000C8D63 /* solarized-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE12D57B4D2000C8D63 /* solarized-dark.min.css */; };
+		2B54BE232D57B4D2000C8D63 /* xcode-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDEB2D57B4D2000C8D63 /* xcode-dark.min.css */; };
+		2B54BE242D57B4D2000C8D63 /* far.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBD2D57B4D2000C8D63 /* far.min.css */; };
+		2B54BE252D57B4D2000C8D63 /* atelier-sulphurpool-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB02D57B4D2000C8D63 /* atelier-sulphurpool-light.min.css */; };
+		2B54BE262D57B4D2000C8D63 /* xcode.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDEC2D57B4D2000C8D63 /* xcode.min.css */; };
+		2B54BE272D57B4D2000C8D63 /* tomorrow-night-bright.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE52D57B4D2000C8D63 /* tomorrow-night-bright.min.css */; };
+		2B54BE282D57B4D2000C8D63 /* agate.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD972D57B4D2000C8D63 /* agate.min.css */; };
+		2B54BE292D57B4D2000C8D63 /* hybrid.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC72D57B4D2000C8D63 /* hybrid.min.css */; };
+		2B54BE2A2D57B4D2000C8D63 /* nord.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD32D57B4D2000C8D63 /* nord.min.css */; };
+		2B54BE2B2D57B4D2000C8D63 /* atelier-sulphurpool-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAF2D57B4D2000C8D63 /* atelier-sulphurpool-dark.min.css */; };
+		2B54BE2C2D57B4D2000C8D63 /* atelier-estuary-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA22D57B4D2000C8D63 /* atelier-estuary-light.min.css */; };
+		2B54BE2D2D57B4D2000C8D63 /* lightfair.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCE2D57B4D2000C8D63 /* lightfair.min.css */; };
+		2B54BE2E2D57B4D2000C8D63 /* atelier-plateau-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAA2D57B4D2000C8D63 /* atelier-plateau-light.min.css */; };
+		2B54BE2F2D57B4D2000C8D63 /* shades-of-purple.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE02D57B4D2000C8D63 /* shades-of-purple.min.css */; };
+		2B54BE302D57B4D2000C8D63 /* atelier-forest-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA32D57B4D2000C8D63 /* atelier-forest-dark.min.css */; };
+		2B54BE312D57B4D2000C8D63 /* tomorrow.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE82D57B4D2000C8D63 /* tomorrow.min.css */; };
+		2B54BE322D57B4D2000C8D63 /* qtcreator_dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDA2D57B4D2000C8D63 /* qtcreator_dark.min.css */; };
+		2B54BE332D57B4D2000C8D63 /* gruvbox-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC42D57B4D2000C8D63 /* gruvbox-dark.min.css */; };
+		2B54BE342D57B4D2000C8D63 /* atelier-estuary-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA12D57B4D2000C8D63 /* atelier-estuary-dark.min.css */; };
+		2B54BE352D57B4D2000C8D63 /* atelier-lakeside-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA82D57B4D2000C8D63 /* atelier-lakeside-light.min.css */; };
+		2B54BE362D57B4D2000C8D63 /* atelier-savanna-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAB2D57B4D2000C8D63 /* atelier-savanna-dark.min.css */; };
+		2B54BE372D57B4D2000C8D63 /* tomorrow-night.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE72D57B4D2000C8D63 /* tomorrow-night.min.css */; };
+		2B54BE382D57B4D2000C8D63 /* xt256.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDED2D57B4D2000C8D63 /* xt256.min.css */; };
+		2B54BE392D57B4D2000C8D63 /* a11y-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD962D57B4D2000C8D63 /* a11y-light.min.css */; };
+		2B54BE3A2D57B4D2000C8D63 /* codepen-embed.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB52D57B4D2000C8D63 /* codepen-embed.min.css */; };
+		2B54BE3B2D57B4D2000C8D63 /* atelier-heath-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA52D57B4D2000C8D63 /* atelier-heath-dark.min.css */; };
+		2B54BE3C2D57B4D2000C8D63 /* atelier-savanna-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAC2D57B4D2000C8D63 /* atelier-savanna-light.min.css */; };
+		2B54BE3D2D57B4D2000C8D63 /* rainbow.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDD2D57B4D2000C8D63 /* rainbow.min.css */; };
+		2B54BE3E2D57B4D2000C8D63 /* gml.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC12D57B4D2000C8D63 /* gml.min.css */; };
+		2B54BE3F2D57B4D2000C8D63 /* a11y-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD952D57B4D2000C8D63 /* a11y-dark.min.css */; };
+		2B54BE402D57B4D2000C8D63 /* arduino-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9A2D57B4D2000C8D63 /* arduino-light.min.css */; };
+		2B54BE412D57B4D2000C8D63 /* qtcreator_light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDB2D57B4D2000C8D63 /* qtcreator_light.min.css */; };
+		2B54BE422D57B4D2000C8D63 /* sunburst.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE32D57B4D2000C8D63 /* sunburst.min.css */; };
+		2B54BE432D57B4D2000C8D63 /* color-brewer.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB62D57B4D2000C8D63 /* color-brewer.min.css */; };
+		2B54BE442D57B4D2000C8D63 /* mono-blue.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD02D57B4D2000C8D63 /* mono-blue.min.css */; };
+		2B54BE452D57B4D2000C8D63 /* magula.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCF2D57B4D2000C8D63 /* magula.min.css */; };
+		2B54BE462D57B4D2000C8D63 /* railscasts.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDC2D57B4D2000C8D63 /* railscasts.min.css */; };
+		2B54BE472D57B4D2000C8D63 /* paraiso-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD62D57B4D2000C8D63 /* paraiso-dark.min.css */; };
+		2B54BE482D57B4D2000C8D63 /* monokai-sublime.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD12D57B4D2000C8D63 /* monokai-sublime.min.css */; };
+		2B54BE492D57B4D2000C8D63 /* androidstudio.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD992D57B4D2000C8D63 /* androidstudio.min.css */; };
+		2B54BE4A2D57B4D2000C8D63 /* atelier-forest-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA42D57B4D2000C8D63 /* atelier-forest-light.min.css */; };
+		2B54BE4B2D57B4D2000C8D63 /* atelier-seaside-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAD2D57B4D2000C8D63 /* atelier-seaside-dark.min.css */; };
+		2B54BE4C2D57B4D2000C8D63 /* atelier-cave-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9D2D57B4D2000C8D63 /* atelier-cave-dark.min.css */; };
+		2B54BE4D2D57B4D2000C8D63 /* isbl-editor-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCA2D57B4D2000C8D63 /* isbl-editor-dark.min.css */; };
+		2B54BE4E2D57B4D2000C8D63 /* arta.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9B2D57B4D2000C8D63 /* arta.min.css */; };
+		2B54BE4F2D57B4D2000C8D63 /* atelier-dune-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD9F2D57B4D2000C8D63 /* atelier-dune-dark.min.css */; };
+		2B54BE502D57B4D2000C8D63 /* grayscale.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC32D57B4D2000C8D63 /* grayscale.min.css */; };
+		2B54BE512D57B4D2000C8D63 /* purebasic.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD92D57B4D2000C8D63 /* purebasic.min.css */; };
+		2B54BE522D57B4D2000C8D63 /* tomorrow-night-eighties.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE62D57B4D2000C8D63 /* tomorrow-night-eighties.min.css */; };
+		2B54BE532D57B4D2000C8D63 /* atelier-plateau-dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA92D57B4D2000C8D63 /* atelier-plateau-dark.min.css */; };
+		2B54BE542D57B4D2000C8D63 /* kimbie.light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCD2D57B4D2000C8D63 /* kimbie.light.min.css */; };
+		2B54BE552D57B4D2000C8D63 /* atom-one-dark-reasonable.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB12D57B4D2000C8D63 /* atom-one-dark-reasonable.min.css */; };
+		2B54BE562D57B4D2000C8D63 /* tomorrow-night-blue.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE42D57B4D2000C8D63 /* tomorrow-night-blue.min.css */; };
+		2B54BE572D57B4D2000C8D63 /* atelier-heath-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA62D57B4D2000C8D63 /* atelier-heath-light.min.css */; };
+		2B54BE582D57B4D2000C8D63 /* brown-paper.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDB42D57B4D2000C8D63 /* brown-paper.min.css */; };
+		2B54BE592D57B4D2000C8D63 /* monokai.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD22D57B4D2000C8D63 /* monokai.min.css */; };
+		2B54BE5A2D57B4D2000C8D63 /* an-old-hope.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BD982D57B4D2000C8D63 /* an-old-hope.min.css */; };
+		2B54BE5B2D57B4D2000C8D63 /* vs.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE92D57B4D2000C8D63 /* vs.min.css */; };
+		2B54BE5C2D57B4D2000C8D63 /* zenburn.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDEE2D57B4D2000C8D63 /* zenburn.min.css */; };
+		2B54BE5D2D57B4D2000C8D63 /* kimbie.dark.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDCC2D57B4D2000C8D63 /* kimbie.dark.min.css */; };
+		2B54BE5E2D57B4D2000C8D63 /* github-gist.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBF2D57B4D2000C8D63 /* github-gist.min.css */; };
+		2B54BE5F2D57B4D2000C8D63 /* ocean.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD52D57B4D2000C8D63 /* ocean.min.css */; };
+		2B54BE602D57B4D2000C8D63 /* pojoaque.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDD82D57B4D2000C8D63 /* pojoaque.min.css */; };
+		2B54BE612D57B4D2000C8D63 /* ir-black.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC92D57B4D2000C8D63 /* ir-black.min.css */; };
+		2B54BE622D57B4D2000C8D63 /* googlecode.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDC22D57B4D2000C8D63 /* googlecode.min.css */; };
+		2B54BE632D57B4D2000C8D63 /* dracula.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDBC2D57B4D2000C8D63 /* dracula.min.css */; };
+		2B54BE642D57B4D2000C8D63 /* routeros.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDDE2D57B4D2000C8D63 /* routeros.min.css */; };
+		2B54BE652D57B4D2000C8D63 /* solarized-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDE22D57B4D2000C8D63 /* solarized-light.min.css */; };
+		2B54BE662D57B4D2000C8D63 /* atelier-dune-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDA02D57B4D2000C8D63 /* atelier-dune-light.min.css */; };
+		2B54BE672D57B4D2000C8D63 /* atelier-seaside-light.min.css in Resources */ = {isa = PBXBuildFile; fileRef = 2B54BDAE2D57B4D2000C8D63 /* atelier-seaside-light.min.css */; };
+		2B54BE682D57B4D2000C8D63 /* Highlightr.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF22D57B4D2000C8D63 /* Highlightr.swift */; };
+		2B54BE692D57B4D2000C8D63 /* GMarkChunkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFC2D57B4D2000C8D63 /* GMarkChunkGenerator.swift */; };
+		2B54BE6A2D57B4D2000C8D63 /* GMarkPluginManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE052D57B4D2000C8D63 /* GMarkPluginManager.swift */; };
+		2B54BE6B2D57B4D2000C8D63 /* GMarkTableStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE082D57B4D2000C8D63 /* GMarkTableStyle.swift */; };
+		2B54BE6C2D57B4D2000C8D63 /* GMarkupTableVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFF2D57B4D2000C8D63 /* GMarkupTableVisitor.swift */; };
+		2B54BE6D2D57B4D2000C8D63 /* GMarkCodeHighlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF82D57B4D2000C8D63 /* GMarkCodeHighlight.swift */; };
+		2B54BE6E2D57B4D2000C8D63 /* GMarkHandlerChain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE032D57B4D2000C8D63 /* GMarkHandlerChain.swift */; };
+		2B54BE6F2D57B4D2000C8D63 /* GMarkTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE0A2D57B4D2000C8D63 /* GMarkTableViewCell.swift */; };
+		2B54BE702D57B4D2000C8D63 /* CodeAttributedString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF12D57B4D2000C8D63 /* CodeAttributedString.swift */; };
+		2B54BE712D57B4D2000C8D63 /* GMarkProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFE2D57B4D2000C8D63 /* GMarkProcessor.swift */; };
+		2B54BE722D57B4D2000C8D63 /* GMarkChunk.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFB2D57B4D2000C8D63 /* GMarkChunk.swift */; };
+		2B54BE732D57B4D2000C8D63 /* Shims.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF42D57B4D2000C8D63 /* Shims.swift */; };
+		2B54BE742D57B4D2000C8D63 /* GMarkupVisitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE002D57B4D2000C8D63 /* GMarkupVisitor.swift */; };
+		2B54BE752D57B4D2000C8D63 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF52D57B4D2000C8D63 /* Theme.swift */; };
+		2B54BE762D57B4D2000C8D63 /* GMarkHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE042D57B4D2000C8D63 /* GMarkHandlers.swift */; };
+		2B54BE772D57B4D2000C8D63 /* GMarkdownMultiView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE022D57B4D2000C8D63 /* GMarkdownMultiView.swift */; };
+		2B54BE782D57B4D2000C8D63 /* GMarkStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE062D57B4D2000C8D63 /* GMarkStyle.swift */; };
+		2B54BE792D57B4D2000C8D63 /* GMarkdownCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF92D57B4D2000C8D63 /* GMarkdownCodeView.swift */; };
+		2B54BE7A2D57B4D2000C8D63 /* GMarkTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BE092D57B4D2000C8D63 /* GMarkTableView.swift */; };
+		2B54BE7B2D57B4D2000C8D63 /* HTMLUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDF32D57B4D2000C8D63 /* HTMLUtils.swift */; };
+		2B54BE7C2D57B4D2000C8D63 /* GMarkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFD2D57B4D2000C8D63 /* GMarkParser.swift */; };
 		2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */; };
 		2BCFA9692D57AD3600EEE6A7 /* markdownv2 in Resources */ = {isa = PBXBuildFile; fileRef = 2BCFA9682D57AD3600EEE6A7 /* markdownv2 */; };
 /* End PBXBuildFile section */
@@ -52,23 +148,119 @@
 		2B1C9FFA2C5BC20D00F85195 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2B1CA0052C5BC38D00F85195 /* markdown */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = markdown; sourceTree = "<group>"; };
 		2B1CA0072C5BC3CD00F85195 /* MarkdownRenderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderController.swift; sourceTree = "<group>"; };
-		2B1CA00D2C5BC66D00F85195 /* GMarkCodeHighlight.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkCodeHighlight.swift; sourceTree = "<group>"; };
-		2B1CA00E2C5BC66D00F85195 /* GMarkdownCodeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkdownCodeView.swift; sourceTree = "<group>"; };
-		2B1CA0102C5BC66D00F85195 /* GMarkChunk.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkChunk.swift; sourceTree = "<group>"; };
-		2B1CA0112C5BC66D00F85195 /* GMarkChunkGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkChunkGenerator.swift; sourceTree = "<group>"; };
-		2B1CA0122C5BC66D00F85195 /* GMarkParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkParser.swift; sourceTree = "<group>"; };
-		2B1CA0132C5BC66D00F85195 /* GMarkProcessor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkProcessor.swift; sourceTree = "<group>"; };
-		2B1CA0142C5BC66D00F85195 /* GMarkupTableVisitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkupTableVisitor.swift; sourceTree = "<group>"; };
-		2B1CA0152C5BC66D00F85195 /* GMarkupVisitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkupVisitor.swift; sourceTree = "<group>"; };
-		2B1CA0172C5BC66D00F85195 /* GMarkdownMultiView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkdownMultiView.swift; sourceTree = "<group>"; };
-		2B1CA0182C5BC66D00F85195 /* GMarkHandlerChain.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkHandlerChain.swift; sourceTree = "<group>"; };
-		2B1CA0192C5BC66D00F85195 /* GMarkHandlers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkHandlers.swift; sourceTree = "<group>"; };
-		2B1CA01A2C5BC66D00F85195 /* GMarkPluginManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkPluginManager.swift; sourceTree = "<group>"; };
-		2B1CA01B2C5BC66D00F85195 /* GMarkStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkStyle.swift; sourceTree = "<group>"; };
-		2B1CA01D2C5BC66D00F85195 /* GMarkTableStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableStyle.swift; sourceTree = "<group>"; };
-		2B1CA01E2C5BC66D00F85195 /* GMarkTableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableView.swift; sourceTree = "<group>"; };
-		2B1CA01F2C5BC66D00F85195 /* GMarkTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GMarkTableViewCell.swift; sourceTree = "<group>"; };
 		2B1CA03B2C5BC6D400F85195 /* NukeImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NukeImageLoader.swift; sourceTree = "<group>"; };
+		2B54BD932D57B4D2000C8D63 /* highlight.min.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = highlight.min.js; sourceTree = "<group>"; };
+		2B54BD952D57B4D2000C8D63 /* a11y-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "a11y-dark.min.css"; sourceTree = "<group>"; };
+		2B54BD962D57B4D2000C8D63 /* a11y-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "a11y-light.min.css"; sourceTree = "<group>"; };
+		2B54BD972D57B4D2000C8D63 /* agate.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = agate.min.css; sourceTree = "<group>"; };
+		2B54BD982D57B4D2000C8D63 /* an-old-hope.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "an-old-hope.min.css"; sourceTree = "<group>"; };
+		2B54BD992D57B4D2000C8D63 /* androidstudio.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = androidstudio.min.css; sourceTree = "<group>"; };
+		2B54BD9A2D57B4D2000C8D63 /* arduino-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "arduino-light.min.css"; sourceTree = "<group>"; };
+		2B54BD9B2D57B4D2000C8D63 /* arta.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = arta.min.css; sourceTree = "<group>"; };
+		2B54BD9C2D57B4D2000C8D63 /* ascetic.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = ascetic.min.css; sourceTree = "<group>"; };
+		2B54BD9D2D57B4D2000C8D63 /* atelier-cave-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-cave-dark.min.css"; sourceTree = "<group>"; };
+		2B54BD9E2D57B4D2000C8D63 /* atelier-cave-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-cave-light.min.css"; sourceTree = "<group>"; };
+		2B54BD9F2D57B4D2000C8D63 /* atelier-dune-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-dune-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDA02D57B4D2000C8D63 /* atelier-dune-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-dune-light.min.css"; sourceTree = "<group>"; };
+		2B54BDA12D57B4D2000C8D63 /* atelier-estuary-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-estuary-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDA22D57B4D2000C8D63 /* atelier-estuary-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-estuary-light.min.css"; sourceTree = "<group>"; };
+		2B54BDA32D57B4D2000C8D63 /* atelier-forest-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-forest-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDA42D57B4D2000C8D63 /* atelier-forest-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-forest-light.min.css"; sourceTree = "<group>"; };
+		2B54BDA52D57B4D2000C8D63 /* atelier-heath-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-heath-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDA62D57B4D2000C8D63 /* atelier-heath-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-heath-light.min.css"; sourceTree = "<group>"; };
+		2B54BDA72D57B4D2000C8D63 /* atelier-lakeside-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-lakeside-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDA82D57B4D2000C8D63 /* atelier-lakeside-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-lakeside-light.min.css"; sourceTree = "<group>"; };
+		2B54BDA92D57B4D2000C8D63 /* atelier-plateau-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-plateau-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDAA2D57B4D2000C8D63 /* atelier-plateau-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-plateau-light.min.css"; sourceTree = "<group>"; };
+		2B54BDAB2D57B4D2000C8D63 /* atelier-savanna-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-savanna-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDAC2D57B4D2000C8D63 /* atelier-savanna-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-savanna-light.min.css"; sourceTree = "<group>"; };
+		2B54BDAD2D57B4D2000C8D63 /* atelier-seaside-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-seaside-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDAE2D57B4D2000C8D63 /* atelier-seaside-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-seaside-light.min.css"; sourceTree = "<group>"; };
+		2B54BDAF2D57B4D2000C8D63 /* atelier-sulphurpool-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-sulphurpool-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDB02D57B4D2000C8D63 /* atelier-sulphurpool-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atelier-sulphurpool-light.min.css"; sourceTree = "<group>"; };
+		2B54BDB12D57B4D2000C8D63 /* atom-one-dark-reasonable.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atom-one-dark-reasonable.min.css"; sourceTree = "<group>"; };
+		2B54BDB22D57B4D2000C8D63 /* atom-one-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atom-one-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDB32D57B4D2000C8D63 /* atom-one-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "atom-one-light.min.css"; sourceTree = "<group>"; };
+		2B54BDB42D57B4D2000C8D63 /* brown-paper.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "brown-paper.min.css"; sourceTree = "<group>"; };
+		2B54BDB52D57B4D2000C8D63 /* codepen-embed.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "codepen-embed.min.css"; sourceTree = "<group>"; };
+		2B54BDB62D57B4D2000C8D63 /* color-brewer.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "color-brewer.min.css"; sourceTree = "<group>"; };
+		2B54BDB72D57B4D2000C8D63 /* darcula.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = darcula.min.css; sourceTree = "<group>"; };
+		2B54BDB82D57B4D2000C8D63 /* dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = dark.min.css; sourceTree = "<group>"; };
+		2B54BDB92D57B4D2000C8D63 /* darkula.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = darkula.min.css; sourceTree = "<group>"; };
+		2B54BDBA2D57B4D2000C8D63 /* default.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = default.min.css; sourceTree = "<group>"; };
+		2B54BDBB2D57B4D2000C8D63 /* docco.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = docco.min.css; sourceTree = "<group>"; };
+		2B54BDBC2D57B4D2000C8D63 /* dracula.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = dracula.min.css; sourceTree = "<group>"; };
+		2B54BDBD2D57B4D2000C8D63 /* far.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = far.min.css; sourceTree = "<group>"; };
+		2B54BDBE2D57B4D2000C8D63 /* foundation.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = foundation.min.css; sourceTree = "<group>"; };
+		2B54BDBF2D57B4D2000C8D63 /* github-gist.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "github-gist.min.css"; sourceTree = "<group>"; };
+		2B54BDC02D57B4D2000C8D63 /* github.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = github.min.css; sourceTree = "<group>"; };
+		2B54BDC12D57B4D2000C8D63 /* gml.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = gml.min.css; sourceTree = "<group>"; };
+		2B54BDC22D57B4D2000C8D63 /* googlecode.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = googlecode.min.css; sourceTree = "<group>"; };
+		2B54BDC32D57B4D2000C8D63 /* grayscale.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = grayscale.min.css; sourceTree = "<group>"; };
+		2B54BDC42D57B4D2000C8D63 /* gruvbox-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "gruvbox-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDC52D57B4D2000C8D63 /* gruvbox-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "gruvbox-light.min.css"; sourceTree = "<group>"; };
+		2B54BDC62D57B4D2000C8D63 /* hopscotch.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = hopscotch.min.css; sourceTree = "<group>"; };
+		2B54BDC72D57B4D2000C8D63 /* hybrid.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = hybrid.min.css; sourceTree = "<group>"; };
+		2B54BDC82D57B4D2000C8D63 /* idea.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = idea.min.css; sourceTree = "<group>"; };
+		2B54BDC92D57B4D2000C8D63 /* ir-black.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "ir-black.min.css"; sourceTree = "<group>"; };
+		2B54BDCA2D57B4D2000C8D63 /* isbl-editor-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "isbl-editor-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDCB2D57B4D2000C8D63 /* isbl-editor-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "isbl-editor-light.min.css"; sourceTree = "<group>"; };
+		2B54BDCC2D57B4D2000C8D63 /* kimbie.dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = kimbie.dark.min.css; sourceTree = "<group>"; };
+		2B54BDCD2D57B4D2000C8D63 /* kimbie.light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = kimbie.light.min.css; sourceTree = "<group>"; };
+		2B54BDCE2D57B4D2000C8D63 /* lightfair.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = lightfair.min.css; sourceTree = "<group>"; };
+		2B54BDCF2D57B4D2000C8D63 /* magula.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = magula.min.css; sourceTree = "<group>"; };
+		2B54BDD02D57B4D2000C8D63 /* mono-blue.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "mono-blue.min.css"; sourceTree = "<group>"; };
+		2B54BDD12D57B4D2000C8D63 /* monokai-sublime.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "monokai-sublime.min.css"; sourceTree = "<group>"; };
+		2B54BDD22D57B4D2000C8D63 /* monokai.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = monokai.min.css; sourceTree = "<group>"; };
+		2B54BDD32D57B4D2000C8D63 /* nord.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = nord.min.css; sourceTree = "<group>"; };
+		2B54BDD42D57B4D2000C8D63 /* obsidian.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = obsidian.min.css; sourceTree = "<group>"; };
+		2B54BDD52D57B4D2000C8D63 /* ocean.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = ocean.min.css; sourceTree = "<group>"; };
+		2B54BDD62D57B4D2000C8D63 /* paraiso-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "paraiso-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDD72D57B4D2000C8D63 /* paraiso-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "paraiso-light.min.css"; sourceTree = "<group>"; };
+		2B54BDD82D57B4D2000C8D63 /* pojoaque.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = pojoaque.min.css; sourceTree = "<group>"; };
+		2B54BDD92D57B4D2000C8D63 /* purebasic.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = purebasic.min.css; sourceTree = "<group>"; };
+		2B54BDDA2D57B4D2000C8D63 /* qtcreator_dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = qtcreator_dark.min.css; sourceTree = "<group>"; };
+		2B54BDDB2D57B4D2000C8D63 /* qtcreator_light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = qtcreator_light.min.css; sourceTree = "<group>"; };
+		2B54BDDC2D57B4D2000C8D63 /* railscasts.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = railscasts.min.css; sourceTree = "<group>"; };
+		2B54BDDD2D57B4D2000C8D63 /* rainbow.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = rainbow.min.css; sourceTree = "<group>"; };
+		2B54BDDE2D57B4D2000C8D63 /* routeros.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = routeros.min.css; sourceTree = "<group>"; };
+		2B54BDDF2D57B4D2000C8D63 /* school-book.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "school-book.min.css"; sourceTree = "<group>"; };
+		2B54BDE02D57B4D2000C8D63 /* shades-of-purple.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "shades-of-purple.min.css"; sourceTree = "<group>"; };
+		2B54BDE12D57B4D2000C8D63 /* solarized-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "solarized-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDE22D57B4D2000C8D63 /* solarized-light.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "solarized-light.min.css"; sourceTree = "<group>"; };
+		2B54BDE32D57B4D2000C8D63 /* sunburst.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = sunburst.min.css; sourceTree = "<group>"; };
+		2B54BDE42D57B4D2000C8D63 /* tomorrow-night-blue.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "tomorrow-night-blue.min.css"; sourceTree = "<group>"; };
+		2B54BDE52D57B4D2000C8D63 /* tomorrow-night-bright.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "tomorrow-night-bright.min.css"; sourceTree = "<group>"; };
+		2B54BDE62D57B4D2000C8D63 /* tomorrow-night-eighties.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "tomorrow-night-eighties.min.css"; sourceTree = "<group>"; };
+		2B54BDE72D57B4D2000C8D63 /* tomorrow-night.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "tomorrow-night.min.css"; sourceTree = "<group>"; };
+		2B54BDE82D57B4D2000C8D63 /* tomorrow.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = tomorrow.min.css; sourceTree = "<group>"; };
+		2B54BDE92D57B4D2000C8D63 /* vs.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = vs.min.css; sourceTree = "<group>"; };
+		2B54BDEA2D57B4D2000C8D63 /* vs2015.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = vs2015.min.css; sourceTree = "<group>"; };
+		2B54BDEB2D57B4D2000C8D63 /* xcode-dark.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = "xcode-dark.min.css"; sourceTree = "<group>"; };
+		2B54BDEC2D57B4D2000C8D63 /* xcode.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = xcode.min.css; sourceTree = "<group>"; };
+		2B54BDED2D57B4D2000C8D63 /* xt256.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = xt256.min.css; sourceTree = "<group>"; };
+		2B54BDEE2D57B4D2000C8D63 /* zenburn.min.css */ = {isa = PBXFileReference; lastKnownFileType = text.css; path = zenburn.min.css; sourceTree = "<group>"; };
+		2B54BDF12D57B4D2000C8D63 /* CodeAttributedString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeAttributedString.swift; sourceTree = "<group>"; };
+		2B54BDF22D57B4D2000C8D63 /* Highlightr.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Highlightr.swift; sourceTree = "<group>"; };
+		2B54BDF32D57B4D2000C8D63 /* HTMLUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTMLUtils.swift; sourceTree = "<group>"; };
+		2B54BDF42D57B4D2000C8D63 /* Shims.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shims.swift; sourceTree = "<group>"; };
+		2B54BDF52D57B4D2000C8D63 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		2B54BDF82D57B4D2000C8D63 /* GMarkCodeHighlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkCodeHighlight.swift; sourceTree = "<group>"; };
+		2B54BDF92D57B4D2000C8D63 /* GMarkdownCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkdownCodeView.swift; sourceTree = "<group>"; };
+		2B54BDFB2D57B4D2000C8D63 /* GMarkChunk.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkChunk.swift; sourceTree = "<group>"; };
+		2B54BDFC2D57B4D2000C8D63 /* GMarkChunkGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkChunkGenerator.swift; sourceTree = "<group>"; };
+		2B54BDFD2D57B4D2000C8D63 /* GMarkParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkParser.swift; sourceTree = "<group>"; };
+		2B54BDFE2D57B4D2000C8D63 /* GMarkProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkProcessor.swift; sourceTree = "<group>"; };
+		2B54BDFF2D57B4D2000C8D63 /* GMarkupTableVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkupTableVisitor.swift; sourceTree = "<group>"; };
+		2B54BE002D57B4D2000C8D63 /* GMarkupVisitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkupVisitor.swift; sourceTree = "<group>"; };
+		2B54BE022D57B4D2000C8D63 /* GMarkdownMultiView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkdownMultiView.swift; sourceTree = "<group>"; };
+		2B54BE032D57B4D2000C8D63 /* GMarkHandlerChain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkHandlerChain.swift; sourceTree = "<group>"; };
+		2B54BE042D57B4D2000C8D63 /* GMarkHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkHandlers.swift; sourceTree = "<group>"; };
+		2B54BE052D57B4D2000C8D63 /* GMarkPluginManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkPluginManager.swift; sourceTree = "<group>"; };
+		2B54BE062D57B4D2000C8D63 /* GMarkStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkStyle.swift; sourceTree = "<group>"; };
+		2B54BE082D57B4D2000C8D63 /* GMarkTableStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkTableStyle.swift; sourceTree = "<group>"; };
+		2B54BE092D57B4D2000C8D63 /* GMarkTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkTableView.swift; sourceTree = "<group>"; };
+		2B54BE0A2D57B4D2000C8D63 /* GMarkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkTableViewCell.swift; sourceTree = "<group>"; };
 		2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 		2BCFA9682D57AD3600EEE6A7 /* markdownv2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv2; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -108,7 +300,7 @@
 		2B1C9FEB2C5BC20B00F85195 /* GMarkdownExample */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA0212C5BC66D00F85195 /* Sources */,
+				2B54BE0C2D57B4D2000C8D63 /* Sources */,
 				2B1C9FEC2C5BC20B00F85195 /* AppDelegate.swift */,
 				2B1C9FEE2C5BC20B00F85195 /* SceneDelegate.swift */,
 				2B1C9FF02C5BC20B00F85195 /* ViewController.swift */,
@@ -125,61 +317,197 @@
 			path = GMarkdownExample;
 			sourceTree = "<group>";
 		};
-		2B1CA00F2C5BC66D00F85195 /* Code */ = {
+		2B54BD942D57B4D2000C8D63 /* Highlighter */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA00D2C5BC66D00F85195 /* GMarkCodeHighlight.swift */,
-				2B1CA00E2C5BC66D00F85195 /* GMarkdownCodeView.swift */,
+				2B54BD932D57B4D2000C8D63 /* highlight.min.js */,
+			);
+			path = Highlighter;
+			sourceTree = "<group>";
+		};
+		2B54BDEF2D57B4D2000C8D63 /* styles */ = {
+			isa = PBXGroup;
+			children = (
+				2B54BD952D57B4D2000C8D63 /* a11y-dark.min.css */,
+				2B54BD962D57B4D2000C8D63 /* a11y-light.min.css */,
+				2B54BD972D57B4D2000C8D63 /* agate.min.css */,
+				2B54BD982D57B4D2000C8D63 /* an-old-hope.min.css */,
+				2B54BD992D57B4D2000C8D63 /* androidstudio.min.css */,
+				2B54BD9A2D57B4D2000C8D63 /* arduino-light.min.css */,
+				2B54BD9B2D57B4D2000C8D63 /* arta.min.css */,
+				2B54BD9C2D57B4D2000C8D63 /* ascetic.min.css */,
+				2B54BD9D2D57B4D2000C8D63 /* atelier-cave-dark.min.css */,
+				2B54BD9E2D57B4D2000C8D63 /* atelier-cave-light.min.css */,
+				2B54BD9F2D57B4D2000C8D63 /* atelier-dune-dark.min.css */,
+				2B54BDA02D57B4D2000C8D63 /* atelier-dune-light.min.css */,
+				2B54BDA12D57B4D2000C8D63 /* atelier-estuary-dark.min.css */,
+				2B54BDA22D57B4D2000C8D63 /* atelier-estuary-light.min.css */,
+				2B54BDA32D57B4D2000C8D63 /* atelier-forest-dark.min.css */,
+				2B54BDA42D57B4D2000C8D63 /* atelier-forest-light.min.css */,
+				2B54BDA52D57B4D2000C8D63 /* atelier-heath-dark.min.css */,
+				2B54BDA62D57B4D2000C8D63 /* atelier-heath-light.min.css */,
+				2B54BDA72D57B4D2000C8D63 /* atelier-lakeside-dark.min.css */,
+				2B54BDA82D57B4D2000C8D63 /* atelier-lakeside-light.min.css */,
+				2B54BDA92D57B4D2000C8D63 /* atelier-plateau-dark.min.css */,
+				2B54BDAA2D57B4D2000C8D63 /* atelier-plateau-light.min.css */,
+				2B54BDAB2D57B4D2000C8D63 /* atelier-savanna-dark.min.css */,
+				2B54BDAC2D57B4D2000C8D63 /* atelier-savanna-light.min.css */,
+				2B54BDAD2D57B4D2000C8D63 /* atelier-seaside-dark.min.css */,
+				2B54BDAE2D57B4D2000C8D63 /* atelier-seaside-light.min.css */,
+				2B54BDAF2D57B4D2000C8D63 /* atelier-sulphurpool-dark.min.css */,
+				2B54BDB02D57B4D2000C8D63 /* atelier-sulphurpool-light.min.css */,
+				2B54BDB12D57B4D2000C8D63 /* atom-one-dark-reasonable.min.css */,
+				2B54BDB22D57B4D2000C8D63 /* atom-one-dark.min.css */,
+				2B54BDB32D57B4D2000C8D63 /* atom-one-light.min.css */,
+				2B54BDB42D57B4D2000C8D63 /* brown-paper.min.css */,
+				2B54BDB52D57B4D2000C8D63 /* codepen-embed.min.css */,
+				2B54BDB62D57B4D2000C8D63 /* color-brewer.min.css */,
+				2B54BDB72D57B4D2000C8D63 /* darcula.min.css */,
+				2B54BDB82D57B4D2000C8D63 /* dark.min.css */,
+				2B54BDB92D57B4D2000C8D63 /* darkula.min.css */,
+				2B54BDBA2D57B4D2000C8D63 /* default.min.css */,
+				2B54BDBB2D57B4D2000C8D63 /* docco.min.css */,
+				2B54BDBC2D57B4D2000C8D63 /* dracula.min.css */,
+				2B54BDBD2D57B4D2000C8D63 /* far.min.css */,
+				2B54BDBE2D57B4D2000C8D63 /* foundation.min.css */,
+				2B54BDBF2D57B4D2000C8D63 /* github-gist.min.css */,
+				2B54BDC02D57B4D2000C8D63 /* github.min.css */,
+				2B54BDC12D57B4D2000C8D63 /* gml.min.css */,
+				2B54BDC22D57B4D2000C8D63 /* googlecode.min.css */,
+				2B54BDC32D57B4D2000C8D63 /* grayscale.min.css */,
+				2B54BDC42D57B4D2000C8D63 /* gruvbox-dark.min.css */,
+				2B54BDC52D57B4D2000C8D63 /* gruvbox-light.min.css */,
+				2B54BDC62D57B4D2000C8D63 /* hopscotch.min.css */,
+				2B54BDC72D57B4D2000C8D63 /* hybrid.min.css */,
+				2B54BDC82D57B4D2000C8D63 /* idea.min.css */,
+				2B54BDC92D57B4D2000C8D63 /* ir-black.min.css */,
+				2B54BDCA2D57B4D2000C8D63 /* isbl-editor-dark.min.css */,
+				2B54BDCB2D57B4D2000C8D63 /* isbl-editor-light.min.css */,
+				2B54BDCC2D57B4D2000C8D63 /* kimbie.dark.min.css */,
+				2B54BDCD2D57B4D2000C8D63 /* kimbie.light.min.css */,
+				2B54BDCE2D57B4D2000C8D63 /* lightfair.min.css */,
+				2B54BDCF2D57B4D2000C8D63 /* magula.min.css */,
+				2B54BDD02D57B4D2000C8D63 /* mono-blue.min.css */,
+				2B54BDD12D57B4D2000C8D63 /* monokai-sublime.min.css */,
+				2B54BDD22D57B4D2000C8D63 /* monokai.min.css */,
+				2B54BDD32D57B4D2000C8D63 /* nord.min.css */,
+				2B54BDD42D57B4D2000C8D63 /* obsidian.min.css */,
+				2B54BDD52D57B4D2000C8D63 /* ocean.min.css */,
+				2B54BDD62D57B4D2000C8D63 /* paraiso-dark.min.css */,
+				2B54BDD72D57B4D2000C8D63 /* paraiso-light.min.css */,
+				2B54BDD82D57B4D2000C8D63 /* pojoaque.min.css */,
+				2B54BDD92D57B4D2000C8D63 /* purebasic.min.css */,
+				2B54BDDA2D57B4D2000C8D63 /* qtcreator_dark.min.css */,
+				2B54BDDB2D57B4D2000C8D63 /* qtcreator_light.min.css */,
+				2B54BDDC2D57B4D2000C8D63 /* railscasts.min.css */,
+				2B54BDDD2D57B4D2000C8D63 /* rainbow.min.css */,
+				2B54BDDE2D57B4D2000C8D63 /* routeros.min.css */,
+				2B54BDDF2D57B4D2000C8D63 /* school-book.min.css */,
+				2B54BDE02D57B4D2000C8D63 /* shades-of-purple.min.css */,
+				2B54BDE12D57B4D2000C8D63 /* solarized-dark.min.css */,
+				2B54BDE22D57B4D2000C8D63 /* solarized-light.min.css */,
+				2B54BDE32D57B4D2000C8D63 /* sunburst.min.css */,
+				2B54BDE42D57B4D2000C8D63 /* tomorrow-night-blue.min.css */,
+				2B54BDE52D57B4D2000C8D63 /* tomorrow-night-bright.min.css */,
+				2B54BDE62D57B4D2000C8D63 /* tomorrow-night-eighties.min.css */,
+				2B54BDE72D57B4D2000C8D63 /* tomorrow-night.min.css */,
+				2B54BDE82D57B4D2000C8D63 /* tomorrow.min.css */,
+				2B54BDE92D57B4D2000C8D63 /* vs.min.css */,
+				2B54BDEA2D57B4D2000C8D63 /* vs2015.min.css */,
+				2B54BDEB2D57B4D2000C8D63 /* xcode-dark.min.css */,
+				2B54BDEC2D57B4D2000C8D63 /* xcode.min.css */,
+				2B54BDED2D57B4D2000C8D63 /* xt256.min.css */,
+				2B54BDEE2D57B4D2000C8D63 /* zenburn.min.css */,
+			);
+			path = styles;
+			sourceTree = "<group>";
+		};
+		2B54BDF02D57B4D2000C8D63 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				2B54BD942D57B4D2000C8D63 /* Highlighter */,
+				2B54BDEF2D57B4D2000C8D63 /* styles */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
+		2B54BDF62D57B4D2000C8D63 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2B54BDF12D57B4D2000C8D63 /* CodeAttributedString.swift */,
+				2B54BDF22D57B4D2000C8D63 /* Highlightr.swift */,
+				2B54BDF32D57B4D2000C8D63 /* HTMLUtils.swift */,
+				2B54BDF42D57B4D2000C8D63 /* Shims.swift */,
+				2B54BDF52D57B4D2000C8D63 /* Theme.swift */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		2B54BDF72D57B4D2000C8D63 /* Highlight */ = {
+			isa = PBXGroup;
+			children = (
+				2B54BDF62D57B4D2000C8D63 /* Classes */,
+			);
+			path = Highlight;
+			sourceTree = "<group>";
+		};
+		2B54BDFA2D57B4D2000C8D63 /* Code */ = {
+			isa = PBXGroup;
+			children = (
+				2B54BDF72D57B4D2000C8D63 /* Highlight */,
+				2B54BDF82D57B4D2000C8D63 /* GMarkCodeHighlight.swift */,
+				2B54BDF92D57B4D2000C8D63 /* GMarkdownCodeView.swift */,
 			);
 			path = Code;
 			sourceTree = "<group>";
 		};
-		2B1CA0162C5BC66D00F85195 /* Parser */ = {
+		2B54BE012D57B4D2000C8D63 /* Parser */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA0102C5BC66D00F85195 /* GMarkChunk.swift */,
-				2B1CA0112C5BC66D00F85195 /* GMarkChunkGenerator.swift */,
-				2B1CA0122C5BC66D00F85195 /* GMarkParser.swift */,
-				2B1CA0132C5BC66D00F85195 /* GMarkProcessor.swift */,
-				2B1CA0142C5BC66D00F85195 /* GMarkupTableVisitor.swift */,
-				2B1CA0152C5BC66D00F85195 /* GMarkupVisitor.swift */,
+				2B54BDFB2D57B4D2000C8D63 /* GMarkChunk.swift */,
+				2B54BDFC2D57B4D2000C8D63 /* GMarkChunkGenerator.swift */,
+				2B54BDFD2D57B4D2000C8D63 /* GMarkParser.swift */,
+				2B54BDFE2D57B4D2000C8D63 /* GMarkProcessor.swift */,
+				2B54BDFF2D57B4D2000C8D63 /* GMarkupTableVisitor.swift */,
+				2B54BE002D57B4D2000C8D63 /* GMarkupVisitor.swift */,
 			);
 			path = Parser;
 			sourceTree = "<group>";
 		};
-		2B1CA01C2C5BC66D00F85195 /* Render */ = {
+		2B54BE072D57B4D2000C8D63 /* Render */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA0172C5BC66D00F85195 /* GMarkdownMultiView.swift */,
-				2B1CA0182C5BC66D00F85195 /* GMarkHandlerChain.swift */,
-				2B1CA0192C5BC66D00F85195 /* GMarkHandlers.swift */,
-				2B1CA01A2C5BC66D00F85195 /* GMarkPluginManager.swift */,
-				2B1CA01B2C5BC66D00F85195 /* GMarkStyle.swift */,
+				2B54BE022D57B4D2000C8D63 /* GMarkdownMultiView.swift */,
+				2B54BE032D57B4D2000C8D63 /* GMarkHandlerChain.swift */,
+				2B54BE042D57B4D2000C8D63 /* GMarkHandlers.swift */,
+				2B54BE052D57B4D2000C8D63 /* GMarkPluginManager.swift */,
+				2B54BE062D57B4D2000C8D63 /* GMarkStyle.swift */,
 			);
 			path = Render;
 			sourceTree = "<group>";
 		};
-		2B1CA0202C5BC66D00F85195 /* Table */ = {
+		2B54BE0B2D57B4D2000C8D63 /* Table */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA01D2C5BC66D00F85195 /* GMarkTableStyle.swift */,
-				2B1CA01E2C5BC66D00F85195 /* GMarkTableView.swift */,
-				2B1CA01F2C5BC66D00F85195 /* GMarkTableViewCell.swift */,
+				2B54BE082D57B4D2000C8D63 /* GMarkTableStyle.swift */,
+				2B54BE092D57B4D2000C8D63 /* GMarkTableView.swift */,
+				2B54BE0A2D57B4D2000C8D63 /* GMarkTableViewCell.swift */,
 			);
 			path = Table;
 			sourceTree = "<group>";
 		};
-		2B1CA0212C5BC66D00F85195 /* Sources */ = {
+		2B54BE0C2D57B4D2000C8D63 /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				2B1CA00F2C5BC66D00F85195 /* Code */,
-				2B1CA0162C5BC66D00F85195 /* Parser */,
-				2B1CA01C2C5BC66D00F85195 /* Render */,
-				2B1CA0202C5BC66D00F85195 /* Table */,
+				2B54BDF02D57B4D2000C8D63 /* Assets */,
+				2B54BDFA2D57B4D2000C8D63 /* Code */,
+				2B54BE012D57B4D2000C8D63 /* Parser */,
+				2B54BE072D57B4D2000C8D63 /* Render */,
+				2B54BE0B2D57B4D2000C8D63 /* Table */,
 			);
 			name = Sources;
-			path = ../../../Sources;
-			sourceTree = "<group>";
+			path = /Users/giki/Desktop/GIKI_Code/GMarkdown/Sources;
+			sourceTree = "<absolute>";
 		};
 /* End PBXGroup section */
 
@@ -254,6 +582,97 @@
 				2BCFA9692D57AD3600EEE6A7 /* markdownv2 in Resources */,
 				2B1C9FF92C5BC20D00F85195 /* Base in Resources */,
 				2B1CA0062C5BC38D00F85195 /* markdown in Resources */,
+				2B54BE0D2D57B4D2000C8D63 /* ascetic.min.css in Resources */,
+				2B54BE0E2D57B4D2000C8D63 /* atelier-lakeside-dark.min.css in Resources */,
+				2B54BE0F2D57B4D2000C8D63 /* foundation.min.css in Resources */,
+				2B54BE102D57B4D2000C8D63 /* github.min.css in Resources */,
+				2B54BE112D57B4D2000C8D63 /* darcula.min.css in Resources */,
+				2B54BE122D57B4D2000C8D63 /* darkula.min.css in Resources */,
+				2B54BE132D57B4D2000C8D63 /* idea.min.css in Resources */,
+				2B54BE142D57B4D2000C8D63 /* dark.min.css in Resources */,
+				2B54BE152D57B4D2000C8D63 /* hopscotch.min.css in Resources */,
+				2B54BE162D57B4D2000C8D63 /* default.min.css in Resources */,
+				2B54BE172D57B4D2000C8D63 /* obsidian.min.css in Resources */,
+				2B54BE182D57B4D2000C8D63 /* highlight.min.js in Resources */,
+				2B54BE192D57B4D2000C8D63 /* school-book.min.css in Resources */,
+				2B54BE1A2D57B4D2000C8D63 /* gruvbox-light.min.css in Resources */,
+				2B54BE1B2D57B4D2000C8D63 /* paraiso-light.min.css in Resources */,
+				2B54BE1C2D57B4D2000C8D63 /* isbl-editor-light.min.css in Resources */,
+				2B54BE1D2D57B4D2000C8D63 /* atelier-cave-light.min.css in Resources */,
+				2B54BE1E2D57B4D2000C8D63 /* atom-one-dark.min.css in Resources */,
+				2B54BE1F2D57B4D2000C8D63 /* vs2015.min.css in Resources */,
+				2B54BE202D57B4D2000C8D63 /* docco.min.css in Resources */,
+				2B54BE212D57B4D2000C8D63 /* atom-one-light.min.css in Resources */,
+				2B54BE222D57B4D2000C8D63 /* solarized-dark.min.css in Resources */,
+				2B54BE232D57B4D2000C8D63 /* xcode-dark.min.css in Resources */,
+				2B54BE242D57B4D2000C8D63 /* far.min.css in Resources */,
+				2B54BE252D57B4D2000C8D63 /* atelier-sulphurpool-light.min.css in Resources */,
+				2B54BE262D57B4D2000C8D63 /* xcode.min.css in Resources */,
+				2B54BE272D57B4D2000C8D63 /* tomorrow-night-bright.min.css in Resources */,
+				2B54BE282D57B4D2000C8D63 /* agate.min.css in Resources */,
+				2B54BE292D57B4D2000C8D63 /* hybrid.min.css in Resources */,
+				2B54BE2A2D57B4D2000C8D63 /* nord.min.css in Resources */,
+				2B54BE2B2D57B4D2000C8D63 /* atelier-sulphurpool-dark.min.css in Resources */,
+				2B54BE2C2D57B4D2000C8D63 /* atelier-estuary-light.min.css in Resources */,
+				2B54BE2D2D57B4D2000C8D63 /* lightfair.min.css in Resources */,
+				2B54BE2E2D57B4D2000C8D63 /* atelier-plateau-light.min.css in Resources */,
+				2B54BE2F2D57B4D2000C8D63 /* shades-of-purple.min.css in Resources */,
+				2B54BE302D57B4D2000C8D63 /* atelier-forest-dark.min.css in Resources */,
+				2B54BE312D57B4D2000C8D63 /* tomorrow.min.css in Resources */,
+				2B54BE322D57B4D2000C8D63 /* qtcreator_dark.min.css in Resources */,
+				2B54BE332D57B4D2000C8D63 /* gruvbox-dark.min.css in Resources */,
+				2B54BE342D57B4D2000C8D63 /* atelier-estuary-dark.min.css in Resources */,
+				2B54BE352D57B4D2000C8D63 /* atelier-lakeside-light.min.css in Resources */,
+				2B54BE362D57B4D2000C8D63 /* atelier-savanna-dark.min.css in Resources */,
+				2B54BE372D57B4D2000C8D63 /* tomorrow-night.min.css in Resources */,
+				2B54BE382D57B4D2000C8D63 /* xt256.min.css in Resources */,
+				2B54BE392D57B4D2000C8D63 /* a11y-light.min.css in Resources */,
+				2B54BE3A2D57B4D2000C8D63 /* codepen-embed.min.css in Resources */,
+				2B54BE3B2D57B4D2000C8D63 /* atelier-heath-dark.min.css in Resources */,
+				2B54BE3C2D57B4D2000C8D63 /* atelier-savanna-light.min.css in Resources */,
+				2B54BE3D2D57B4D2000C8D63 /* rainbow.min.css in Resources */,
+				2B54BE3E2D57B4D2000C8D63 /* gml.min.css in Resources */,
+				2B54BE3F2D57B4D2000C8D63 /* a11y-dark.min.css in Resources */,
+				2B54BE402D57B4D2000C8D63 /* arduino-light.min.css in Resources */,
+				2B54BE412D57B4D2000C8D63 /* qtcreator_light.min.css in Resources */,
+				2B54BE422D57B4D2000C8D63 /* sunburst.min.css in Resources */,
+				2B54BE432D57B4D2000C8D63 /* color-brewer.min.css in Resources */,
+				2B54BE442D57B4D2000C8D63 /* mono-blue.min.css in Resources */,
+				2B54BE452D57B4D2000C8D63 /* magula.min.css in Resources */,
+				2B54BE462D57B4D2000C8D63 /* railscasts.min.css in Resources */,
+				2B54BE472D57B4D2000C8D63 /* paraiso-dark.min.css in Resources */,
+				2B54BE482D57B4D2000C8D63 /* monokai-sublime.min.css in Resources */,
+				2B54BE492D57B4D2000C8D63 /* androidstudio.min.css in Resources */,
+				2B54BE4A2D57B4D2000C8D63 /* atelier-forest-light.min.css in Resources */,
+				2B54BE4B2D57B4D2000C8D63 /* atelier-seaside-dark.min.css in Resources */,
+				2B54BE4C2D57B4D2000C8D63 /* atelier-cave-dark.min.css in Resources */,
+				2B54BE4D2D57B4D2000C8D63 /* isbl-editor-dark.min.css in Resources */,
+				2B54BE4E2D57B4D2000C8D63 /* arta.min.css in Resources */,
+				2B54BE4F2D57B4D2000C8D63 /* atelier-dune-dark.min.css in Resources */,
+				2B54BE502D57B4D2000C8D63 /* grayscale.min.css in Resources */,
+				2B54BE512D57B4D2000C8D63 /* purebasic.min.css in Resources */,
+				2B54BE522D57B4D2000C8D63 /* tomorrow-night-eighties.min.css in Resources */,
+				2B54BE532D57B4D2000C8D63 /* atelier-plateau-dark.min.css in Resources */,
+				2B54BE542D57B4D2000C8D63 /* kimbie.light.min.css in Resources */,
+				2B54BE552D57B4D2000C8D63 /* atom-one-dark-reasonable.min.css in Resources */,
+				2B54BE562D57B4D2000C8D63 /* tomorrow-night-blue.min.css in Resources */,
+				2B54BE572D57B4D2000C8D63 /* atelier-heath-light.min.css in Resources */,
+				2B54BE582D57B4D2000C8D63 /* brown-paper.min.css in Resources */,
+				2B54BE592D57B4D2000C8D63 /* monokai.min.css in Resources */,
+				2B54BE5A2D57B4D2000C8D63 /* an-old-hope.min.css in Resources */,
+				2B54BE5B2D57B4D2000C8D63 /* vs.min.css in Resources */,
+				2B54BE5C2D57B4D2000C8D63 /* zenburn.min.css in Resources */,
+				2B54BE5D2D57B4D2000C8D63 /* kimbie.dark.min.css in Resources */,
+				2B54BE5E2D57B4D2000C8D63 /* github-gist.min.css in Resources */,
+				2B54BE5F2D57B4D2000C8D63 /* ocean.min.css in Resources */,
+				2B54BE602D57B4D2000C8D63 /* pojoaque.min.css in Resources */,
+				2B54BE612D57B4D2000C8D63 /* ir-black.min.css in Resources */,
+				2B54BE622D57B4D2000C8D63 /* googlecode.min.css in Resources */,
+				2B54BE632D57B4D2000C8D63 /* dracula.min.css in Resources */,
+				2B54BE642D57B4D2000C8D63 /* routeros.min.css in Resources */,
+				2B54BE652D57B4D2000C8D63 /* solarized-light.min.css in Resources */,
+				2B54BE662D57B4D2000C8D63 /* atelier-dune-light.min.css in Resources */,
+				2B54BE672D57B4D2000C8D63 /* atelier-seaside-light.min.css in Resources */,
 				2B1C9FF42C5BC20B00F85195 /* Base in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -265,28 +684,33 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B1CA0302C5BC66D00F85195 /* GMarkTableView.swift in Sources */,
-				2B1CA0262C5BC66D00F85195 /* GMarkParser.swift in Sources */,
-				2B1CA02A2C5BC66D00F85195 /* GMarkdownMultiView.swift in Sources */,
-				2B1CA0232C5BC66D00F85195 /* GMarkdownCodeView.swift in Sources */,
-				2B1CA02F2C5BC66D00F85195 /* GMarkTableStyle.swift in Sources */,
-				2B1CA02B2C5BC66D00F85195 /* GMarkHandlerChain.swift in Sources */,
 				2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */,
-				2B1CA0222C5BC66D00F85195 /* GMarkCodeHighlight.swift in Sources */,
-				2B1CA02C2C5BC66D00F85195 /* GMarkHandlers.swift in Sources */,
-				2B1CA02E2C5BC66D00F85195 /* GMarkStyle.swift in Sources */,
+				2B54BE682D57B4D2000C8D63 /* Highlightr.swift in Sources */,
+				2B54BE692D57B4D2000C8D63 /* GMarkChunkGenerator.swift in Sources */,
+				2B54BE6A2D57B4D2000C8D63 /* GMarkPluginManager.swift in Sources */,
+				2B54BE6B2D57B4D2000C8D63 /* GMarkTableStyle.swift in Sources */,
+				2B54BE6C2D57B4D2000C8D63 /* GMarkupTableVisitor.swift in Sources */,
+				2B54BE6D2D57B4D2000C8D63 /* GMarkCodeHighlight.swift in Sources */,
+				2B54BE6E2D57B4D2000C8D63 /* GMarkHandlerChain.swift in Sources */,
+				2B54BE6F2D57B4D2000C8D63 /* GMarkTableViewCell.swift in Sources */,
+				2B54BE702D57B4D2000C8D63 /* CodeAttributedString.swift in Sources */,
+				2B54BE712D57B4D2000C8D63 /* GMarkProcessor.swift in Sources */,
+				2B54BE722D57B4D2000C8D63 /* GMarkChunk.swift in Sources */,
+				2B54BE732D57B4D2000C8D63 /* Shims.swift in Sources */,
+				2B54BE742D57B4D2000C8D63 /* GMarkupVisitor.swift in Sources */,
+				2B54BE752D57B4D2000C8D63 /* Theme.swift in Sources */,
+				2B54BE762D57B4D2000C8D63 /* GMarkHandlers.swift in Sources */,
+				2B54BE772D57B4D2000C8D63 /* GMarkdownMultiView.swift in Sources */,
+				2B54BE782D57B4D2000C8D63 /* GMarkStyle.swift in Sources */,
+				2B54BE792D57B4D2000C8D63 /* GMarkdownCodeView.swift in Sources */,
+				2B54BE7A2D57B4D2000C8D63 /* GMarkTableView.swift in Sources */,
+				2B54BE7B2D57B4D2000C8D63 /* HTMLUtils.swift in Sources */,
+				2B54BE7C2D57B4D2000C8D63 /* GMarkParser.swift in Sources */,
 				2B1CA0082C5BC3CD00F85195 /* MarkdownRenderController.swift in Sources */,
-				2B1CA0242C5BC66D00F85195 /* GMarkChunk.swift in Sources */,
 				2B1C9FF12C5BC20B00F85195 /* ViewController.swift in Sources */,
 				2B1C9FED2C5BC20B00F85195 /* AppDelegate.swift in Sources */,
-				2B1CA0252C5BC66D00F85195 /* GMarkChunkGenerator.swift in Sources */,
 				2B1C9FEF2C5BC20B00F85195 /* SceneDelegate.swift in Sources */,
-				2B1CA0282C5BC66D00F85195 /* GMarkupTableVisitor.swift in Sources */,
-				2B1CA0312C5BC66D00F85195 /* GMarkTableViewCell.swift in Sources */,
 				2B1CA03C2C5BC6D400F85195 /* NukeImageLoader.swift in Sources */,
-				2B1CA0292C5BC66D00F85195 /* GMarkupVisitor.swift in Sources */,
-				2B1CA0272C5BC66D00F85195 /* GMarkProcessor.swift in Sources */,
-				2B1CA02D2C5BC66D00F85195 /* GMarkPluginManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
