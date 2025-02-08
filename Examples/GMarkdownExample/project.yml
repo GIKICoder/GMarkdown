@@ -1,0 +1,24 @@
+name: GMarkdownExample
+options:
+  bundleIdPrefix: com.giki.markdown
+  deploymentTarget:
+    iOS: 13.0
+packages:
+    GMarkdown:
+        path: ../..
+targets:
+  GMarkdownExample:
+    type: application
+    platform: iOS
+    sources: 
+      - GMarkdownExample
+    dependencies:
+      - package: GMarkdown
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_UILaunchStoryboardName: LaunchScreen
+        PRODUCT_BUNDLE_IDENTIFIER: com.giki.markdown
+        MARKETING_VERSION: 1.0.0
+        CURRENT_PROJECT_VERSION: 1
+        INFOPLIST_KEY_CFBundleDisplayName: GMarkdown

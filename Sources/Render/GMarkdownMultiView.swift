@@ -76,7 +76,7 @@ extension UICollectionView {
     }
 }
 
-class GMarkdownMultiView: UIView {
+public class GMarkdownMultiView: UIView {
     // MARK: - Properties
 
     private var collectionView: UICollectionView!
@@ -86,12 +86,12 @@ class GMarkdownMultiView: UIView {
 
     // MARK: - Initialization
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         commonInit()
     }
 
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         super.init(coder: coder)
         commonInit()
     }
@@ -163,7 +163,7 @@ class GMarkdownMultiView: UIView {
 
     // MARK: - Public Methods
 
-    func updateMarkdown(_ items: [GMarkChunk]) {
+    public func updateMarkdown(_ items: [GMarkChunk]) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, GMarkChunk>()
         snapshot.appendSections([.main])
         snapshot.appendItems(items, toSection: .main)
@@ -172,7 +172,7 @@ class GMarkdownMultiView: UIView {
 }
 
 extension GMarkdownMultiView: UICollectionViewDelegateFlowLayout {
-    func collectionView(_: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+    public func collectionView(_: UICollectionView, layout _: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         guard let item = dataSource.itemIdentifier(for: indexPath) else {
             return CGSize(width: UIScreen.main.bounds.width, height: 0.00)
         }

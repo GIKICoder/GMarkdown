@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GMarkdown
 
 class TextViewViewController: UIViewController {
     
@@ -14,7 +15,7 @@ class TextViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
-        GMarkPluginManager.shared.imageLoader = NukeImageLoader()
+//        GMarkPluginManager.shared.imageLoader = NukeImageLoader()
         markdownView.isEditable = false
         markdownView.isScrollEnabled = true
         markdownView.isSelectable = true

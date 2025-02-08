@@ -10,7 +10,7 @@ import UIKit
 import Nuke
 import NukeExtensions
 import NukeUI
-
+import GMarkdown
 
 class NukeImageLoader: ImageLoader {
     

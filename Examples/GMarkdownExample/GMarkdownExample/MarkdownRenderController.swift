@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import GMarkdown
 
 class MarkdownRenderController: UIViewController {
     
