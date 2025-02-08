@@ -768,17 +768,6 @@ public struct GMarkupVisitor: MarkupVisitor {
         return attrString
     }
     
-    private mutating func renderImageAsAttachment(_ image: UIImage) -> NSAttributedString {
-        let attachment = MPITextAttachment()
-        attachment.image = image
-        attachment.contentSize = image.size
-        attachment.contentMode = .left
-        attachment.verticalAligment = .center
-        let attrString = NSMutableAttributedString(attachment: attachment)
-        applyDefaultParagraphStyle(to: attrString)
-        return attrString
-    }
-    
     private mutating func applyDefaultParagraphStyle(to attributedString: NSMutableAttributedString) {
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
