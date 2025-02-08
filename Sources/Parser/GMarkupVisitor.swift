@@ -22,6 +22,7 @@ public struct GMarkupVisitor: MarkupVisitor {
     
     private let style: Style
     public var referLoader: ReferLoader?
+    public var imageLoader: ImageLoader?
     
     public init(style: Style) {
         self.style = style
@@ -638,16 +639,14 @@ public struct GMarkupVisitor: MarkupVisitor {
         return result
     }
     
-    private mutating func handleImage(source: String) -> NSAttributedString {
+    private func handleImage(source: String) -> NSAttributedString {
         if Thread.isMainThread {
             return createImageAttributedString(source: source)
         } else {
             let semaphore = DispatchSemaphore(value: 0)
             var resultString: NSAttributedString!
-            let currentStyle = self.style // 在主线程之前获取所需的值
-            
             DispatchQueue.main.async {
-                resultString = Self.createImageAttributedStringStatic(source: source, style: currentStyle)
+                resultString =  self.createImageAttributedString(source: source)
                 semaphore.signal()
             }
             
@@ -655,14 +654,14 @@ public struct GMarkupVisitor: MarkupVisitor {
             return resultString
         }
     }
-    
+
     // 原来的实例方法
     private func createImageAttributedString(source: String) -> NSAttributedString {
-        return Self.createImageAttributedStringStatic(source: source, style: self.style)
+        return GMarkupVisitor.createImageAttributedStringStatic(source: source, style: self.style,imageLoader: imageLoader)
     }
-    
+
     // 静态方法，不需要访问实例属性
-    private static func createImageAttributedStringStatic(source: String, style: Style) -> NSAttributedString {
+    private static func createImageAttributedStringStatic(source: String, style: Style, imageLoader:ImageLoader?) -> NSAttributedString {
         let result = NSMutableAttributedString()
         
         let imageView = UIImageView()
@@ -671,7 +670,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         imageView.clipsToBounds = true
         imageView.contentMode = style.imageStyle.contentMode
         
-        GMarkPluginManager.shared.imageLoader?.loadImage(from: source, into: imageView)
+        imageLoader?.loadImage(from: source, into: imageView)
         
         let attachment = MPITextAttachment()
         attachment.content = imageView

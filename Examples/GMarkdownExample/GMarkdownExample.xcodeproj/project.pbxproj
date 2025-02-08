@@ -135,6 +135,7 @@
 		2B54BE7C2D57B4D2000C8D63 /* GMarkParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B54BDFD2D57B4D2000C8D63 /* GMarkParser.swift */; };
 		2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */; };
 		2BCFA9692D57AD3600EEE6A7 /* markdownv2 in Resources */ = {isa = PBXBuildFile; fileRef = 2BCFA9682D57AD3600EEE6A7 /* markdownv2 */; };
+		2BF6E4222D57BF1E00378866 /* GMarkTableRender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BF6E4212D57BF1E00378866 /* GMarkTableRender.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -263,6 +264,7 @@
 		2B54BE0A2D57B4D2000C8D63 /* GMarkTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkTableViewCell.swift; sourceTree = "<group>"; };
 		2BCFA9662D57AAAD00EEE6A7 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 		2BCFA9682D57AD3600EEE6A7 /* markdownv2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv2; sourceTree = "<group>"; };
+		2BF6E4212D57BF1E00378866 /* GMarkTableRender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GMarkTableRender.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -466,6 +468,7 @@
 			children = (
 				2B54BDFB2D57B4D2000C8D63 /* GMarkChunk.swift */,
 				2B54BDFC2D57B4D2000C8D63 /* GMarkChunkGenerator.swift */,
+				2BF6E4212D57BF1E00378866 /* GMarkTableRender.swift */,
 				2B54BDFD2D57B4D2000C8D63 /* GMarkParser.swift */,
 				2B54BDFE2D57B4D2000C8D63 /* GMarkProcessor.swift */,
 				2B54BDFF2D57B4D2000C8D63 /* GMarkupTableVisitor.swift */,
@@ -687,6 +690,7 @@
 				2BCFA9672D57AAAD00EEE6A7 /* TextViewViewController.swift in Sources */,
 				2B54BE682D57B4D2000C8D63 /* Highlightr.swift in Sources */,
 				2B54BE692D57B4D2000C8D63 /* GMarkChunkGenerator.swift in Sources */,
+				2BF6E4222D57BF1E00378866 /* GMarkTableRender.swift in Sources */,
 				2B54BE6A2D57B4D2000C8D63 /* GMarkPluginManager.swift in Sources */,
 				2B54BE6B2D57B4D2000C8D63 /* GMarkTableStyle.swift in Sources */,
 				2B54BE6C2D57B4D2000C8D63 /* GMarkupTableVisitor.swift in Sources */,

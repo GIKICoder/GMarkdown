@@ -154,7 +154,7 @@ open class GMarkdownCodeView: UIView {
     }
 
     @objc private func codeCopyAction() {
-        if let text = markChunk?.attributeText?.string {
+        if let text = markChunk?.attributedText.string {
             onCopy?(text)
         }
     }

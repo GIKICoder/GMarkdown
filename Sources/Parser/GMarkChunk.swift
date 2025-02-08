@@ -2,7 +2,7 @@
 //  GMarkChunk.swift
 //  GMarkRender
 //
-//  Created by GIKI on 2024/7/26.
+//  Created by GIKI on 2025/04/27.
 //
 
 import CryptoKit
@@ -10,6 +10,8 @@ import Foundation
 import Markdown
 import MPITextKit
 import UIKit
+
+// MARK: - ChunkType
 
 public enum ChunkType: Int {
     case Text = 0
@@ -20,152 +22,215 @@ public enum ChunkType: Int {
     case Image = 5
     case Latex = 6
     case Html = 7
-    case DotlineType = 8
-    case DotlineCard = 9
 }
 
+// MARK: - GMarkChunk
 
-public struct GMarkChunk: Hashable {
-    let id = UUID()
-
+/// A class representing a parsed Markdown chunk with various rendering attributes.
+/// Conforms to `Hashable` and `Equatable` to support diffing based on content changes.
+public final class GMarkChunk: Hashable, Sendable {
+    
+    // MARK: - Properties
+    
+    /// A unique identifier for the chunk, provided externally.
+    public var identifier: String = UUID().uuidString
+    
+    public var chunkIndex: Int = 0
+    
+    /// The children markup elements of this chunk.
     public var children: [Markup] = []
-
+    
+    /// The type of the chunk.
     public var chunkType: ChunkType = .Text
-
-    public var attributeText: NSAttributedString?
-
+    
+    /// The attributed text representation of the chunk.
+    public var attributedText: NSAttributedString = NSAttributedString(string: "")
+    
+    /// The text renderer for the chunk.
     public var textRender: MPITextRenderer?
-
+    
+    /// The text renderer used when the chunk is truncated.
     public var truncationTextRender: MPITextRenderer?
-
-    public var itemSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 0)
-
-    public var truncationItemSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 0)
-
+    
+    /// The size of the chunk item.
+    public var itemSize: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 0)
+    
+    /// The size of the truncated chunk item.
+    public var truncationItemSize: CGSize = CGSize(width: UIScreen.main.bounds.width, height: 0)
+    
+    /// The style applied to the chunk.
     public var style: Style = MarkdownStyle.defaultStyle()
-
+    
+    /// The table renderer, if the chunk is a table.
     public var tableRender: GMarkTableRender?
-
-    public var language: String?
-
-    public var source: String?
-    public var sourceTemplate: String?
-    public var sourceNums: [String]?
-
-    public var codeSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 0)
-
-    public var latexSize: CGSize = .init(width: UIScreen.main.bounds.width, height: 0)
-
+    
+    /// The programming language, if the chunk is a code block.
+    public var language: String = ""
+    
+    /// The source code or content of the chunk.
+    public var source: String = ""
+    
+    /// The template source, if applicable.
+    public var sourceTemplate: String = ""
+    
+    /// Line numbers or related metadata for the source, if applicable.
+    public var sourceNumbers: [String] = []
+    
+    /// The size of the code block.
+    public var codeSize: CGSize = .zero
+    
+    /// The size of the LaTeX block.
+    public var latexSize: CGSize = .zero
+    
+    /// The image rendered from LaTeX, if applicable.
     public var latexImage: UIImage?
     
-    public var cardType: String?
-    public var cardTitle: String?
-    public var cardHighlight: String?
-    public var cardImages: [[String:Any]]?
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
+    public var hashKey = UUID().uuidString
+    
+    // MARK: - Initializers
+    
+    // 无参构造器
+    public init() {
+        self.identifier = UUID().uuidString
+        setupStyle()
+        updateHashKey()
     }
-
-    public static func == (lhs: GMarkChunk, rhs: GMarkChunk) -> Bool {
-        return lhs.id == rhs.id
+    
+    // 基础构造器 - identifier可选
+    public init(identifier: String = UUID().uuidString) {
+        self.identifier = identifier
+        setupStyle()
+        updateHashKey()
     }
-
-    public func hashKey() -> String {
-        var tempKey = ""
-        if chunkType == .Text || chunkType == .Latex {
-            tempKey = String(chunkType.rawValue) + tempKey
-            if let text = attributeText?.string {
-                tempKey = tempKey + text.md5()
-            }
-        } else if chunkType == .Code {
-            tempKey = String(chunkType.rawValue) + tempKey
-            if let text = attributeText?.string {
-                tempKey = tempKey + text.md5() + (language ?? "")
-            }
-        } else if chunkType == .Table {
-            tempKey = String(chunkType.rawValue) + tempKey
-            if let tableContent = tableRender?.markTable.contents {
-                tempKey = tableContent.md5() + tempKey
-            } else {
-                tempKey = generateRandomString()
-            }
-        } else if chunkType == .Image {
-            tempKey = String(chunkType.rawValue) + tempKey
-            tempKey = tempKey + (sourceTemplate ?? "") + (source ?? "")
-        } else if chunkType == .DotlineCard {
-            tempKey = String(chunkType.rawValue) + tempKey
-            tempKey = tempKey + (cardTitle ?? "") + (cardHighlight ?? "") 
-            if let text = attributeText?.string {
-                tempKey = tempKey + text.md5()
-            }
-        }
-        if tempKey.count > 0 {
-            tempKey = tempKey + String(ceil(itemSize.height))
-            return tempKey
-        }
-        tempKey = String(chunkType.rawValue) + tempKey + String(ceil(itemSize.height)) + id.uuidString
-        return tempKey
-    }
-
-    func generateRandomString() -> String {
-        let timestamp = Int(Date().timeIntervalSince1970)
-        let randomNumber = Int.random(in: 0 ... 10000)
-        let resultString = "\(timestamp)\(randomNumber)"
-        return resultString
-    }
-
-    init(children: [Markup], chunkType: ChunkType) {
-        self.init(children: children,
-                  chunkType: chunkType,
-                  attributeText: nil,
-                  textRender: nil,
-                  itemSize: CGSize(width: UIScreen.main.bounds.width, height: 0),
-                  style: MarkdownStyle.defaultStyle(),
-                  tableRender: nil,
-                  language: nil, codeSize: .zero)
-    }
-
-    init(chunkType: ChunkType) {
-        self.init(children: [],
-                  chunkType: chunkType,
-                  attributeText: nil,
-                  textRender: nil,
-                  itemSize: CGSize(width: UIScreen.main.bounds.width, height: 0),
-                  style: MarkdownStyle.defaultStyle(),
-                  tableRender: nil,
-                  language: nil, codeSize: .zero)
-    }
-
-    private init(children: [Markup], chunkType: ChunkType, attributeText: NSAttributedString? = nil, textRender: MPITextRenderer? = nil, itemSize: CGSize, style: MarkdownStyle = MarkdownStyle.defaultStyle(), tableRender: GMarkTableRender? = nil, language: String? = nil, codeSize: CGSize) {
-        self.children = children
+    
+    // 便利构造器 - chunkType
+    public convenience init(chunkType: ChunkType) {
+        self.init()
         self.chunkType = chunkType
-        self.attributeText = attributeText
-        self.textRender = textRender
-        self.itemSize = itemSize
-        self.style = style
-        self.tableRender = tableRender
-        self.language = language
-        self.codeSize = codeSize
-
-        commonInitialization()
+        updateHashKey()
     }
-
-    mutating func commonInitialization() {
+    
+    // 便利构造器 - children
+    public convenience init(children: [Markup]) {
+        self.init()
+        self.children = children
+        updateHashKey()
+    }
+    
+    // 便利构造器 - chunkType和children
+    public convenience init(chunkType: ChunkType, children: [Markup]) {
+        self.init()
+        self.chunkType = chunkType
+        self.children = children
+        updateHashKey()
+    }
+    
+    // 便利构造器 - 完整参数
+    public convenience init(identifier: String = UUID().uuidString,
+                            chunkType: ChunkType = .Text,
+                            children: [Markup] = []) {
+        self.init(identifier: identifier)
+        self.chunkType = chunkType
+        self.children = children
+        updateHashKey()
+    }
+    
+    private func setupStyle() {
         style.useMPTextKit = true
         style.codeBlockStyle.customRender = true
     }
+    
+    public func updateHashKey() {
+        hashKey = combineHash()
+    }
+    
+    // MARK: - Hashable & Equatable
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(identifier)
+        hasher.combine(hashKey)
+    }
+    
+    public static func == (lhs: GMarkChunk, rhs: GMarkChunk) -> Bool {
+        return lhs.identifier == rhs.identifier
+        && lhs.hashKey == rhs.hashKey
+    }
+    
+    // MARK: - Public Methods
+    
+    /// Generates a unique hash key based on the chunk's properties.
+    ///
+    /// - Returns: A unique string representing the hash key.
+    public func combineHash() -> String {
+        var customHash = "\(chunkIndex)" + "-" + "\(chunkType.rawValue)" + "-" + identifier
+        switch chunkType {
+        case .Text, .Latex:
+            let text = attributedText.string
+            customHash += text.md5()
+        case .Code:
+            let text = attributedText.string
+            customHash += text.md5()
+            customHash += language
+        case .Table:
+            let tableContent = tableRender?.markTable.contents ?? generateRandomString()
+            if !tableContent.isEmpty {
+                customHash += tableContent.md5()
+            } else {
+                customHash += generateRandomString()
+            }
+        case .Image:
+            customHash += sourceTemplate
+            customHash += source
+        case .Thematic:
+            customHash += generateRandomString()
+        default:
+            customHash += generateRandomString()
+            break
+        }
+        
+        customHash += String(format: "%.0f", ceil(itemSize.height))
+        customHash += String(format: "%.0f", ceil(itemSize.width))
+        
+        return customHash
+    }
+    
+    // MARK: - Private Methods
+    
+    /// Performs common initialization tasks.
+    private func commonInitialization() {
+        style.useMPTextKit = true
+        style.codeBlockStyle.customRender = true
+    }
+    
+    /// Generates a random string based on the current timestamp and a random number.
+    ///
+    /// - Returns: A random string.
+    private func generateRandomString() -> String {
+            let timestamp = Int(Date().timeIntervalSince1970)
+             let randomNumber = Int.random(in: 0 ... 10000)
+            let resultString = "\(timestamp)\(randomNumber)"
+            return resultString + UUID().uuidString
+        }
 }
 
+
+// MARK: - Extensions
+
 private extension Data {
-    func md5() -> String {
+    /// Computes the MD5 hash of the data.
+    ///
+    /// - Returns: A hexadecimal string representation of the MD5 hash.
+    func md5Hash() -> String {
         let digest = Insecure.MD5.hash(data: self)
         return digest.map { String(format: "%02hhx", $0) }.joined()
     }
 }
 
 private extension String {
+    /// Computes the MD5 hash of the string.
+    ///
+    /// - Returns: A hexadecimal string representation of the MD5 hash.
     func md5() -> String {
-        data(using: .utf8)?.md5() ?? ""
+        self.data(using: .utf8)?.md5Hash() ?? ""
     }
 }

@@ -229,10 +229,7 @@ class GMarkTextCell: UICollectionViewCell, MPILabelDelegate, ChunkCellConfigurab
             label.textRenderer = textRender
             return
         }
-        if let attributeText = chunk.attributeText {
-            label.attributedText = attributeText
-            return
-        }
+        label.attributedText = chunk.attributedText
     }
 
     // MARK: - MPILabelDelegate
@@ -332,7 +329,7 @@ class GMarkTableCell: UICollectionViewCell, GMarkTableViewDataSource, ChunkCellC
     }
 
     func headerEmpty() -> Bool {
-        return (markChunk?.tableRender?.headerRenders?.isEmpty) != nil
+        return (markChunk?.tableRender?.headerRenders.isEmpty) != nil
     }
 
     func headerRenders() -> [MPITextRenderer] {

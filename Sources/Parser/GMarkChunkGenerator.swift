@@ -29,21 +29,30 @@ public class GMarkChunkGenerator: ChunkGenerator {
     public var maxAttributedStringLength = 2000
     public var style: Style?
     public var referLoader: ReferLoader?
+    public var imageLoader: ImageLoader?
+    public var identifier: String = UUID().uuidString
+    
     
     public init(handlers: [MarkupHandler] = [
         TableMarkupHandler(),
         CodeBlockMarkupHandler(),
         BlockQuoteMarkupHandler(),
         ThematicBreakHandler(),
-        ImageHandler(),
-//        LaTexHandler(),
     ]) {
         self.handlers = handlers
     }
     
+    public func addImageHandler() {
+        self.handlers.append(ImageHandler())
+    }
+    
+    public func addLaTexHandler() {
+        self.handlers.append(LaTexHandler())
+    }
+    
     public func generateChunks(from markups: [Markup]) -> [GMarkChunk] {
         var chunks: [GMarkChunk] = []
-        var currentChunk = GMarkChunk(chunkType: .Text)
+        var currentChunk = GMarkChunk(identifier: identifier,chunkType: .Text)
         if let chunkStyle = style {
             currentChunk.style = chunkStyle
         }
@@ -51,29 +60,32 @@ public class GMarkChunkGenerator: ChunkGenerator {
             if let handler = handlers.first(where: { $0.canHandle(markup) }) {
                 if !currentChunk.children.isEmpty {
                     chunks.append(currentChunk)
-                    currentChunk = GMarkChunk(chunkType: .Text)
+                    currentChunk = GMarkChunk(identifier: identifier,chunkType: .Text)
                     if let chunkStyle = style {
                         currentChunk.style = chunkStyle
                     }
                 }
                 let chunk = handler.handle(markup, style: style)
+                chunk.identifier = identifier
+                chunk.updateHashKey()
                 chunks.append(chunk)
             } else {
                 var visitor = GMarkupVisitor(style: currentChunk.style)
                 visitor.referLoader = referLoader
+                visitor.imageLoader = imageLoader
                 let attributeText = visitor.visit(markup)
                 
-                if (currentChunk.attributeText?.length ?? 0) + attributeText.length > maxAttributedStringLength {
+                if currentChunk.attributedText.length + attributeText.length > maxAttributedStringLength {
                     chunks.append(currentChunk)
-                    currentChunk = GMarkChunk(children: [], chunkType: .Text)
+                    currentChunk = GMarkChunk(identifier: identifier,chunkType: .Text)
                     if let chunkStyle = style {
                         currentChunk.style = chunkStyle
                     }
                 }
                 currentChunk.children.append(markup)
-                let mutableAttributeText = NSMutableAttributedString(attributedString: currentChunk.attributeText ?? NSAttributedString())
+                let mutableAttributeText = NSMutableAttributedString(attributedString: currentChunk.attributedText)
                 mutableAttributeText.append(attributeText)
-                currentChunk.attributeText = mutableAttributeText
+                currentChunk.attributedText = mutableAttributeText
                 currentChunk.generatorTextRender()
             }
         }
@@ -81,7 +93,10 @@ public class GMarkChunkGenerator: ChunkGenerator {
         if !currentChunk.children.isEmpty {
             chunks.append(currentChunk)
         }
-        
+        chunks.enumerated().forEach { index,chunk in
+            chunk.chunkIndex = index
+            chunk.updateHashKey()
+        }
         return chunks
     }
     
@@ -99,7 +114,7 @@ public class TableMarkupHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(children: [markup], chunkType: .Table)
+        let chunk = GMarkChunk(chunkType: .Table, children: [markup])
         if let style = style {
             chunk.style = style
         }
@@ -121,7 +136,7 @@ public class CodeBlockMarkupHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(children: [markup], chunkType: .Code)
+        var chunk = GMarkChunk(chunkType: .Code, children: [markup])
         if let style = style {
             chunk.style = style
         }
@@ -145,13 +160,13 @@ public class BlockQuoteMarkupHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
-        return GMarkChunk(children: [markup], chunkType: .BlockQuote)
+        return GMarkChunk(chunkType: .BlockQuote, children: [markup])
     }
 }
 
 public class ThematicBreakHandler: MarkupHandler {
     public init() {
-        // 初始化代码
+        
     }
     
     public func canHandle(_ markup: Markup) -> Bool {
@@ -159,7 +174,7 @@ public class ThematicBreakHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(children: [markup], chunkType: .Thematic)
+        let chunk = GMarkChunk(chunkType: .Thematic, children: [markup])
         chunk.itemSize = CGSize(width: chunk.style.maxContainerWidth, height: 30)
         return chunk
     }
@@ -183,7 +198,7 @@ public class LaTexHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(children: [markup], chunkType: .Latex)
+        let chunk = GMarkChunk(chunkType: .Latex, children: [markup])
         guard let markup = markup as! Paragraph? else {
             return chunk
         }
@@ -206,7 +221,7 @@ public class ImageHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(children: [markup], chunkType: .Image)
+        let chunk = GMarkChunk(chunkType: .Image, children: [markup])
         var imgSource: String?
         if markup is Paragraph {
             if let markSub = markup.child(at: 0) as? Image {
@@ -216,15 +231,7 @@ public class ImageHandler: MarkupHandler {
         if let mark = markup as? Image {
             imgSource = mark.source
         }
-        chunk.source = imgSource
-        if let im = imgSource {
-            let splites = splitText(text: im)
-            chunk.sourceTemplate = splites?.first
-            if splites?.count ?? 0 > 1, let num = splites?.last {
-                chunk.sourceNums = splitTextToNums(text: num)
-            }
-        }
-        
+        chunk.source = imgSource ?? ""
         chunk.itemSize = CGSize(width: chunk.style.maxContainerWidth, height: 100)
         return chunk
     }
@@ -251,15 +258,12 @@ public class ImageHandler: MarkupHandler {
 // MARK: - Latex Chunk
 
 extension GMarkChunk {
-    mutating func generateLatex(markup: Paragraph) {
+    func generateLatex(markup: Paragraph) {
         var visitor = GMarkupVisitor(style: style)
         visitor.ignoreLatex = true
-        attributeText = visitor.visit(markup)
+        attributedText = visitor.visit(markup)
         
-        guard let text = attributeText?.string else {
-            calculateLatexText()
-            return
-        }
+        let text = attributedText.string
         let trimText = trimBrackets(from: text)
         var mImage = MathImage(latex: trimText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
         mImage.font = MathFont.xitsFont
@@ -271,9 +275,10 @@ extension GMarkChunk {
             return
         }
         calculateLatexText()
+        updateHashKey()
     }
     
-    mutating func trimBrackets(from string: String) -> String {
+    func trimBrackets(from string: String) -> String {
         let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
         if trimmedString.hasPrefix("[") && (trimmedString.hasSuffix("]")) {
             return String(trimmedString.dropFirst().dropLast())
@@ -281,11 +286,8 @@ extension GMarkChunk {
         return trimmedString
     }
     
-    mutating func calculateLatexText() {
-        guard let attr = attributeText else {
-            return
-        }
-        
+    func calculateLatexText() {
+        let attr = attributedText
         let builder = MPITextRenderAttributesBuilder()
         builder.attributedText = attr
         builder.maximumNumberOfLines = 0
@@ -296,14 +298,42 @@ extension GMarkChunk {
     }
 }
 
+extension NSAttributedString {
+    func addGradientMask(lastCharCount: Int = 5) -> NSAttributedString {
+        let mutableAttr = NSMutableAttributedString(attributedString: self)
+        let totalLength = self.length
+        
+        // 确保字符数量合法
+        guard totalLength > 0 && lastCharCount > 0 else { return self }
+        
+        // 计算需要添加渐变的起始位置
+        let startPosition = max(0, totalLength - lastCharCount)
+        let gradientLength = min(lastCharCount, totalLength)
+        
+        // 创建渐变colors数组
+        let gradientSteps = gradientLength
+        for i in 0..<gradientSteps {
+            let progress = Float(i) / Float(gradientSteps)
+            let alpha = 1.0 - progress // 从1渐变到0
+            
+            let attributes: [NSAttributedString.Key: Any] = [
+                .foregroundColor: UIColor.black.withAlphaComponent(CGFloat(alpha))
+            ]
+            
+            let location = startPosition + i
+            mutableAttr.addAttributes(attributes, range: NSRange(location: location, length: 1))
+        }
+        
+        return mutableAttr
+    }
+}
+
 // MARK: - text Chunk
 
 extension GMarkChunk {
-    mutating func generatorTextRender() {
-        guard let attr = attributeText else {
-            return
-        }
-        
+    func generatorTextRender() {
+        //        attributedText = attributedText.addGradientMask(lastCharCount: 5)
+        let attr = attributedText
         let builder = MPITextRenderAttributesBuilder()
         builder.attributedText = attr
         builder.maximumNumberOfLines = 0
@@ -317,10 +347,13 @@ extension GMarkChunk {
             tbuilder.maximumNumberOfLines = UInt(style.maximumNumberOfLines)
             tbuilder.truncationAttributedText = generateTruncation()
             let tRenderAttributes = MPITextRenderAttributes(builder: tbuilder)
+            truncationTextRender
             truncationTextRender = MPITextRenderer(renderAttributes: tRenderAttributes, constrainedSize: CGSize(width: style.maxContainerWidth, height: CGFLOAT_MAX))
             
             truncationItemSize = CGSize(width: style.maxContainerWidth, height: truncationTextRender?.size().height ?? 0.0)
         }
+        
+        updateHashKey()
     }
     
     func generateTruncation() -> NSAttributedString {
@@ -358,19 +391,20 @@ extension GMarkChunk {
 // MARK: - Code Chunk
 
 extension GMarkChunk {
-    mutating func generateCode(markup: CodeBlock) {
-        language = markup.language
+    func generateCode(markup: CodeBlock) {
+        language = markup.language ?? ""
         style.codeBlockStyle.customRender = true
+        style.codeBlockStyle.useHighlight = true
         var visitor = GMarkupVisitor(style: style)
         
-        attributeText = visitor.visit(markup)
+        attributedText = visitor.visit(markup)
         calculateCode()
+        
+        updateHashKey()
     }
     
-    mutating func calculateCode() {
-        guard let attr = attributeText else {
-            return
-        }
+    func calculateCode() {
+        let attr = attributedText
         let builder = MPITextRenderAttributesBuilder()
         builder.attributedText = attr
         builder.maximumNumberOfLines = 0
@@ -386,16 +420,18 @@ extension GMarkChunk {
 // MARK: - Table Chunk
 
 extension GMarkChunk {
-    mutating func generateTable(markup: Table) {
+    func generateTable(markup: Table) {
         var style = style
         style.useMPTextKit = true
         style.imageStyle.size = CGSize(width: 60, height: 60)
         var visitor = GMarkupTableVisitor(style: style)
         let table = visitor.visit(markup)
         calculateTable(table: table)
+        
+        updateHashKey()
     }
     
-    mutating func calculateTable(table: GMarkTable?) {
+    func calculateTable(table: GMarkTable?) {
         guard let table = table else {
             return
         }
@@ -404,55 +440,6 @@ extension GMarkChunk {
     }
 }
 
-public struct GMarkTableRender {
-    public let markTable: GMarkTable
-    public let style: Style
-    public var headerRenders: [MPITextRenderer]? = []
-    public var bodyRenders: [[MPITextRenderer]]? = []
-    public var tableHeight: CGFloat?
-    public init(markTable: GMarkTable, style: Style) {
-        self.markTable = markTable
-        self.style = style
-        setupTableRender()
-    }
-    
-    mutating func setupTableRender() {
-        let maxW = style.tableStyle.cellMaximumWidth
-        let defaultH = style.tableStyle.cellHeight
-        let paddingH = style.tableStyle.cellPadding.top + style.tableStyle.cellPadding.bottom
-        var height = defaultH
-        markTable.headers?.enumerated().forEach { _, attr in
-            let builder = MPITextRenderAttributesBuilder()
-            builder.attributedText = attr
-            builder.maximumNumberOfLines = UInt(style.tableStyle.maximumNumberOfLines)
-            let renderAttributes = MPITextRenderAttributes(builder: builder)
-            let fitsSize = CGSize(width: maxW, height: CGFLOAT_MAX)
-            let textRender = MPITextRenderer(renderAttributes: renderAttributes, constrainedSize: fitsSize)
-            headerRenders?.append(textRender)
-            height = max(textRender.size().height + paddingH, height)
-        }
-        
-        markTable.bodys?.enumerated().forEach { _, attrs in
-            var rowRenders: [MPITextRenderer] = []
-            var maxRowHeight = 0.0
-            for (_, attr) in attrs.enumerated() {
-                let builder = MPITextRenderAttributesBuilder()
-                builder.attributedText = attr
-                builder.maximumNumberOfLines = UInt(style.tableStyle.maximumNumberOfLines)
-                let renderAttributes = MPITextRenderAttributes(builder: builder)
-                let fitsSize = CGSize(width: maxW, height: CGFLOAT_MAX)
-                let textRender = MPITextRenderer(renderAttributes: renderAttributes, constrainedSize: fitsSize)
-                rowRenders.append(textRender)
-                maxRowHeight = max(textRender.size().height + paddingH, defaultH)
-            }
-            height += maxRowHeight
-            bodyRenders?.append(rowRenders)
-        }
-        
-        height += style.tableStyle.padding.top + style.tableStyle.padding.bottom
-        tableHeight = height
-    }
-}
 
 
 // MARK: - Localized
@@ -498,6 +485,6 @@ extension String {
             value: "",
             comment: comment
         )
-      }
-        
+    }
+    
 }

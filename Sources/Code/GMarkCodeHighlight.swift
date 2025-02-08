@@ -9,7 +9,7 @@ import Foundation
 
 open class GMarkCodeHighlight: NSObject {
     override init() {
-        highlightr?.setTheme(to: "github")
+        highlightr?.setTheme(to: "github-gist")
     }
 
     /// Highlightr instance used internally for highlighting. Use this for configuring the theme.
@@ -19,7 +19,7 @@ open class GMarkCodeHighlight: NSObject {
     public static let shared = GMarkCodeHighlight()
     
     public func changeDark(_ dark: Bool) {
-        let theme = dark ? "dark" : "github"
+        let theme = dark ? "dark" : "github-gist"
         setTheme(to: theme)
     }
 
