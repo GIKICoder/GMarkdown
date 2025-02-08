@@ -789,6 +789,14 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
 }
 
+
+// MARK: - Public Attribute Implementation
+extension GMarkupVisitor {
+    public func buildAttributedText(from text: String) -> NSMutableAttributedString {
+        defaultAttribute(from: text)
+    }
+}
+
 // MARK: - Default Attribute Implementation
 extension GMarkupVisitor {
     
