@@ -27,7 +27,7 @@ class MarkdownRenderController: UIViewController {
     
     
     func setupMarkdown() async {
-        guard let filepath = Bundle.main.path(forResource: "markdown", ofType: nil),
+        guard let filepath = Bundle.main.path(forResource: "markdownv2", ofType: nil),
               let filecontents = try? String(contentsOfFile: filepath, encoding: .utf8) else {
             return
         }
@@ -46,6 +46,7 @@ class MarkdownRenderController: UIViewController {
                 let generator = GMarkChunkGenerator()
                 generator.style = style
                 generator.imageLoader = self.imageloader
+                generator.addLaTexHandler()
                 let processor = GMarkProcessor(parser: GMarkParser(), chunkGenerator: generator)
                 let chunks = processor.process(markdown: content)
                 continuation.resume(returning: chunks)

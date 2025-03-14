@@ -269,9 +269,9 @@ extension GMarkChunk {
         mImage.font = MathFont.xitsFont
         let (_, image) = mImage.asImage()
         if let image = image {
-            itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
             latexSize = image.size
             latexImage = image
+            itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
             return
         }
         calculateLatexText()

@@ -14,8 +14,9 @@ let package = Package(
   ],
   dependencies: [
     .package(url: "https://github.com/apple/swift-markdown.git", from: "0.4.0"),
-    .package(url: "https://github.com/mgriebling/SwiftMath.git", from: "1.4.0"),
+//    .package(url: "https://github.com/mgriebling/SwiftMath.git", from: "1.4.0"),
     .package(url: "https://github.com/meitu/MPITextKit.git", from: "0.1.13"),
+    .package(path: "./SwiftMath")
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
