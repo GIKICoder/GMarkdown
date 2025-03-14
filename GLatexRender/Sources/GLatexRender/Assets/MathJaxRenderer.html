@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LaTeX iOS Renderer</title>
+        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+            
+            <style>
+                * {
+                    margin: 0;
+                    padding: 0;
+                    border: 0;
+                    outline: 0;
+                    font-size: 100%;
+                    vertical-align: baseline;
+                    background: transparent;
+                }
+            
+            #latex-view {
+                display: inline-block;
+                min-height: 0px;
+                min-width: 0px;
+                overflow: hidden;
+                white-space: pre-line;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            </style>
+            
+            <script type="text/javascript" async src="mathjax/MathJax.js?config=TeX-AMS_CHTML-full"></script>
+            
+            <script type="text/x-mathjax-config">
+                MathJax.Hub.Config({
+                                   messageStyle: "none",
+                                   tex2jax: { inlineMath: [['$','$'],['\\(','\\)'], ['[math]','[/math]']], preview: "none" }
+                                   });
+                                   
+                                   MathJax.Hub.Queue(function () {
+                                                     try {
+                                                     webkit.messageHandlers.callbackHandler.postMessage('ready');
+                                                     } catch(err) {
+                                                     console.log('The native context does not exist yet');
+                                                     }
+                                                     });
+                </script>
+            
+            <script type="text/javascript">
+                function renderLaTeX(str) {
+                    var latexDiv = document.getElementById('latex-view');
+                    latexDiv.innerHTML = str;
+                    MathJax.Hub.Queue(["Typeset",MathJax.Hub,latexDiv]);
+                    MathJax.Hub.Queue(sendCallbackToiOSApp());
+                }
+            
+            function sendCallbackToiOSApp() {
+                try {
+                    var latexDiv = document.getElementById('latex-view');
+                    var width = latexDiv.clientWidth;
+                    var height = latexDiv.clientHeight;
+                    
+                    webkit.messageHandlers.callbackHandler.postMessage('{"height":' + height + ',"width":' + width + '}');
+                } catch(err) {
+                    console.log('User is not running in compatible browser');
+                }
+            }
+            </script>
+            </head>
+    
+    <body>
+        
+        <div id='latex-view'>
+        </div>
+        
+    </body>
+</html>

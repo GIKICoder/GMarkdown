@@ -8,6 +8,7 @@
 import Foundation
 import UIKit
 import MPITextKit
+import GLatexRender
 
 class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     static let reuseIdentifier = "GMarkLatexCell"
@@ -21,7 +22,11 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         imageView.contentMode = .scaleAspectFit
         return imageView
     }()
+    
+    private var laTeXImageViewV2 = LaTeXImageView()
+    private var laTeXRenderer: LaTeXRenderer?
 
+    
     override public init(frame: CGRect) {
         super.init(frame: frame)
         setupUI()
@@ -35,6 +40,7 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     public override func layoutSubviews() {
         super.layoutSubviews()
         scrollView.frame = contentView.bounds
+        self.laTeXImageViewV2.frame = scrollView.bounds
     }
 
     func setupUI() {
@@ -42,6 +48,12 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         scrollView.addSubview(latexImageView)
         scrollView.frame = contentView.bounds
         scrollView.autoresizingMask = [.flexibleHeight,.flexibleWidth]
+    
+        scrollView.addSubview(laTeXImageViewV2)
+        self.laTeXRenderer = LaTeXRenderer(parentView: self.scrollView)
+        self.laTeXImageViewV2.inject(laTeXRenderer: self.laTeXRenderer!)
+        self.laTeXImageViewV2.isHidden = true
+        self.laTeXImageViewV2.frame = scrollView.bounds
     }
     
     func configure(with chunk: GMarkChunk) {
@@ -54,10 +66,16 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
                 latexImageView.frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: image.size.width, height: image.size.height)
             }
             scrollView.contentSize = CGSize(width: image.size.width, height: image.size.height)
-            scrollView.backgroundColor = .red
-            latexImageView.backgroundColor = .blue
         } else {
-            
+            self.laTeXImageViewV2.isHidden = false
+            laTeXImageViewV2.render(chunk.attributedText.string, shouldResize: true) { (error) in
+                if let error = error {
+                    print("\(error)")
+                    return
+                }
+                
+                print("Successfully rendered LaTeX")
+            }
         }
     }
 }
