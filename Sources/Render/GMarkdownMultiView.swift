@@ -51,6 +51,8 @@ class ChunkCellProviderFactory {
             return DefaultChunkCellProvider<GMarkTableCell>()
         case .Thematic:
             return DefaultChunkCellProvider<GMarkThematicCell>()
+        case .Latex:
+            return DefaultChunkCellProvider<GMarkLatexCell>()
         default:
             return DefaultChunkCellProvider<GMarkTextCell>()
         }
@@ -62,6 +64,7 @@ class ChunkCellProviderFactory {
             DefaultChunkCellProvider<GMarkCodeCell>.self,
             DefaultChunkCellProvider<GMarkTableCell>.self,
             DefaultChunkCellProvider<GMarkThematicCell>.self,
+            DefaultChunkCellProvider<GMarkLatexCell>.self,
         ]
     }
 }
@@ -443,6 +446,49 @@ class GMarkThematicCell: UICollectionViewCell, ChunkCellConfigurable {
     }
 
     func configure(with _: GMarkChunk) {}
+}
+
+class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
+    static let reuseIdentifier = "GMarkLatexCell"
+    private let scrollView: UIScrollView = {
+        let sv = UIScrollView()
+        return sv
+    }()
+
+    private let latexImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    }()
+
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        setupUI()
+    }
+
+    @available(*, unavailable)
+    required public init?(coder _: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        scrollView.bounds = contentView.bounds
+    }
+
+    func setupUI() {
+        contentView.addSubview(scrollView)
+        scrollView.addSubview(latexImageView)
+        scrollView.bounds = contentView.bounds
+        scrollView.autoresizingMask = [.flexibleHeight,.flexibleWidth]
+    }
+    func configure(with chunk: GMarkChunk) {
+        if let image = chunk.latexImage {
+            latexImageView.image = image
+            latexImageView.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+            scrollView.contentSize = image.size
+        }
+    }
 }
 
 public extension Array {

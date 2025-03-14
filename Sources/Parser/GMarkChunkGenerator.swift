@@ -347,7 +347,6 @@ extension GMarkChunk {
             tbuilder.maximumNumberOfLines = UInt(style.maximumNumberOfLines)
             tbuilder.truncationAttributedText = generateTruncation()
             let tRenderAttributes = MPITextRenderAttributes(builder: tbuilder)
-            truncationTextRender
             truncationTextRender = MPITextRenderer(renderAttributes: tRenderAttributes, constrainedSize: CGSize(width: style.maxContainerWidth, height: CGFLOAT_MAX))
             
             truncationItemSize = CGSize(width: style.maxContainerWidth, height: truncationTextRender?.size().height ?? 0.0)

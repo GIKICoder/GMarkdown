@@ -55,10 +55,17 @@ public class GMarkParser {
         for match in matches {
             let matchRange = match.range
             let matchedString = nsString.substring(with: matchRange)
-            if matchedString.count < 300 {
-                /// Add a safeguard.
-                let wrappedString = "<LaTex>\(matchedString)</LaTex>"
-                result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
+            if matchedString.count < 3000 {
+                let lines = matchedString.components(separatedBy: .newlines)
+                if lines.count > 1 {
+                    /// Add a safeguard.
+                    let wrappedString = "\n <LaTex>\(matchedString)</LaTex> \n"
+                    result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
+                } else {
+                    let wrappedString = "<LaTex>\(matchedString)</LaTex>"
+                    result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
+                }
+                
             } else {
                 
             }
