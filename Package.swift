@@ -16,6 +16,9 @@ let package = Package(
     .package(url: "https://github.com/apple/swift-markdown.git", from: "0.4.0"),
     .package(url: "https://github.com/mgriebling/SwiftMath.git", from: "1.4.0"),
     .package(url: "https://github.com/meitu/MPITextKit.git", from: "0.1.13"),
+    .package(url: "https://github.com/colinc86/MathJaxSwift", from: "3.4.0"),
+    .package(url: "https://github.com/exyte/Macaw.git", from: "0.9.10"),
+    
   ],
   targets: [
     // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -25,7 +28,9 @@ let package = Package(
       dependencies: [
         .product(name: "Markdown", package: "swift-markdown"),
         .product(name: "MPITextKit", package: "MPITextKit"),
-        .product(name: "SwiftMath", package: "SwiftMath")
+        .product(name: "SwiftMath", package: "SwiftMath"),
+        .product(name: "MathJaxSwift", package: "MathJaxSwift"),
+        .product(name: "Macaw", package: "Macaw"),
       ],
       resources: [
         .copy("Assets/Highlighter/highlight.min.js"),

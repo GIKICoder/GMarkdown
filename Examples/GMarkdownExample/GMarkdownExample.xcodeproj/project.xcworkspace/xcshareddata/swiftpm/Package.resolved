@@ -1,6 +1,24 @@
 {
-  "originHash" : "2eafb738b4554b73e3323afc0da2ebb4dfc95465ffa331dce69c4d3277507813",
+  "originHash" : "53342ba49c076e074ed57dc0a1e1ca37056e3d32f150b221fed67c63ef170b2f",
   "pins" : [
+    {
+      "identity" : "macaw",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/exyte/Macaw.git",
+      "state" : {
+        "revision" : "29ec199cbc9c814f8ceffc1a33b8775b7349dcdd",
+        "version" : "0.9.10"
+      }
+    },
+    {
+      "identity" : "mathjaxswift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/colinc86/MathJaxSwift",
+      "state" : {
+        "revision" : "e23d6eab941da699ac4a60fb0e60f3ba5c937459",
+        "version" : "3.4.0"
+      }
+    },
     {
       "identity" : "mpitextkit",
       "kind" : "remoteSourceControl",
@@ -44,6 +62,15 @@
       "state" : {
         "revision" : "3964a0c4b13abcb5b58c8ebb8041ce67f393c414",
         "version" : "1.4.0"
+      }
+    },
+    {
+      "identity" : "swxmlhash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drmohundro/SWXMLHash",
+      "state" : {
+        "revision" : "6469881a3f30417c5bb02404ea4b69207f297592",
+        "version" : "6.0.0"
       }
     }
   ],
