@@ -10,6 +10,7 @@ import Markdown
 import MPITextKit
 import SwiftMath
 import UIKit
+import Macaw
 
 // MARK: - Protocols
 
@@ -215,20 +216,20 @@ public class ImageHandler: MarkupHandler {
     public func canHandle(_ markup: Markup) -> Bool {
         if markup is Paragraph {
             let markSub = markup.child(at: 0)
-            return markSub is Image
+            return markSub is Markdown.Image
         }
-        return markup is Image
+        return markup is Markdown.Image
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Image, children: [markup])
         var imgSource: String?
         if markup is Paragraph {
-            if let markSub = markup.child(at: 0) as? Image {
+            if let markSub = markup.child(at: 0) as? Markdown.Image {
                 imgSource = markSub.source
             }
         }
-        if let mark = markup as? Image {
+        if let mark = markup as? Markdown.Image {
             imgSource = mark.source
         }
         chunk.source = imgSource ?? ""
@@ -258,7 +259,74 @@ public class ImageHandler: MarkupHandler {
 // MARK: - Latex Chunk
 
 extension GMarkChunk {
+    
     func generateLatex(markup: Paragraph) {
+        // 初始化访问者并生成属性文本
+        var visitor = GMarkupVisitor(style: style)
+        visitor.ignoreLatex = true
+        attributedText = visitor.visit(markup)
+        
+        // 获取并修剪文本
+        let text = attributedText.string
+        let trimText = trimBrackets(from: text)
+        
+        // 初始化渲染器
+        var renderer: GMarkLatexRender
+        do {
+            renderer = try GMarkLatexRender()
+        } catch {
+            // 处理渲染器初始化错误
+            print("渲染器初始化失败: \(error)")
+            calculateLatexText()
+            updateHashKey()
+            return
+        }
+        
+        // 定义变量来存储渲染结果和可能的错误
+        var svgResult: String?
+        var renderError: Error?
+        
+        // 创建信号量，初始值为0
+        let semaphore = DispatchSemaphore(value: 0)
+        
+        // 在后台任务中执行异步渲染
+        DispatchQueue.global().async {
+            // 使用 Task 来调用 async 方法
+            Task {
+                do {
+                    // 执行异步渲染
+                    let result = try await renderer.convert(trimText)
+                    svgResult = result
+                } catch {
+                    // 捕获错误
+                    renderError = error
+                }
+                // 信号量减一，表示任务完成
+                semaphore.signal()
+            }
+        }
+        
+        // 等待信号量，直到异步任务完成
+        semaphore.wait()
+        
+         if let svg = svgResult {
+            // 使用渲染结果
+            self.latexSvg = svg
+             if let node = try? SVGParser.parse(text: svg),
+                let imageSize = node.bounds?.size().toCG() {
+                 self.latexNode = node
+                 latexSize = imageSize
+                 itemSize = CGSize(width: style.maxContainerWidth, height: imageSize.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
+                 return
+             }
+        }
+        // 继续后续处理
+        calculateLatexText()
+        updateHashKey()
+    }
+
+    
+    func generateLatexV2(markup: Paragraph) {
         var visitor = GMarkupVisitor(style: style)
         visitor.ignoreLatex = true
         attributedText = visitor.visit(markup)
