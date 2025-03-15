@@ -269,6 +269,11 @@ extension GMarkChunk {
         // 获取并修剪文本
         let text = attributedText.string
         let trimText = trimBrackets(from: text)
+        print("trimText: \(trimText)")
+        guard let filepath = Bundle.main.path(forResource: "markdownv2", ofType: nil),
+              let filecontents = try? String(contentsOfFile: filepath, encoding: .utf8) else {
+            return
+        }
         
         // 初始化渲染器
         var renderer: GMarkLatexRender
@@ -285,35 +290,19 @@ extension GMarkChunk {
         // 定义变量来存储渲染结果和可能的错误
         var svgResult: String?
         var renderError: Error?
-        
-        // 创建信号量，初始值为0
-        let semaphore = DispatchSemaphore(value: 0)
-        
-        // 在后台任务中执行异步渲染
-        DispatchQueue.global().async {
-            // 使用 Task 来调用 async 方法
-            Task {
-                do {
-                    // 执行异步渲染
-                    let result = try await renderer.convert(trimText)
-                    svgResult = result
-                } catch {
-                    // 捕获错误
-                    renderError = error
-                }
-                // 信号量减一，表示任务完成
-                semaphore.signal()
-            }
+        do {
+            svgResult = try renderer.convert(filecontents)
+        } catch {
+            renderError = error
         }
-        
-        // 等待信号量，直到异步任务完成
-        semaphore.wait()
         
          if let svg = svgResult {
             // 使用渲染结果
             self.latexSvg = svg
+             print("Latex SVG: \(svg)")
              if let node = try? SVGParser.parse(text: svg),
-                let imageSize = node.bounds?.size().toCG() {
+                let nodeSize = node.bounds?.size().toCG() {
+                 let imageSize = CGSize(width: nodeSize.width*8, height: nodeSize.height*8)
                  self.latexNode = node
                  latexSize = imageSize
                  itemSize = CGSize(width: style.maxContainerWidth, height: imageSize.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)

@@ -9,6 +9,7 @@ import Foundation
 import UIKit
 import MPITextKit
 import GLatexRender
+import Macaw
 
 class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     static let reuseIdentifier = "GMarkLatexCell"
@@ -25,7 +26,8 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     
     private var laTeXImageViewV2 = LaTeXImageView()
     private var laTeXRenderer: LaTeXRenderer?
-
+    
+    private var svgView: SVGView?
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -58,6 +60,8 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     
     func configure(with chunk: GMarkChunk) {
         if let image = chunk.latexImage {
+            latexImageView.isHidden = false
+            self.laTeXImageViewV2.isHidden = true
             latexImageView.image = image
             if image.size.width >= CGRectGetWidth(scrollView.frame) {
                 latexImageView.frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: image.size.width, height: image.size.height)
@@ -66,6 +70,20 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
                 latexImageView.frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: image.size.width, height: image.size.height)
             }
             scrollView.contentSize = CGSize(width: image.size.width, height: image.size.height)
+        } else if let node = chunk.latexNode {
+            latexImageView.isHidden = true
+            self.laTeXImageViewV2.isHidden = true
+            svgView?.removeFromSuperview()
+            svgView = nil
+            var frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
+            if chunk.latexSize.width < CGRectGetWidth(scrollView.frame) {
+                let left = (CGRectGetWidth(scrollView.frame) - chunk.latexSize.width) * 0.5
+                frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
+            }
+            svgView = SVGView(node: node, frame: frame)
+            scrollView.addSubview(svgView!)
+            scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
+            print("scrollView.contentSize: \(scrollView.contentSize)")
         } else {
             self.laTeXImageViewV2.isHidden = false
             laTeXImageViewV2.render(chunk.attributedText.string, shouldResize: true) { (error) in

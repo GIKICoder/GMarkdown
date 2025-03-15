@@ -1,6 +1,15 @@
 {
-  "originHash" : "862a083edc307e4f6dfcef6d12e614ae4ea6d6f27ccb12c071ceef6c31231453",
+  "originHash" : "4260fecf2c283aa74a720f69484004c8d392fb7f27f940b622d758c8e5d565d7",
   "pins" : [
+    {
+      "identity" : "macaw",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/exyte/Macaw.git",
+      "state" : {
+        "revision" : "29ec199cbc9c814f8ceffc1a33b8775b7349dcdd",
+        "version" : "0.9.10"
+      }
+    },
     {
       "identity" : "mpitextkit",
       "kind" : "remoteSourceControl",
@@ -35,6 +44,15 @@
       "state" : {
         "revision" : "4aae40bf6fff5286e0e1672329d17824ce16e081",
         "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "swxmlhash",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/drmohundro/SWXMLHash",
+      "state" : {
+        "revision" : "6469881a3f30417c5bb02404ea4b69207f297592",
+        "version" : "6.0.0"
       }
     }
   ],
