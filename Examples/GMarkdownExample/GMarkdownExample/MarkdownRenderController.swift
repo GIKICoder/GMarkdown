@@ -46,6 +46,7 @@ class MarkdownRenderController: UIViewController {
                 let generator = GMarkChunkGenerator()
                 generator.style = style
                 generator.imageLoader = self.imageloader
+                generator.addLaTexHandler()
                 let processor = GMarkProcessor(parser: GMarkParser(), chunkGenerator: generator)
                 let chunks = processor.process(markdown: content)
                 continuation.resume(returning: chunks)

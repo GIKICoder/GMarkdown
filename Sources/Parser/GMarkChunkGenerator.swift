@@ -10,6 +10,7 @@ import Markdown
 import MPITextKit
 import SwiftMath
 import UIKit
+import Macaw
 
 // MARK: - Protocols
 
@@ -202,7 +203,7 @@ public class LaTexHandler: MarkupHandler {
         guard let markup = markup as! Paragraph? else {
             return chunk
         }
-        chunk.generateLatex(markup: markup)
+        chunk.generateLatexNormal(markup: markup)
         return chunk
     }
 }
@@ -215,20 +216,20 @@ public class ImageHandler: MarkupHandler {
     public func canHandle(_ markup: Markup) -> Bool {
         if markup is Paragraph {
             let markSub = markup.child(at: 0)
-            return markSub is Image
+            return markSub is Markdown.Image
         }
-        return markup is Image
+        return markup is Markdown.Image
     }
     
     public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Image, children: [markup])
         var imgSource: String?
         if markup is Paragraph {
-            if let markSub = markup.child(at: 0) as? Image {
+            if let markSub = markup.child(at: 0) as? Markdown.Image {
                 imgSource = markSub.source
             }
         }
-        if let mark = markup as? Image {
+        if let mark = markup as? Markdown.Image {
             imgSource = mark.source
         }
         chunk.source = imgSource ?? ""
@@ -258,24 +259,66 @@ public class ImageHandler: MarkupHandler {
 // MARK: - Latex Chunk
 
 extension GMarkChunk {
-    func generateLatex(markup: Paragraph) {
-        var visitor = GMarkupVisitor(style: style)
-        visitor.ignoreLatex = true
-        attributedText = visitor.visit(markup)
-        
-        let text = attributedText.string
+    
+    func generateLatexWithSlow(markup: Paragraph) {
+        // 初始化访问者并生成属性文本
+        var visitor = GMarkupStringifier()
+        let text =  visitor.visit(markup)
         let trimText = trimBrackets(from: text)
+
+        // 初始化渲染器
+        var renderer: GMarkLatexRender
+        do {
+            renderer = try GMarkLatexRender()
+        } catch {
+            // 处理渲染器初始化错误
+            calculateLatexText()
+            updateHashKey()
+            return
+        }
+        
+    
+        do {
+            let svgResult = try renderer.convert(trimText)
+            // 使用渲染结果
+            self.latexSvg = svgResult
+            if let node = try? SVGParser.parse(text: svgResult),
+               let nodeSize = node.bounds?.size().toCG() {
+                let imageSize = CGSize(width: nodeSize.width * 8, height: nodeSize.height * 8)
+                self.latexNode = node
+                latexSize = imageSize
+                itemSize = CGSize(
+                    width: style.maxContainerWidth,
+                    height: imageSize.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.bottom
+                )
+                return
+            }
+        } catch let error {
+            print("LaTeX 渲染错误: \(error.localizedDescription)")
+        }
+        // 继续后续处理
+        calculateLatexText()
+        updateHashKey()
+    }
+
+    
+    func generateLatexNormal(markup: Paragraph) {
+        var visitor = GMarkupStringifier()
+        let text =  visitor.visit(markup)
+        let trimText = trimBrackets(from: text)
+        
         var mImage = MathImage(latex: trimText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
         mImage.font = MathFont.xitsFont
         let (_, image) = mImage.asImage()
         if let image = image {
-            itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
+            print("latex: generateLatexNormal success: \(trimText)")
             latexSize = image.size
             latexImage = image
-            return
+            itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
+        } else {
+            print("latex: generateLatexNormal error: \(trimText)")
+            generateLatexWithSlow(markup: markup)
         }
-        calculateLatexText()
-        updateHashKey()
     }
     
     func trimBrackets(from string: String) -> String {

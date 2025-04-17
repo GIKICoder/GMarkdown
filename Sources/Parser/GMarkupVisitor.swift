@@ -978,7 +978,7 @@ extension NSAttributedString {
     }
     
     static func doubleNewline(withStyle style: Style) -> NSAttributedString {
-        return NSAttributedString(string: "\n\n", attributes: [.font: style.fonts.current])
+        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
     }
 }
 
@@ -1046,7 +1046,7 @@ extension Markup {
             return true
         case let paragraph as Paragraph:
             if paragraph.child(at: 0) is Image { return true }
-            if paragraph.childCount == 3,let inlineHTML = paragraph.child(at: 0) as? InlineHTML, inlineHTML.plainText == "<LaTex>" {
+            if let inlineHTML = paragraph.child(at: 0) as? InlineHTML, inlineHTML.plainText == "<LaTex>" {
                 return true
             }
             return false
