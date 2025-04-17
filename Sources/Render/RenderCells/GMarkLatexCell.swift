@@ -8,7 +8,6 @@
 import Foundation
 import UIKit
 import MPITextKit
-import GLatexRender
 import Macaw
 
 class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
@@ -72,7 +71,6 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
             svgView = SVGView(node: node, frame: frame)
             scrollView.addSubview(svgView!)
             scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
-            print("scrollView.contentSize: \(scrollView.contentSize)")
         }
     }
 }

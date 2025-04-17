@@ -17,8 +17,7 @@ let package = Package(
     .package(url: "https://github.com/meitu/MPITextKit.git", from: "0.1.13"),
     .package(url: "https://github.com/exyte/Macaw.git", from: "0.9.10"),
     .package(path: "./Vendors/MathJaxSwift"),
-    .package(path: "./Vendors/SwiftMath"),
-    .package(path: "./GLatexRender")
+    .package(path: "./Vendors/SwiftMath")
   ],
   targets: [
     .target(
@@ -27,7 +26,6 @@ let package = Package(
         .product(name: "Markdown", package: "swift-markdown"),
         .product(name: "MPITextKit", package: "MPITextKit"),
         .product(name: "SwiftMath", package: "SwiftMath"),
-        .product(name: "GLatexRender", package: "GLatexRender"),
         .product(name: "MathJaxSwift", package: "MathJaxSwift"),
         .product(name: "Macaw", package: "Macaw"),
       ],
