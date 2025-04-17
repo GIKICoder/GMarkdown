@@ -8,7 +8,7 @@
 import Foundation
 import Markdown
 
-public struct GMarkTextVisitor: MarkupVisitor {
+public struct GMarkupStringifier: MarkupVisitor {
     public typealias Result = String
     
     public init() {}

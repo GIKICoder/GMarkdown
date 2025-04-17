@@ -262,7 +262,7 @@ extension GMarkChunk {
     
     func generateLatexWithSlow(markup: Paragraph) {
         // 初始化访问者并生成属性文本
-        var visitor = GMarkTextVisitor()
+        var visitor = GMarkupStringifier()
         let text =  visitor.visit(markup)
         let trimText = trimBrackets(from: text)
 
@@ -303,7 +303,7 @@ extension GMarkChunk {
 
     
     func generateLatexNormal(markup: Paragraph) {
-        var visitor = GMarkTextVisitor()
+        var visitor = GMarkupStringifier()
         let text =  visitor.visit(markup)
         let trimText = trimBrackets(from: text)
         
