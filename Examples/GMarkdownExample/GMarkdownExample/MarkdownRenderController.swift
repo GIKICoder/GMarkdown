@@ -27,7 +27,7 @@ class MarkdownRenderController: UIViewController {
     
     
     func setupMarkdown() async {
-        guard let filepath = Bundle.main.path(forResource: "markdownv2", ofType: nil),
+        guard let filepath = Bundle.main.path(forResource: "markdown", ofType: nil),
               let filecontents = try? String(contentsOfFile: filepath, encoding: .utf8) else {
             return
         }

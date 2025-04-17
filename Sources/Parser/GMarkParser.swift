@@ -72,10 +72,8 @@ public class GMarkParser {
         }
         /// Ensure that each code block image stands alone on a separate line.
         result = replaceSubstring(in: result, target: "```", replacement: "\n```")
-        
         result = replaceSubstring(in: result, target: "<img>", replacement: "\n\n ![](")
         result = replaceSubstring(in: result, target: "</img>", replacement: ") \n\n")
-        
         
         return result
     }

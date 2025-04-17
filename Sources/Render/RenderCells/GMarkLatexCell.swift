@@ -24,7 +24,6 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         return imageView
     }()
     
-    private var laTeXImageViewV2 = LaTeXImageView()
     private var laTeXRenderer: LaTeXRenderer?
     
     private var svgView: SVGView?
@@ -42,26 +41,17 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     public override func layoutSubviews() {
         super.layoutSubviews()
         scrollView.frame = contentView.bounds
-        self.laTeXImageViewV2.frame = scrollView.bounds
     }
 
     func setupUI() {
         contentView.addSubview(scrollView)
         scrollView.addSubview(latexImageView)
         scrollView.frame = contentView.bounds
-        scrollView.autoresizingMask = [.flexibleHeight,.flexibleWidth]
-    
-        scrollView.addSubview(laTeXImageViewV2)
-        self.laTeXRenderer = LaTeXRenderer(parentView: self.scrollView)
-        self.laTeXImageViewV2.inject(laTeXRenderer: self.laTeXRenderer!)
-        self.laTeXImageViewV2.isHidden = true
-        self.laTeXImageViewV2.frame = scrollView.bounds
     }
     
     func configure(with chunk: GMarkChunk) {
         if let image = chunk.latexImage {
             latexImageView.isHidden = false
-            self.laTeXImageViewV2.isHidden = true
             latexImageView.image = image
             if image.size.width >= CGRectGetWidth(scrollView.frame) {
                 latexImageView.frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: image.size.width, height: image.size.height)
@@ -72,7 +62,6 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
             scrollView.contentSize = CGSize(width: image.size.width, height: image.size.height)
         } else if let node = chunk.latexNode {
             latexImageView.isHidden = true
-            self.laTeXImageViewV2.isHidden = true
             svgView?.removeFromSuperview()
             svgView = nil
             var frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
@@ -84,16 +73,6 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
             scrollView.addSubview(svgView!)
             scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
             print("scrollView.contentSize: \(scrollView.contentSize)")
-        } else {
-            self.laTeXImageViewV2.isHidden = false
-            laTeXImageViewV2.render(chunk.attributedText.string, shouldResize: true) { (error) in
-                if let error = error {
-                    print("\(error)")
-                    return
-                }
-                
-                print("Successfully rendered LaTeX")
-            }
         }
     }
 }
