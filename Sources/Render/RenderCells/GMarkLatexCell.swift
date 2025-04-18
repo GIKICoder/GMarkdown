@@ -23,7 +23,11 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         return imageView
     }()
     
-    private var svgView: SVGView?
+    private var svgView: SVGView = {
+        let view = SVGView(frame: .zero)
+        view.isHidden = true
+        return view
+    }()
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -43,11 +47,13 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     func setupUI() {
         contentView.addSubview(scrollView)
         scrollView.addSubview(latexImageView)
+        scrollView.addSubview(svgView)
         scrollView.frame = contentView.bounds
     }
     
     func configure(with chunk: GMarkChunk) {
         if let image = chunk.latexImage {
+            svgView.isHidden = true
             latexImageView.isHidden = false
             latexImageView.image = image
             if image.size.width >= CGRectGetWidth(scrollView.frame) {
@@ -59,15 +65,14 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
             scrollView.contentSize = CGSize(width: image.size.width, height: image.size.height)
         } else if let node = chunk.latexNode {
             latexImageView.isHidden = true
-            svgView?.removeFromSuperview()
-            svgView = nil
+            svgView.isHidden = false
             var frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
             if chunk.latexSize.width < CGRectGetWidth(scrollView.frame) {
                 let left = (CGRectGetWidth(scrollView.frame) - chunk.latexSize.width) * 0.5
                 frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
             }
-            svgView = SVGView(node: node, frame: frame)
-            scrollView.addSubview(svgView!)
+            svgView.node = node
+            svgView.frame = frame
             scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
         }
     }

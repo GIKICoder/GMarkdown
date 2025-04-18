@@ -137,7 +137,7 @@ public class CodeBlockMarkupHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(chunkType: .Code, children: [markup])
+        let chunk = GMarkChunk(chunkType: .Code, children: [markup])
         if let style = style {
             chunk.style = style
         }
