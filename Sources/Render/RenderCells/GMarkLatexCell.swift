@@ -23,8 +23,6 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         return imageView
     }()
     
-    private var laTeXRenderer: LaTeXRenderer?
-    
     private var svgView: SVGView?
     
     override public init(frame: CGRect) {
