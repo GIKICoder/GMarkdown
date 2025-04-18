@@ -55,7 +55,7 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
     
     public mutating func visitImage(_ image: Image) -> NSAttributedString {
         
-        return handleImage(source: source)
+        return handleImage(source: image.source ?? "")
     }
     
     public mutating func visitEmphasis(_ emphasis: Emphasis) -> NSAttributedString {
@@ -640,21 +640,16 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
     
     private func handleImage(source: String) -> NSAttributedString {
         
-        let attached = AsyncImageAttachedProvider(url: source)
+        let provider = AsyncImageAttachedProvider(url: source)
+        let attachment = SubviewTextAttachment(viewProvider: provider)
         
-        if Thread.isMainThread {
-            return createImageAttributedString(source: source)
-        } else {
-            let semaphore = DispatchSemaphore(value: 0)
-            var resultString: NSAttributedString!
-            DispatchQueue.main.async {
-                resultString =  self.createImageAttributedString(source: source)
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
-            return resultString
-        }
+        let attributed = defaultAttribute(from: "")
+        let separatorString = NSAttributedString(string: .paragraphSeparator)
+        attributed.append(separatorString)
+        attributed.insertAttachment(attachment, at: separatorString.string.count)
+        attributed.append(separatorString)
+        
+        return attributed
     }
 
     // 原来的实例方法

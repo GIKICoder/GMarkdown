@@ -18,6 +18,7 @@ class AsyncImageAttachedProvider: TextAttachedViewProvider {
     }
     
     func instantiateView(for attachment: SubviewTextAttachment, in behavior: SubviewAttachingTextViewBehavior) -> UIView {
+        self.imageView.backgroundColor = .orange
         return self.imageView
     }
 

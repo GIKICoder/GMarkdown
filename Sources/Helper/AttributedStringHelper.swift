@@ -39,6 +39,17 @@ public extension NSAttributedString {
 
 }
 
+extension NSAttributedString {
+    static func singleNewline(withStyle style: Style) -> NSAttributedString {
+        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
+    }
+    
+    static func doubleNewline(withStyle style: Style) -> NSAttributedString {
+        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
+    }
+}
+
+
 public extension NSMutableAttributedString {
 
     func insertAttachment(_ attachment: NSTextAttachment, at index: Int, with paragraphStyle: NSParagraphStyle? = nil) {
@@ -61,12 +72,44 @@ public extension NSMutableAttributedString {
         }
     }
 
-    func addAttributes(_ attributes: [NSAttributedString.Key : Any]) {
-        self.addAttributes(attributes, range: NSRange(location: 0, length: self.length))
-    }
-
 }
 
 public extension String {
     static let paragraphSeparator = "\u{2029}"
 }
+
+extension NSMutableAttributedString.Key {
+    static let listDepth = NSAttributedString.Key("ListDepth")
+    static let quoteDepth = NSAttributedString.Key("QuoteDepth")
+    static let indent = NSAttributedString.Key("Indent")
+    static let blockQuote = NSAttributedString.Key("BlockQuote")
+}
+
+extension NSMutableAttributedString {
+    func addAttribute(_ name: NSAttributedString.Key, value: Any) {
+        addAttribute(name, value: value, range: NSRange(location: 0, length: length))
+    }
+    
+    func addAttributes(_ attrs: [NSAttributedString.Key: Any]) {
+        addAttributes(attrs, range: NSRange(location: 0, length: length))
+    }
+    
+    func applyEmphasis() {
+        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
+            guard let font = value as? UIFont else { return }
+            if let italicFont = font.italic {
+                addAttribute(.font, value: italicFont, range: range)
+            }
+        }
+    }
+    
+    func applyStrong() {
+        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
+            guard let font = value as? UIFont else { return }
+            if let boldFont = font.bold {
+                addAttribute(.font, value: boldFont, range: range)
+            }
+        }
+    }
+}
+
