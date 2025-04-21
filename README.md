@@ -30,7 +30,7 @@ GMarkdown is available through Swift Package Manager. To include it in your proj
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/GIKICoder/GMarkdown.git", from: "0.0.1")
+    .package(url: "https://github.com/GIKICoder/GMarkdown.git", from: "0.0.6")
 ]
 ```
 
