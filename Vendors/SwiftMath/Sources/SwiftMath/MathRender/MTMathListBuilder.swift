@@ -591,19 +591,19 @@ public struct MTMathListBuilder {
         } else if command == "color" {
             // A color command has 2 arguments
             let mathColor = MTMathColor()
-            mathColor.colorString = self.readColor()!
+            mathColor.colorString = self.readColor()
             mathColor.innerList = self.buildInternal(true)
             return mathColor
         } else if command == "textcolor" {
             // A textcolor command has 2 arguments
             let mathColor = MTMathTextColor()
-            mathColor.colorString = self.readColor()!
+            mathColor.colorString = self.readColor()
             mathColor.innerList = self.buildInternal(true)
             return mathColor
         } else if command == "colorbox" {
             // A color command has 2 arguments
             let mathColorbox = MTMathColorbox()
-            mathColorbox.colorString = self.readColor()!
+            mathColorbox.colorString = self.readColor()
             mathColorbox.innerList = self.buildInternal(true)
             return mathColorbox
         } else {
@@ -613,11 +613,11 @@ public struct MTMathListBuilder {
         }
     }
 
-    mutating func readColor() -> String? {
+    mutating func readColor() -> String {
         if !self.expectCharacter("{") {
             // We didn't find an opening brace, so no env found.
             self.setError(.characterNotFound, message:"Missing {")
-            return nil;
+            return "000000";
         }
         
         // Ignore spaces and nonascii.
@@ -639,7 +639,7 @@ public struct MTMathListBuilder {
         if !self.expectCharacter("}") {
             // We didn't find an closing brace, so invalid format.
             self.setError(.characterNotFound, message:"Missing }")
-            return nil;
+            return "000000";
         }
         return mutable;
     }
@@ -828,13 +828,13 @@ public struct MTMathListBuilder {
         } else if command == "color" {
             // A color command has 2 arguments
             let mathColor = MTMathColor()
-            mathColor.colorString = self.readColor()!
+            mathColor.colorString = self.readColor()
             mathColor.innerList = self.buildInternal(true)
             return mathColor
         } else if command == "colorbox" {
             // A color command has 2 arguments
             let mathColorbox = MTMathColorbox()
-            mathColorbox.colorString = self.readColor()!
+            mathColorbox.colorString = self.readColor()
             mathColorbox.innerList = self.buildInternal(true)
             return mathColorbox
         } else {
