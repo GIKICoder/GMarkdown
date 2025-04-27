@@ -62,7 +62,7 @@ public class GMarkParser {
             let matchedString = nsString.substring(with: matchRange)
             if matchedString.count < 3000 {
                 let lines = matchedString.components(separatedBy: .newlines)
-                if lines.count > 1 {
+                if lines.count > 1 || matchedString.count > 30 {
                     /// Add a safeguard.
                     let wrappedString = "\n <LaTex>\(matchedString)</LaTex> \n"
                     result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)

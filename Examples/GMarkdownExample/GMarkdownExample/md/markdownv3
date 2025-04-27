@@ -106,3 +106,78 @@ $$\int_{1}^{3}\frac{e^3/x}{x^2}\, dx$$
 $$\int_C x^3\, dx + 4y^2\, dy$$
 
 $${}_1^2\!\Omega_3^4$$
+
+以下是高等数学中常见的几何公式和定理分类整理：
+
+---
+
+### 一、平面与空间解析几何
+1. **平面方程**
+   - 一般式：\( Ax + By + Cz + D = 0 \)
+   - 点法式：\( A(x - x_0) + B(y - y_0) + C(z - z_0) = 0 \)（法向量为 \((A, B, C)\)）
+   来源：
+
+2. **二次曲面方程**
+   - 球面：\( (x - a)^2 + (y - b)^2 + (z - c)^2 = R^2 \)
+   - 椭球面：\( \frac{x^2}{a^2} + \frac{y^2}{b^2} + \frac{z^2}{c^2} = 1 \)
+   - 抛物面：\( z = \frac{x^2}{a^2} + \frac{y^2}{b^2} \)
+   来源：
+
+---
+
+### 二、向量运算与几何应用
+1. **向量点积与叉积**
+   - 点积：\( \mathbf{a} \cdot \mathbf{b} = |\mathbf{a}||\mathbf{b}|\cos\theta \)
+   - 叉积：\( \mathbf{a} \times \mathbf{b} = |\mathbf{a}||\mathbf{b}|\sin\theta \cdot \mathbf{n} \)（\(\mathbf{n}\)为法向量）
+   来源：
+
+2. **空间曲线弧长公式**
+   $$s = \int_a^b \sqrt{\left( \frac{dx}{dt} \right)^2 + \left( \frac{dy}{dt} \right)^2 + \left( \frac{dz}{dt} \right)^2} \, dt$$
+   来源：
+
+3. **曲率公式**
+   - 平面曲线：\( K = \frac{|y''|}{(1 + y'^2)^{3/2}} \)
+   - 空间曲线：\( K = \frac{|\mathbf{r}'(t) \times \mathbf{r}''(t)|}{|\mathbf{r}'(t)|^3} \)
+   来源：
+
+---
+
+### 三、积分定理（几何应用）
+1. **格林公式（平面区域）**
+   $$ \oint_L Pdx + Qdy = \iint_D \left( \frac{\partial Q}{\partial x} - \frac{\partial P}{\partial y} \right) dxdy $$
+   来源：
+
+2. **高斯公式（空间区域）**
+   $$ \oiint_{\Sigma} \mathbf{F} \cdot d\mathbf{S} = \iiint_{\Omega} \nabla \cdot \mathbf{F} \, dV $$
+   来源：
+
+3. **斯托克斯公式（曲面与曲线）**
+   $$ \oint_L \mathbf{F} \cdot d\mathbf{r} = \iint_{\Sigma} (\nabla \times \mathbf{F}) \cdot d\mathbf{S} $$
+   来源：
+
+---
+
+### 四、基础几何公式（积分与体积计算）
+1. **圆与球相关公式**
+   - 圆周长：\( C = 2\pi R \)；面积：\( A = \pi R^2 \)
+   - 球体积：\( V = \frac{4}{3}\pi R^3 \)；表面积：\( S = 4\pi R^2 \)
+   来源：
+
+2. **旋转体体积公式**
+   - 绕x轴旋转：\( V = \pi \int_a^b [f(x)]^2 dx \)
+   - 绕y轴旋转：\( V = 2\pi \int_a^b x f(x) dx \)
+   来源：
+
+---
+
+### 五、其他重要定理
+1. **拉格朗日中值定理（几何意义）**
+   曲线上某点切线斜率等于区间端点连线的斜率。
+
+2. **隐函数定理**
+   用于确定方程 \( F(x, y, z) = 0 \) 在局部可表示为显式函数。
+
+---
+
+以上公式和定理涵盖了向量代数、空间解析几何、积分定理及几何应用，是高等数学几何部分的核心内容，建议结合具体例题强化理解。
+

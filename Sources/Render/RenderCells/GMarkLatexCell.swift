@@ -66,9 +66,26 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
                 let left = (CGRectGetWidth(scrollView.frame) - chunk.latexSize.width) * 0.5
                 frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
             }
-            svgView = SVGView(node: node, frame: frame)
-            scrollView.addSubview(svgView!)
-            scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
+            //            svgView = SVGView(node: node, frame: frame)
+            //            scrollView.addSubview(svgView!)
+            //            scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
+            // Creating a temporary SVG view for rendering
+            let tempSVGView = SVGView(node: node, frame: CGRect(origin: .zero, size: frame.size))
+            
+            // Render the SVG as an image
+            UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+            if let context = UIGraphicsGetCurrentContext() {
+                tempSVGView.layer.render(in: context)
+                let renderedImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                if let renderedImage {
+                    // Display the rendered image
+                    latexImageView.isHidden = false
+                    latexImageView.image = renderedImage
+                    latexImageView.frame = frame
+                    scrollView.contentSize = CGSize(width: renderedImage.size.width, height: renderedImage.size.height)
+                }
+            }
         }
     }
 }
