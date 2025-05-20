@@ -1,0 +1,144 @@
+@latex{
+Comprehensive Markdown Guide
+}
+# Comprehensive Markdown Guide
+## Introduction to Advanced Markdown Features
+
+### 1. Text Formatting Basics
+
+This is *italic* and this is **bold**
+Here's ***bold italic*** text
+~~Strikethrough~~ text
+`inline code`
+
+### 2. Lists
+
+#### Ordered List
+1. First item
+2. Second item
+   1. Sub-item 2.1
+   2. Sub-item 2.2
+3. Third item
+
+#### Unordered List
+* Item one
+  * Sub-item
+  * Sub-item
+* Item two
+* Item three
+
+### 3. Blockquotes
+
+> This is a simple blockquote
+>> This is a nested blockquote
+>>> Even deeper nesting
+
+### 4. Code Blocks
+
+```python
+def hello_world():
+    print("Hello, Markdown!")
+    
+class Example:
+    def __init__(self):
+        self.value = 42
+```
+
+```javascript
+function calculateSum(a, b) {
+    return a + b;
+}
+```
+
+### 5. Tables
+
+| Feature | Basic | Pro | Enterprise |
+|---------|:------|:---:|----------:|
+| Users | 10 | 100 | Unlimited |
+| Storage | 5GB | 50GB | 500GB |
+| Support | Email | 24/7 | Dedicated |
+| Custom Domain | ❌ | ✅ | ✅ |
+| Analytics | Basic | Advanced | Full Suite |
+
+### 6. Images and Links
+
+![Markdown Logo](https://markdown-here.com/img/icon256.png)
+[Visit GitHub](https://github.com)
+
+### 7. LaTeX Mathematical Expressions
+
+Inline equation: $E = mc^2$
+
+Block equation:
+$$
+\frac{-b \pm \sqrt{b^2 - 4ac}}{2a}
+$$
+
+$$
+\sum_{n=1}^{\infty} \frac{1}{n^2} = \frac{\pi^2}{6}
+$$
+
+### 8. Task Lists
+
+- [x] Write the introduction
+- [x] Add code examples
+- [ ] Complete documentation
+- [ ] Review and publish
+
+### 9. Horizontal Rules
+
+---
+***
+___
+
+### 10. Advanced Table with Alignment
+
+| Left-aligned | Center-aligned | Right-aligned |
+|:------------|:-------------:|-------------:|
+| col 3 is | some wordy text | $1600 |
+| col 2 is | centered | $12 |
+| zebra stripes | are neat | $1 |
+
+### 11. Definition Lists
+
+Term 1
+: Definition 1
+
+Term 2
+: Definition 2a
+: Definition 2b
+
+### 12. Footnotes
+
+Here's a sentence with a footnote[^1].
+
+[^1]: This is the footnote content.
+
+### 13. Custom HTML
+
+<details>
+<summary>Click to expand!</summary>
+
+This is hidden content that can be expanded.
+</details>
+
+<div align="center">
+  <h3>Centered content</h3>
+  <p>This entire section is centered</p>
+</div>
+
+### 14. Emoji Support
+
+:smile: :heart: :thumbsup: :rocket:
+
+### 15. Mermaid Diagrams
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
+This comprehensive example showcases various Markdown features and formatting options. Note that some features might require specific Markdown processors or extensions to work properly.

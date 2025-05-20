@@ -17,6 +17,7 @@ class MarkdownRenderController: UIViewController {
         super.viewDidLoad()
         //    GMarkPluginManager.shared.imageLoader = imageloader
         view.addSubview(markdownView)
+        markdownView.backgroundColor = .white
         markdownView.frame = view.bounds
         // Do any additional setup after loading the view.
         //    GMarkPluginManager.shared.imageLoader = GNukeImageLoader()

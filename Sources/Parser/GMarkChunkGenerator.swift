@@ -316,7 +316,11 @@ extension GMarkChunk {
             latexImage = image
             itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
         } else {
-            print("latex: generateLatexNormal error: \(trimText)")
+//            var visitor = GMarkupVisitor(style: style)
+//            attributedText = visitor.visit(markup)
+//            calculateLatexText()
+//            updateHashKey()
+//            print("latex: generateLatexNormal error: \(trimText)")
             generateLatexWithSlow(markup: markup)
         }
     }

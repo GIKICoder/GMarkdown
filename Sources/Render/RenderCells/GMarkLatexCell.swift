@@ -23,11 +23,7 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
         return imageView
     }()
     
-    private var svgView: SVGView = {
-        let view = SVGView(frame: .zero)
-        view.isHidden = true
-        return view
-    }()
+    private var svgView: SVGView?
     
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -47,13 +43,11 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     func setupUI() {
         contentView.addSubview(scrollView)
         scrollView.addSubview(latexImageView)
-        scrollView.addSubview(svgView)
         scrollView.frame = contentView.bounds
     }
     
     func configure(with chunk: GMarkChunk) {
         if let image = chunk.latexImage {
-            svgView.isHidden = true
             latexImageView.isHidden = false
             latexImageView.image = image
             if image.size.width >= CGRectGetWidth(scrollView.frame) {
@@ -65,15 +59,33 @@ class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
             scrollView.contentSize = CGSize(width: image.size.width, height: image.size.height)
         } else if let node = chunk.latexNode {
             latexImageView.isHidden = true
-            svgView.isHidden = false
+            svgView?.removeFromSuperview()
+            svgView = nil
             var frame = CGRect(x: 0, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
             if chunk.latexSize.width < CGRectGetWidth(scrollView.frame) {
                 let left = (CGRectGetWidth(scrollView.frame) - chunk.latexSize.width) * 0.5
                 frame = CGRect(x: left, y: chunk.style.codeBlockStyle.padding.top, width: chunk.latexSize.width, height: chunk.latexSize.height)
             }
-            svgView.node = node
-            svgView.frame = frame
-            scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
+            //            svgView = SVGView(node: node, frame: frame)
+            //            scrollView.addSubview(svgView!)
+            //            scrollView.contentSize = CGSize(width: chunk.latexSize.width, height: chunk.latexSize.height)
+            // Creating a temporary SVG view for rendering
+            let tempSVGView = SVGView(node: node, frame: CGRect(origin: .zero, size: frame.size))
+            
+            // Render the SVG as an image
+            UIGraphicsBeginImageContextWithOptions(frame.size, false, UIScreen.main.scale)
+            if let context = UIGraphicsGetCurrentContext() {
+                tempSVGView.layer.render(in: context)
+                let renderedImage = UIGraphicsGetImageFromCurrentImageContext()
+                UIGraphicsEndImageContext()
+                if let renderedImage {
+                    // Display the rendered image
+                    latexImageView.isHidden = false
+                    latexImageView.image = renderedImage
+                    latexImageView.frame = frame
+                    scrollView.contentSize = CGSize(width: renderedImage.size.width, height: renderedImage.size.height)
+                }
+            }
         }
     }
 }

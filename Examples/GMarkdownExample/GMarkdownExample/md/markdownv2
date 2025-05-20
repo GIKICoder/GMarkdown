@@ -1,3 +1,4 @@
+
 Markdown 是一种轻量级标记语言，它允许人们使用易读易写的纯文本格式编写文档，然后转换成有效的 XHTML（或 HTML）文档。以下是一个包含尽可能多Markdown元素的示例文档：
 # 一级标题
 
@@ -112,6 +113,9 @@ BM25的打分函数可以表示为：
 IDF（逆文档频率）的计算公式是：
 
 \[ IDF(q_i) = \log \left( \frac{N - n(q_i) + 0.5}{n(q_i) + 0.5} + 1 \right) \]
+
+Based on the OCR content, we have a function with a shaded area under the curve from \( x = 1 \) to \( x = 4 \) and the following table of data for the function values:
+
 
 Based on the OCR content, we have a function with a shaded area under the curve from \( x = 1 \) to \( x = 4 \) and the following table of data for the function values:
 
