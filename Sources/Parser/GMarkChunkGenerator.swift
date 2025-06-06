@@ -309,7 +309,7 @@ extension GMarkChunk {
         
         var mImage = MathImage(latex: trimText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
         mImage.font = MathFont.xitsFont
-        let (_, image) = mImage.asImage()
+        let (_, image, _) = mImage.asImage()
         if let image = image {
             print("latex: generateLatexNormal success: \(trimText)")
             latexSize = image.size
