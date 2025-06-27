@@ -89,7 +89,7 @@ open class GMarkdownCodeView: UIView {
         scrollView.addSubview(codeLabel)
 
         setupConstraints()
-        // setDefaultCopyImage()
+         setDefaultCopyImage()
     }
 
     private func setupConstraints() {

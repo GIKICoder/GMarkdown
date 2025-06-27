@@ -9,8 +9,8 @@ import Foundation
 import Markdown
 
 public class GMarkParser {
+    
     public init() {
-        // 初始化代码
     }
 
     public func parseMarkdownToMarkups(markdown: String) -> [Markup] {
@@ -37,20 +37,13 @@ public class GMarkParser {
         return markups
     }
 
-    /// preprocess Latex
+    /// preprocess markdown
     public func preprocessing(_ markdown: String) -> String {
+        
         var result = markdown
-        // \\$\\$(.+?)\\$\\$|\\$(.+?)\\$|
-        /// |\\\\\\[\n(.+?)\\\\\\\n]
-        //       let pattern = "\\\\\\[(.+?)\\\\\\]|\\\\\\((.+?)\\\\\\)"
-        // let pattern = "\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
         
-//        let pattern = "\\$\\$(.+?)\\$\\$|\\$(.+?)\\$|\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
-        
+        /// preprocess Latex
         let pattern = "\\$\\$([\\s\\S]*?)\\$\\$|\\$([\\s\\S]*?)\\$|\\\\\\[([\\s\\S]*?)\\\\\\]|\\\\\\(([\\s\\S]*?)\\\\\\)"
-
-
-
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
         let nsString = result as NSString
         let range = NSRange(location: 0, length: nsString.length)
@@ -71,10 +64,9 @@ public class GMarkParser {
                     result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
                 }
                 
-            } else {
-                
             }
         }
+        
         /// Ensure that each code block image stands alone on a separate line.
         result = replaceSubstring(in: result, target: "```", replacement: "\n```")
         result = replaceSubstring(in: result, target: "<img>", replacement: "\n\n ![](")

@@ -1,0 +1,516 @@
+## UndoManager 详解
+
+UndoManager 是一个用于管理撤销(Undo)和重做(Redo)操作的工具，广泛应用于需要历史记录功能的应用中。
+
+## 1. 基本概念
+
+### 核心功能
+- **撤销(Undo)**: 回退到上一个状态
+- **重做(Redo)**: 恢复被撤销的操作
+- **历史记录管理**: 维护操作历史栈
+
+## 2. JavaScript 原生 UndoManager
+
+### 基本使用
+
+```javascript
+// 创建 UndoManager 实例
+const undoManager = new UndoManager();
+
+// 添加撤销项
+undoManager.transact({
+    execute: () => {
+        // 执行操作
+        console.log('执行操作');
+    },
+    undo: () => {
+        // 撤销操作
+        console.log('撤销操作');
+    },
+    redo: () => {
+        // 重做操作
+        console.log('重做操作');
+    }
+});
+
+// 撤销
+if (undoManager.canUndo) {
+    undoManager.undo();
+}
+
+// 重做
+if (undoManager.canRedo) {
+    undoManager.redo();
+}
+```
+
+## 3. 自定义 UndoManager 实现
+
+### 基础实现
+
+```javascript
+class UndoManager {
+    constructor(limit = 10) {
+        this.limit = limit;
+        this.undoStack = [];
+        this.redoStack = [];
+    }
+
+    execute(command) {
+        // 执行命令
+        command.execute();
+        
+        // 添加到撤销栈
+        this.undoStack.push(command);
+        
+        // 限制栈大小
+        if (this.undoStack.length > this.limit) {
+            this.undoStack.shift();
+        }
+        
+        // 清空重做栈
+        this.redoStack = [];
+    }
+
+    undo() {
+        const command = this.undoStack.pop();
+        if (command) {
+            command.undo();
+            this.redoStack.push(command);
+        }
+    }
+
+    redo() {
+        const command = this.redoStack.pop();
+        if (command) {
+            command.redo();
+            this.undoStack.push(command);
+        }
+    }
+
+    canUndo() {
+        return this.undoStack.length > 0;
+    }
+
+    canRedo() {
+        return this.redoStack.length > 0;
+    }
+
+    clear() {
+        this.undoStack = [];
+        this.redoStack = [];
+    }
+}
+```
+
+### 命令模式实现
+
+```javascript
+// 命令接口
+class Command {
+    execute() {
+        throw new Error('execute() must be implemented');
+    }
+    
+    undo() {
+        throw new Error('undo() must be implemented');
+    }
+    
+    redo() {
+        this.execute();
+    }
+}
+
+// 具体命令示例
+class TextCommand extends Command {
+    constructor(editor, text, position) {
+        super();
+        this.editor = editor;
+        this.text = text;
+        this.position = position;
+        this.previousText = '';
+    }
+
+    execute() {
+        this.previousText = this.editor.getText();
+        this.editor.insertText(this.text, this.position);
+    }
+
+    undo() {
+        this.editor.setText(this.previousText);
+    }
+}
+```
+
+## 4. 实际应用示例
+
+### 文本编辑器撤销/重做
+
+```javascript
+class TextEditor {
+    constructor() {
+        this.content = '';
+        this.undoManager = new UndoManager();
+    }
+
+    insertText(text, position) {
+        const command = {
+            execute: () => {
+                this.content =
+                    this.content.slice(0, position) +
+                    text +
+                    this.content.slice(position);
+            },
+            undo: () => {
+                this.content =
+                    this.content.slice(0, position) +
+                    this.content.slice(position + text.length);
+            }
+        };
+        
+        this.undoManager.execute(command);
+    }
+
+    deleteText(start, end) {
+        const deletedText = this.content.slice(start, end);
+        
+        const command = {
+            execute: () => {
+                this.content =
+                    this.content.slice(0, start) +
+                    this.content.slice(end);
+            },
+            undo: () => {
+                this.content =
+                    this.content.slice(0, start) +
+                    deletedText +
+                    this.content.slice(start);
+            }
+        };
+        
+        this.undoManager.execute(command);
+    }
+
+    undo() {
+        this.undoManager.undo();
+    }
+
+    redo() {
+        this.undoManager.redo();
+    }
+}
+```
+
+### 画图应用撤销/重做
+
+```javascript
+class DrawingApp {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext('2d');
+        this.undoManager = new UndoManager();
+        this.shapes = [];
+    }
+
+    drawRectangle(x, y, width, height, color) {
+        const shape = { type: 'rectangle', x, y, width, height, color };
+        
+        const command = {
+            execute: () => {
+                this.shapes.push(shape);
+                this.redraw();
+            },
+            undo: () => {
+                this.shapes.pop();
+                this.redraw();
+            }
+        };
+        
+        this.undoManager.execute(command);
+    }
+
+    redraw() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        this.shapes.forEach(shape => {
+            if (shape.type === 'rectangle') {
+                this.ctx.fillStyle = shape.color;
+                this.ctx.fillRect(shape.x, shape.y, shape.width, shape.height);
+            }
+        });
+    }
+}
+```
+
+## 5. 高级功能实现
+
+### 批量操作支持
+
+```javascript
+class BatchCommand extends Command {
+    constructor(commands) {
+        super();
+        this.commands = commands;
+    }
+
+    execute() {
+        this.commands.forEach(cmd => cmd.execute());
+    }
+
+    undo() {
+        // 反向撤销
+        for (let i = this.commands.length - 1; i >= 0; i--) {
+            this.commands[i].undo();
+        }
+    }
+}
+
+// 使用示例
+const batchCommand = new BatchCommand([
+    new TextCommand(editor, 'Hello', 0),
+    new TextCommand(editor, ' World', 5)
+]);
+undoManager.execute(batchCommand);
+```
+
+### 状态快照实现
+
+```javascript
+class SnapshotUndoManager {
+    constructor() {
+        this.snapshots = [];
+        this.currentIndex = -1;
+    }
+
+    takeSnapshot(state) {
+        // 删除当前索引之后的所有快照
+        this.snapshots = this.snapshots.slice(0, this.currentIndex + 1);
+        
+        // 添加新快照
+        this.snapshots.push(JSON.parse(JSON.stringify(state)));
+        this.currentIndex++;
+    }
+
+    undo() {
+        if (this.currentIndex > 0) {
+            this.currentIndex--;
+            return this.snapshots[this.currentIndex];
+        }
+        return null;
+    }
+
+    redo() {
+        if (this.currentIndex < this.snapshots.length - 1) {
+            this.currentIndex++;
+            return this.snapshots[this.currentIndex];
+        }
+        return null;
+    }
+}
+```
+
+## 6. React 中的 UndoManager
+
+```jsx
+import { useState, useCallback } from 'react';
+
+function useUndoManager(initialState) {
+    const [state, setState] = useState(initialState);
+    const [history, setHistory] = useState([initialState]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const execute = useCallback((newState) => {
+        const newHistory = history.slice(0, currentIndex + 1);
+        newHistory.push(newState);
+        
+        setHistory(newHistory);
+        setCurrentIndex(newHistory.length - 1);
+        setState(newState);
+    }, [history, currentIndex]);
+
+    const undo = useCallback(() => {
+        if (currentIndex > 0) {
+            const newIndex = currentIndex - 1;
+            setCurrentIndex(newIndex);
+            setState(history[newIndex]);
+        }
+    }, [currentIndex, history]);
+
+    const redo = useCallback(() => {
+        if (currentIndex < history.length - 1) {
+            const newIndex = currentIndex + 1;
+            setCurrentIndex(newIndex);
+            setState(history[newIndex]);
+        }
+    }, [currentIndex, history]);
+
+    return {
+        state,
+        execute,
+        undo,
+        redo,
+        canUndo: currentIndex > 0,
+        canRedo: currentIndex < history.length - 1
+    };
+}
+
+// 使用示例
+function TextEditor() {
+    const {
+        state: text,
+        execute: setText,
+        undo,
+        redo,
+        canUndo,
+        canRedo
+    } = useUndoManager('');
+
+    return (
+        <div>
+            <textarea
+                value={text}
+                onChange={(e) => setText(e.target.value)}
+            />
+            <button onClick={undo} disabled={!canUndo}>
+                撤销
+            </button>
+            <button onClick={redo} disabled={!canRedo}>
+                重做
+            </button>
+        </div>
+    );
+}
+```
+
+## 7. 性能优化
+
+### 内存管理
+
+```javascript
+class OptimizedUndoManager {
+    constructor(options = {}) {
+        this.maxMemory = options.maxMemory || 50 * 1024 * 1024; // 50MB
+        this.compression = options.compression || false;
+        this.currentMemory = 0;
+        this.undoStack = [];
+        this.redoStack = [];
+    }
+
+    execute(command) {
+        const size = this.calculateSize(command);
+        
+        // 内存管理
+        while (this.currentMemory + size > this.maxMemory && this.undoStack.length > 0) {
+            const removed = this.undoStack.shift();
+            this.currentMemory -= this.calculateSize(removed);
+        }
+
+        command.execute();
+        this.undoStack.push(command);
+        this.currentMemory += size;
+        this.redoStack = [];
+    }
+
+    calculateSize(command) {
+        // 估算命令占用的内存大小
+        return JSON.stringify(command).length * 2; // 简单估算
+    }
+}
+```
+
+### 增量存储
+
+```javascript
+class DiffBasedCommand extends Command {
+    constructor(oldState, newState) {
+        super();
+        this.diff = this.createDiff(oldState, newState);
+        this.oldState = oldState;
+    }
+
+    createDiff(oldState, newState) {
+        // 使用 diff 算法计算差异
+        // 这里是简化示例
+        return {
+            old: oldState,
+            new: newState
+        };
+    }
+
+    execute() {
+        // 应用差异
+        return this.diff.new;
+    }
+
+    undo() {
+        // 回退差异
+        return this.diff.old;
+    }
+}
+```
+
+## 8. 最佳实践
+
+### 1. 命令粒度控制
+```javascript
+class UndoManagerWithDebounce {
+    constructor() {
+        this.undoManager = new UndoManager();
+        this.pendingCommand = null;
+        this.debounceTimer = null;
+    }
+
+    execute(command, debounceMs = 300) {
+        clearTimeout(this.debounceTimer);
+        
+        this.pendingCommand = command;
+        
+        this.debounceTimer = setTimeout(() => {
+            this.undoManager.execute(this.pendingCommand);
+            this.pendingCommand = null;
+        }, debounceMs);
+    }
+}
+```
+
+### 2. 错误处理
+```javascript
+class SafeUndoManager extends UndoManager {
+    async execute(command) {
+        try {
+            await command.execute();
+            this.undoStack.push(command);
+            this.redoStack = [];
+        } catch (error) {
+            console.error('执行命令失败:', error);
+            throw error;
+        }
+    }
+
+    async undo() {
+        const command = this.undoStack.pop();
+        if (command) {
+            try {
+                await command.undo();
+                this.redoStack.push(command);
+            } catch (error) {
+                console.error('撤销失败:', error);
+                // 恢复栈状态
+                this.undoStack.push(command);
+                throw error;
+            }
+        }
+    }
+}
+```
+
+## 总结
+
+UndoManager 是实现撤销/重做功能的核心组件，主要特点：
+
+1. **灵活性**: 支持各种类型的操作
+2. **可扩展**: 易于添加新功能
+3. **性能**: 需要考虑内存管理
+4. **用户体验**: 提供直观的历史操作
+
+选择合适的实现方式取决于具体应用场景和需求。

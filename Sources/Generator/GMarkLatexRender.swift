@@ -29,23 +29,17 @@ class GMarkLatexRender {
     private let inputOptions = TeXInputProcessorOptions(loadPackages:[
         TeXInputProcessorOptions.Packages.ams,          // 用于扩展数学符号和环境
         TeXInputProcessorOptions.Packages.base,         // 基础包，必要
-//        TeXInputProcessorOptions.Packages.bbox,         // 调整边框和背景色
-//        TeXInputProcessorOptions.Packages.boldsymbol,   // 数学符号加粗
-//        TeXInputProcessorOptions.Packages.color,        // 文本和公式颜色
-//        TeXInputProcessorOptions.Packages.newcommand,   // 定义新的命令和宏
+        TeXInputProcessorOptions.Packages.bbox,         // 调整边框和背景色
+        TeXInputProcessorOptions.Packages.boldsymbol,   // 数学符号加粗
+        TeXInputProcessorOptions.Packages.color,        // 文本和公式颜色
+        TeXInputProcessorOptions.Packages.newcommand,   // 定义新的命令和宏
         TeXInputProcessorOptions.Packages.noerrors,     // 出错时不显示错误信息
         TeXInputProcessorOptions.Packages.noundefined,  // 处理未定义命令
-//        TeXInputProcessorOptions.Packages.unicode,      // 支持 Unicode 字符
-//        TeXInputProcessorOptions.Packages.mathtools     // amsmath 的扩展，提供更多工具
+        TeXInputProcessorOptions.Packages.unicode,      // 支持 Unicode 字符
+        TeXInputProcessorOptions.Packages.mathtools     // amsmath 的扩展，提供更多工具
     ], processEscapes: true)
     
-    // The SVG output processor options - adjust scale and alignment as needed.
-    private let outputOptions = SVGOutputProcessorOptions(
-        scale: 3,           // Increase if SVG is still too small
-        minScale: 2,
-        displayAlign: SVGOutputProcessorOptions.DisplayAlignments.center,
-        displayIndent: 0.5
-    )
+
     
     // The conversion options - use block rendering and increase container dimensions.
     private let convOptions: ConversionOptions = ConversionOptions(

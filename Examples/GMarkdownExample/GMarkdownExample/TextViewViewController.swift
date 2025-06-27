@@ -10,7 +10,7 @@ import GMarkdown
 
 class TextViewViewController: UIViewController {
     
-    let markdownView = UITextView()
+    let markdownView = SubviewAttachingTextView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,7 @@ class TextViewViewController: UIViewController {
         markdownView.isSelectable = true
         view.addSubview(markdownView)
         
-        markdownView.frame = CGRectMake(10, 100, UIScreen.main.bounds.width-20, 300)
+        markdownView.frame = view.bounds
         
         setupMarkdown()
     }
@@ -37,7 +37,7 @@ class TextViewViewController: UIViewController {
         var style = MarkdownStyle.defaultStyle()
         style.useMPTextKit = false
         style.codeBlockStyle.customRender = false
-        var vistor = GMarkupVisitor(style: style)
+        var vistor = GMarkupAttachVisitor(style: style)
         let attributedText = vistor.visit(document)
         self.markdownView.attributedText = attributedText
     }

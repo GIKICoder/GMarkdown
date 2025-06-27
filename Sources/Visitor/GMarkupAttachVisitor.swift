@@ -1,10 +1,11 @@
 //
-//  GMarkupVisitor.swift
-//  GMarkRender
+//  GMarkupAttachVisitor.swift
+//  GMarkdown
 //
-//  Created by GIKI on 2024/7/25.
+//  Created by GIKI on 2025/4/18.
 //
 
+import Foundation
 import Markdown
 import UIKit
 #if canImport(MPITextKit)
@@ -12,7 +13,7 @@ import MPITextKit
 #endif
 import SwiftMath
 
-public struct GMarkupVisitor: MarkupVisitor {
+public struct GMarkupAttachVisitor: MarkupVisitor {
     
     // MARK: - Properties
     
@@ -53,10 +54,8 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     public mutating func visitImage(_ image: Image) -> NSAttributedString {
-        guard style.useMPTextKit, let source = image.source else {
-            return NSMutableAttributedString(string: "")
-        }
-        return handleImage(source: source)
+        
+        return handleImage(source: image.source ?? "")
     }
     
     public mutating func visitEmphasis(_ emphasis: Emphasis) -> NSAttributedString {
@@ -640,24 +639,22 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     private func handleImage(source: String) -> NSAttributedString {
-        if Thread.isMainThread {
-            return createImageAttributedString(source: source)
-        } else {
-            let semaphore = DispatchSemaphore(value: 0)
-            var resultString: NSAttributedString!
-            DispatchQueue.main.async {
-                resultString =  self.createImageAttributedString(source: source)
-                semaphore.signal()
-            }
-            
-            semaphore.wait()
-            return resultString
-        }
+        
+        let provider = AsyncImageAttachedProvider(url: source)
+        let attachment = SubviewTextAttachment(viewProvider: provider)
+        
+        let attributed = defaultAttribute(from: "")
+        let separatorString = NSAttributedString(string: .paragraphSeparator)
+        attributed.append(separatorString)
+        attributed.insertAttachment(attachment, at: separatorString.string.count)
+        attributed.append(separatorString)
+        
+        return attributed
     }
 
     // 原来的实例方法
     private func createImageAttributedString(source: String) -> NSAttributedString {
-        return GMarkupVisitor.createImageAttributedStringStatic(source: source, style: self.style,imageLoader: imageLoader)
+        return GMarkupAttachVisitor.createImageAttributedStringStatic(source: source, style: self.style,imageLoader: imageLoader)
     }
 
     // 静态方法，不需要访问实例属性
@@ -791,14 +788,14 @@ public struct GMarkupVisitor: MarkupVisitor {
 
 
 // MARK: - Public Attribute Implementation
-extension GMarkupVisitor {
+extension GMarkupAttachVisitor {
     public func buildAttributedText(from text: String) -> NSMutableAttributedString {
         defaultAttribute(from: text)
     }
 }
 
 // MARK: - Default Attribute Implementation
-extension GMarkupVisitor {
+extension GMarkupAttachVisitor {
     
     func defaultAttribute(from text: String) -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString(string: text)
@@ -823,7 +820,7 @@ extension GMarkupVisitor {
     }
 }
 
-extension GMarkupVisitor {
+extension GMarkupAttachVisitor {
     /// 检测文本是否为RTL语言
     /// - Parameter text: 要检测的文本
     /// - Returns: 如果是RTL语言返回`true`，否则返回`false`
@@ -863,8 +860,6 @@ extension GMarkupVisitor {
         return rtlLanguages.contains(language)
     }
 }
-
-
 
 // MARK: - Renderer Helper
 
@@ -915,171 +910,3 @@ private struct Renderer {
         }
     }
 }
-
-
-// MARK: - Helper Extensions
-
-extension UIFont {
-    var italic: UIFont? {
-        return apply(newTraits: .traitItalic)
-    }
-    
-    var bold: UIFont? {
-        return apply(newTraits: .traitBold)
-    }
-    
-    func apply(newTraits: UIFontDescriptor.SymbolicTraits) -> UIFont? {
-        var existingTraits = self.fontDescriptor.symbolicTraits
-        existingTraits.insert(newTraits)
-        
-        guard let newDescriptor = self.fontDescriptor.withSymbolicTraits(existingTraits) else { return nil }
-        return UIFont(descriptor: newDescriptor, size: self.pointSize)
-    }
-}
-
-extension NSMutableAttributedString.Key {
-    static let listDepth = NSAttributedString.Key("ListDepth")
-    static let quoteDepth = NSAttributedString.Key("QuoteDepth")
-    static let indent = NSAttributedString.Key("Indent")
-    static let blockQuote = NSAttributedString.Key("BlockQuote")
-}
-
-extension NSMutableAttributedString {
-    func addAttribute(_ name: NSAttributedString.Key, value: Any) {
-        addAttribute(name, value: value, range: NSRange(location: 0, length: length))
-    }
-    
-    func addAttributes(_ attrs: [NSAttributedString.Key: Any]) {
-        addAttributes(attrs, range: NSRange(location: 0, length: length))
-    }
-    
-    func applyEmphasis() {
-        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
-            guard let font = value as? UIFont else { return }
-            if let italicFont = font.italic {
-                addAttribute(.font, value: italicFont, range: range)
-            }
-        }
-    }
-    
-    func applyStrong() {
-        enumerateAttribute(.font, in: NSRange(location: 0, length: length), options: []) { value, range, _ in
-            guard let font = value as? UIFont else { return }
-            if let boldFont = font.bold {
-                addAttribute(.font, value: boldFont, range: range)
-            }
-        }
-    }
-}
-
-extension NSAttributedString {
-    static func singleNewline(withStyle style: Style) -> NSAttributedString {
-        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
-    }
-    
-    static func doubleNewline(withStyle style: Style) -> NSAttributedString {
-        return NSAttributedString(string: "\n", attributes: [.font: style.fonts.current])
-    }
-}
-
-extension ListItemContainer {
-    var listDepth: Int {
-        var depth = 0
-        var current = parent
-        while let currentElement = current {
-            if currentElement is ListItemContainer {
-                depth += 1
-            }
-            current = currentElement.parent
-        }
-        return depth
-    }
-}
-
-extension BlockQuote {
-    var quoteDepth: Int {
-        var depth = 0
-        var current = parent
-        while let currentElement = current {
-            if currentElement is BlockQuote {
-                depth += 1
-            }
-            current = currentElement.parent
-        }
-        return depth
-    }
-}
-
-extension Markup {
-    var hasSuccessor: Bool {
-        let siblingIndex = indexInParent
-        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return false }
-        guard let nextSibling = parent.child(at: siblingIndex + 1) else { return false }
-        return !isSplitPoint(nextSibling)
-    }
-    
-    var isContainedInList: Bool {
-        var current = parent
-        while let currentElement = current {
-            if currentElement is ListItemContainer {
-                return true
-            }
-            current = currentElement.parent
-        }
-        return false
-    }
-    
-    var subTag: String? {
-        let siblingIndex = indexInParent
-        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return nil }
-        let nextSibling = parent.child(at: siblingIndex + 1)
-        if let inlineHTML = nextSibling as? InlineHTML, inlineHTML.plainText == "<sup>",
-           let tagText = parent.child(at: siblingIndex + 2) as? Text {
-            return tagText.plainText
-        }
-        return nil
-    }
-    
-    func isSplitPoint(_ item: Markup) -> Bool {
-        switch item {
-        case is Table, is CodeBlock, is ThematicBreak, is Image:
-            return true
-        case let paragraph as Paragraph:
-            if paragraph.child(at: 0) is Image { return true }
-            if let inlineHTML = paragraph.child(at: 0) as? InlineHTML, inlineHTML.plainText == "<LaTex>" {
-                return true
-            }
-            return false
-        default:
-            return false
-        }
-    }
-}
-
-extension UIImage {
-    /// 根据给定的最大宽度调整图片大小，同时保持比例不变。
-    /// - Parameter maxWidth: 图片的最大宽度。
-    /// - Returns: 调整后的UIImage实例。如果原始宽度小于或等于maxWidth，则返回原图。
-    func resized(toMaxWidth maxWidth: CGFloat) -> UIImage {
-        // 检查是否需要调整大小
-        if self.size.width <= maxWidth {
-            return self
-        }
-        
-        // 计算缩放比例以保持纵横比
-        let scaleFactor = maxWidth / self.size.width
-        let newHeight = self.size.height * scaleFactor
-        let newSize = CGSize(width: maxWidth, height: newHeight)
-        
-        // 开始图形上下文并绘制调整后的图片
-        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-        self.draw(in: CGRect(origin: .zero, size: newSize))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        if let resizedImage {
-            return resizedImage
-        }
-        return self
-    }
-}
-

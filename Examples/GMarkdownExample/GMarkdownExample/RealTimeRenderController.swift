@@ -1,20 +1,24 @@
 //
-//  MarkdownRenderController.swift
+//  StreamRenderController.swift
 //  GMarkdownExample
 //
-//  Created by GIKI on 2024/8/1.
+//  Created by GIKI on 2025/6/28.
 //
 
 import UIKit
 import GMarkdown
 
-class MarkdownRenderController: UIViewController {
+class RealTimeRenderController: UIViewController {
     
     private let markdownView = GMarkdownMultiView()
     private let imageloader = NukeImageLoader()
     private let menuButton = UIButton(type: .system)
+    private let streamButton = UIButton(type: .system)
     private let containerView = UIView()
     private var currentMarkdownFile = "markdown"
+    private var displayLink: CADisplayLink?
+    private var currentIndex = 0
+    private var currentContent = ""
     
     private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5"]
     
@@ -25,12 +29,13 @@ class MarkdownRenderController: UIViewController {
             await loadMarkdown(fileName: currentMarkdownFile)
         }
     }
+    
     deinit {
         GMarkCachedManager.shared.clearAllCache()
+        stopDisplayLink()
     }
     
     private func setupUI() {
-        // 设置容器视图
         view.backgroundColor = .systemBackground
         containerView.backgroundColor = .systemBackground
         containerView.layer.cornerRadius = 16
@@ -40,11 +45,9 @@ class MarkdownRenderController: UIViewController {
         containerView.layer.shadowOpacity = 0.1
         view.addSubview(containerView)
         
-        // 设置Markdown视图
         markdownView.backgroundColor = .systemBackground
         containerView.addSubview(markdownView)
         
-        // 设置菜单按钮
         menuButton.setImage(UIImage(systemName: "text.book.closed"), for: .normal)
         menuButton.backgroundColor = .systemBackground
         menuButton.layer.cornerRadius = 20
@@ -55,10 +58,20 @@ class MarkdownRenderController: UIViewController {
         menuButton.addTarget(self, action: #selector(showMenu), for: .touchUpInside)
         view.addSubview(menuButton)
         
-        // 设置约束
+        streamButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        streamButton.backgroundColor = .systemBackground
+        streamButton.layer.cornerRadius = 20
+        streamButton.layer.shadowColor = UIColor.black.cgColor
+        streamButton.layer.shadowOffset = CGSize(width: 0, height: 2)
+        streamButton.layer.shadowRadius = 4
+        streamButton.layer.shadowOpacity = 0.1
+        streamButton.addTarget(self, action: #selector(startStreamRendering), for: .touchUpInside)
+        view.addSubview(streamButton)
+        
         containerView.translatesAutoresizingMaskIntoConstraints = false
         markdownView.translatesAutoresizingMaskIntoConstraints = false
         menuButton.translatesAutoresizingMaskIntoConstraints = false
+        streamButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             containerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
@@ -74,7 +87,12 @@ class MarkdownRenderController: UIViewController {
             menuButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             menuButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
             menuButton.widthAnchor.constraint(equalToConstant: 40),
-            menuButton.heightAnchor.constraint(equalToConstant: 40)
+            menuButton.heightAnchor.constraint(equalToConstant: 40),
+            
+            streamButton.topAnchor.constraint(equalTo: menuButton.bottomAnchor, constant: 16),
+            streamButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -32),
+            streamButton.widthAnchor.constraint(equalToConstant: 40),
+            streamButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
@@ -101,6 +119,59 @@ class MarkdownRenderController: UIViewController {
         present(alert, animated: true)
     }
     
+    @objc private func startStreamRendering() {
+        stopDisplayLink()
+        currentIndex = 0
+        
+        Task { [weak self] in
+            guard let self = self,
+                  let filepath = Bundle.main.path(forResource: currentMarkdownFile, ofType: nil),
+                  let filecontents = try? String(contentsOfFile: filepath, encoding: .utf8) else {
+                return
+            }
+            self.currentContent = filecontents
+            self.setupDisplayLink()
+        }
+    }
+    
+    private func setupDisplayLink() {
+        displayLink = CADisplayLink(target: self, selector: #selector(updateStreamContent))
+        if #available(iOS 15.0, *) {
+            // 提高渲染频率，设置更高的帧率范围以实现更快的更新
+            displayLink?.preferredFrameRateRange = CAFrameRateRange(minimum: 60, maximum: 120)
+        } else {
+            // 在旧版本iOS上设置更短的帧间隔以提高更新频率
+            displayLink?.frameInterval = 1  // 每帧都更新，即60fps
+        }
+        displayLink?.add(to: .main, forMode: .common)
+    }
+    
+    private func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
+        GMarkCachedManager.shared.clearAllCache()
+    }
+    
+    @objc private func updateStreamContent() {
+        guard currentIndex < currentContent.count else {
+            stopDisplayLink()
+            return
+        }
+        
+        // 随机读取1-5个字符，模拟SSE实时流效果
+        let randomCharCount = Int.random(in: 1...5)
+        let endIndex = min(currentIndex + randomCharCount, currentContent.count)
+        let partialContent = String(currentContent.prefix(endIndex))
+        currentIndex = endIndex
+        
+        Task { [weak self] in
+             guard let self = self else { return }
+             let chunks = await parseMarkdown(partialContent)
+             await MainActor.run {
+                 self.markdownView.updateMarkdown(chunks)
+             }
+         }
+    }
     
     private func loadMarkdown(fileName: String) async {
         guard let filepath = Bundle.main.path(forResource: fileName, ofType: nil),

@@ -16,6 +16,8 @@
 		2B052D042D82B65500BAE956 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2B052D032D82B65500BAE956 /* NukeExtensions */; };
 		2B052D052D82B70500BAE956 /* markdown in Resources */ = {isa = PBXBuildFile; fileRef = 114640C16E263162F58A1B43 /* markdown */; };
 		2B052D062D82B70500BAE956 /* markdownv2 in Resources */ = {isa = PBXBuildFile; fileRef = 66BC7B35F5F1709820DC6394 /* markdownv2 */; };
+		2B6C0D2D2E0F0B8A00F6D641 /* RealTimeRenderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */; };
+		2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2E2E0F102900F6D641 /* markdownv5 */; };
 		2B78F42F2DBE534B00ABE9B6 /* markdownv4 in Resources */ = {isa = PBXBuildFile; fileRef = 2B78F42E2DBE534B00ABE9B6 /* markdownv4 */; };
 		2BD9E4752DB73F23005638D0 /* markdownv3 in Resources */ = {isa = PBXBuildFile; fileRef = 2BD9E4742DB73F23005638D0 /* markdownv3 */; };
 		3990ACD55BC5C22064C6B29D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5793B2B7A2BD113C658AC6D4 /* AppDelegate.swift */; };
@@ -27,6 +29,8 @@
 
 /* Begin PBXFileReference section */
 		114640C16E263162F58A1B43 /* markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdown; sourceTree = "<group>"; };
+		2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeRenderController.swift; sourceTree = "<group>"; };
+		2B6C0D2E2E0F102900F6D641 /* markdownv5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv5; sourceTree = "<group>"; };
 		2B78F42E2DBE534B00ABE9B6 /* markdownv4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv4; sourceTree = "<group>"; };
 		2BD9E4742DB73F23005638D0 /* markdownv3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv3; sourceTree = "<group>"; };
 		4085333849BD4098ECAE248B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -65,6 +69,7 @@
 				66BC7B35F5F1709820DC6394 /* markdownv2 */,
 				2BD9E4742DB73F23005638D0 /* markdownv3 */,
 				2B78F42E2DBE534B00ABE9B6 /* markdownv4 */,
+				2B6C0D2E2E0F102900F6D641 /* markdownv5 */,
 			);
 			path = md;
 			sourceTree = "<group>";
@@ -98,6 +103,7 @@
 				C668D18BDBB1E7F3E2ACCD51 /* NukeImageLoader.swift */,
 				D76B57722F3D40404987BA64 /* SceneDelegate.swift */,
 				DB231D7527DBBE4BA252BC18 /* TextViewViewController.swift */,
+				2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */,
 				4D4F40CB2FCF10C84C18B559 /* ViewController.swift */,
 			);
 			path = GMarkdownExample;
@@ -174,6 +180,7 @@
 			files = (
 				2B052D052D82B70500BAE956 /* markdown in Resources */,
 				2B052D062D82B70500BAE956 /* markdownv2 in Resources */,
+				2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */,
 				179DAE4E4169B30B188FDB4A /* Assets.xcassets in Resources */,
 				0977BD9B39BE57E852EDC86E /* LaunchScreen.storyboard in Resources */,
 				2B78F42F2DBE534B00ABE9B6 /* markdownv4 in Resources */,
@@ -193,6 +200,7 @@
 				95C5C3ED71581EF51445984A /* MarkdownRenderController.swift in Sources */,
 				13D98D2720E5CF4446F1756B /* NukeImageLoader.swift in Sources */,
 				01C7B035BED50979225F5C40 /* SceneDelegate.swift in Sources */,
+				2B6C0D2D2E0F0B8A00F6D641 /* RealTimeRenderController.swift in Sources */,
 				1C5B29B355BAE2B7F413678D /* TextViewViewController.swift in Sources */,
 				6AF6B6B2AB0DDEE4160BF3D0 /* ViewController.swift in Sources */,
 			);
