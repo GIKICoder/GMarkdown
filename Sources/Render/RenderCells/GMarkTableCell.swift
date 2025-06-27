@@ -104,7 +104,7 @@ class GMarkTableCell: UICollectionViewCell, GMarkTableViewDataSource, ChunkCellC
     func table(_: GMarkTableView, lengthForRow row: Int) -> CGFloat {
         var height: CGFloat = tableStyle.cellHeight
         let renderArray = tableRenders()
-        if let renders = renderArray[safe2: row] {
+        if let renders = renderArray[safe: row] {
             for textRender in renders {
                 let textheight = textRender.size().height
                 height = max(height, textheight + tableStyle.cellPadding.top + tableStyle.cellPadding.bottom)
@@ -118,7 +118,7 @@ class GMarkTableCell: UICollectionViewCell, GMarkTableViewDataSource, ChunkCellC
         var maxColWidth: CGFloat = 0
         for row in renderArray {
             if col < row.count {
-                if let textRender = row[safe2: col] {
+                if let textRender = row[safe: col] {
                     let textWidth = textRender.size().width
                     maxColWidth = max(maxColWidth, textWidth + tableStyle.cellPadding.left + tableStyle.cellPadding.right)
                 }
