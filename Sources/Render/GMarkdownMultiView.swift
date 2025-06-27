@@ -243,9 +243,3 @@ class GMarkThematicCell: UICollectionViewCell, ChunkCellConfigurable {
     
     func configure(with _: GMarkChunk) {}
 }
-
-public extension Array {
-    subscript(safe2 index: Int) -> Element? {
-        indices ~= index ? self[index] : nil
-    }
-}
