@@ -20,7 +20,7 @@ public class CodeBlockMarkupHandler: MarkupHandler {
     }
     
     public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
-        var chunk = GMarkChunk(chunkType: .Code, children: [markup])
+        let chunk = GMarkChunk(chunkType: .Code, children: [markup])
         if let style = style {
             chunk.style = style
         }
@@ -37,11 +37,20 @@ public class CodeBlockMarkupHandler: MarkupHandler {
 
 extension GMarkChunk {
     func generateCode(markup: CodeBlock) {
+        
+        if let cachedAttributed = GMarkCachedManager.shared.getAttributedTextCache(for: markup.code) {
+            attributedText = cachedAttributed
+            calculateCode()
+            updateHashKey()
+            return
+        }
+        
         language = markup.language ?? ""
         style.codeBlockStyle.customRender = true
         var visitor = GMarkupVisitor(style: style)
         
         attributedText = visitor.visit(markup)
+        GMarkCachedManager.shared.setAttributedTextCache(attributedText, for: markup.code)
         calculateCode()
         
         updateHashKey()
