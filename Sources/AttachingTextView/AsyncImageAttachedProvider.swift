@@ -2,7 +2,7 @@
 //  AsyncImageAttachedProvider.swift
 //  GMarkdown
 //
-//  Created by 巩柯 on 2025/4/18.
+//  Created by GIKI on 2025/4/18.
 //
 
 import UIKit

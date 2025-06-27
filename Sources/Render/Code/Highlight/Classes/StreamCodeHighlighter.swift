@@ -2,7 +2,7 @@
 //  StreamCodeHighlighter.swift
 //  GMarkdown
 //
-//  Created by 巩柯 on 2025/6/28.
+//  Created by GIKI on 2025/6/28.
 //
 
 import Foundation

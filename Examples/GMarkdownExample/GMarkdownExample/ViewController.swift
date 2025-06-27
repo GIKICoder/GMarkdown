@@ -112,6 +112,12 @@ class ViewController: UIViewController {
             viewController: MarkdownRenderController.self
         ),
         ExampleItem(
+            title: "Real-time Markdown Rendering",
+            description: "Demonstrates real-time parsing and rendering of Markdown text",
+            icon: "text.alignleft",
+            viewController: RealTimeRenderController.self
+        ),
+        ExampleItem(
             title: "TextView Integration",
             description: "Shows how to integrate Markdown rendering capabilities into UITextView",
             icon: "text.alignleft",
