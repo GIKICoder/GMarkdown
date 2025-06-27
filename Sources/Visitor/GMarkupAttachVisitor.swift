@@ -223,7 +223,7 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         var mathImage = MathImage(latex: trimmedText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
         mathImage.font = MathFont.xitsFont
         
-        let (_, image) = mathImage.asImage()
+        let (_, image, _) = mathImage.asImage()
         
         if let image = image {
             let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
