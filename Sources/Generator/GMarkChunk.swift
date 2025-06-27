@@ -85,7 +85,7 @@ public final class GMarkChunk: Hashable, Sendable {
     
     /// The image rendered from LaTeX, if applicable.
     public var latexImage: UIImage?
-    
+    public var latexKey: String?
     public var latexSvg: String?
     public var latexNode: Node?
     
