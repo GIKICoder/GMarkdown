@@ -7,66 +7,171 @@
 
 import UIKit
 
-class ViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
+// 示例配置结构体
+struct ExampleItem {
+    let title: String
+    let description: String
+    let icon: String
+    let viewController: UIViewController.Type
+}
+
+class ExampleCell: UICollectionViewCell {
+    static let reuseIdentifier = "ExampleCell"
     
-    var collectionView: UICollectionView!
-    let items = ["Markdown Render","Markdown Render -> UITextView"]
+    private let containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .systemBackground
+        view.layer.cornerRadius = 12
+        view.layer.shadowColor = UIColor.black.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 2)
+        view.layer.shadowRadius = 6
+        view.layer.shadowOpacity = 0.1
+        return view
+    }()
+    
+    private let iconView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.contentMode = .scaleAspectFit
+        imageView.tintColor = .systemBlue
+        return imageView
+    }()
+    
+    private let titleLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 17, weight: .semibold)
+        label.textColor = .label
+        return label
+    }()
+    
+    private let descriptionLabel: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14)
+        label.textColor = .secondaryLabel
+        label.numberOfLines = 2
+        return label
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        setupViews()
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupViews() {
+        contentView.addSubview(containerView)
+        containerView.addSubview(iconView)
+        containerView.addSubview(titleLabel)
+        containerView.addSubview(descriptionLabel)
+        
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            containerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            
+            iconView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor, constant: 16),
+            iconView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            iconView.widthAnchor.constraint(equalToConstant: 32),
+            iconView.heightAnchor.constraint(equalToConstant: 32),
+            
+            titleLabel.topAnchor.constraint(equalTo: containerView.topAnchor, constant: 16),
+            titleLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 16),
+            titleLabel.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -16),
+            
+            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
+            descriptionLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            descriptionLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+            descriptionLabel.bottomAnchor.constraint(lessThanOrEqualTo: containerView.bottomAnchor, constant: -16)
+        ])
+    }
+    
+    func configure(with item: ExampleItem) {
+        titleLabel.text = item.title
+        descriptionLabel.text = item.description
+        iconView.image = UIImage(systemName: item.icon)
+    }
+}
+
+class ViewController: UIViewController {
+    
+    private var collectionView: UICollectionView!
+    
+    private let examples: [ExampleItem] = [
+        ExampleItem(
+            title: "Markdown Renderer",
+            description: "Demonstrates basic Markdown rendering features including headings, lists, and code blocks",
+            icon: "doc.text.fill",
+            viewController: MarkdownRenderController.self
+        ),
+        ExampleItem(
+            title: "TextView Integration",
+            description: "Shows how to integrate Markdown rendering capabilities into UITextView",
+            icon: "text.alignleft",
+            viewController: TextViewViewController.self
+        )
+    ]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        title = "GMarkdownExample"
-        // 设置布局
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: view.frame.width, height: 70)
-        layout.minimumLineSpacing = 0
-        
-        // 初始化 UICollectionView
-        collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
-        
-        // 注册 cell
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        
-        self.view.addSubview(collectionView)
+        setupNavigationBar()
+        setupCollectionView()
     }
     
-    // MARK: - UICollectionViewDataSource
+    private func setupNavigationBar() {
+        title = "GMarkdown 示例"
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.largeTitleDisplayMode = .always
+        
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .systemBackground
+        navigationController?.navigationBar.standardAppearance = appearance
+        navigationController?.navigationBar.scrollEdgeAppearance = appearance
+    }
+    
+    private func setupCollectionView() {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: view.bounds.width, height: 100)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
+        
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        collectionView.backgroundColor = .systemGroupedBackground
+        collectionView.delegate = self
+        collectionView.dataSource = self
+        collectionView.register(ExampleCell.self, forCellWithReuseIdentifier: ExampleCell.reuseIdentifier)
+        collectionView.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        
+        view.addSubview(collectionView)
+    }
+}
+
+// MARK: - UICollectionViewDataSource & UICollectionViewDelegate
+extension ViewController: UICollectionViewDataSource, UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return items.count
+        return examples.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        
-        // 配置 cell
-        let label = UILabel(frame: CGRect(x: 16, y: 22, width: 200, height: 25))
-        label.text = items[indexPath.item]
-        label.textAlignment = .left
-        cell.contentView.addSubview(label)
-        
-        // 添加右箭头
-        let arrow = UIImageView(image: UIImage(systemName: "chevron.right"))
-        arrow.frame = CGRect(x: cell.contentView.frame.width - 50, y: (cell.contentView.frame.height - 20)/2, width: 20, height: 20)
-        cell.contentView.addSubview(arrow)
-        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ExampleCell.reuseIdentifier, for: indexPath) as! ExampleCell
+        cell.configure(with: examples[indexPath.item])
         return cell
     }
     
-    // MARK: - UICollectionViewDelegate
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        // 点击某一行后的处理
-        print("Selected item: \(items[indexPath.item])")
-        if indexPath.item == 0 {
-            self.navigationController?.pushViewController(MarkdownRenderController(), animated: true)
-        } else if indexPath.item == 1 {
-            self.navigationController?.pushViewController(TextViewViewController(), animated: true)
-            
-        }
+        let example = examples[indexPath.item]
+        let viewController = example.viewController.init()
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
+
