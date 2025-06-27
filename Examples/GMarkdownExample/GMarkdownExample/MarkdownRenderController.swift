@@ -16,7 +16,7 @@ class MarkdownRenderController: UIViewController {
     private let containerView = UIView()
     private var currentMarkdownFile = "markdown"
     
-    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4"]
+    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +24,9 @@ class MarkdownRenderController: UIViewController {
         Task {
             await loadMarkdown(fileName: currentMarkdownFile)
         }
+    }
+    deinit {
+        GMarkCachedManager.shared.clearAllCache()
     }
     
     private func setupUI() {

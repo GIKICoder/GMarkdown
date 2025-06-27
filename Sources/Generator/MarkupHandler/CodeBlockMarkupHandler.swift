@@ -50,7 +50,8 @@ extension GMarkChunk {
         var visitor = GMarkupVisitor(style: style)
         
         attributedText = visitor.visit(markup)
-        GMarkCachedManager.shared.setAttributedTextCache(attributedText, for: markup.code)
+        // 先去掉cache的逻辑，后续再考虑
+        // GMarkCachedManager.shared.setAttributedTextCache(attributedText, for: markup.code)
         calculateCode()
         
         updateHashKey()

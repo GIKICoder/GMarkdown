@@ -8,9 +8,9 @@
 import Foundation
 import UIKit
 
-final class GMarkCachedManager {
+public final class GMarkCachedManager {
     
-    static let shared = GMarkCachedManager()
+    public static let shared = GMarkCachedManager()
     
     private init() {}
     
