@@ -210,31 +210,9 @@ public final class GMarkChunk: Hashable, Sendable {
     ///
     /// - Returns: A random string.
     private func generateRandomString() -> String {
-            let timestamp = Int(Date().timeIntervalSince1970)
-             let randomNumber = Int.random(in: 0 ... 10000)
-            let resultString = "\(timestamp)\(randomNumber)"
-            return resultString + UUID().uuidString
-        }
-}
-
-
-// MARK: - Extensions
-
-private extension Data {
-    /// Computes the MD5 hash of the data.
-    ///
-    /// - Returns: A hexadecimal string representation of the MD5 hash.
-    func md5Hash() -> String {
-        let digest = Insecure.MD5.hash(data: self)
-        return digest.map { String(format: "%02hhx", $0) }.joined()
-    }
-}
-
-private extension String {
-    /// Computes the MD5 hash of the string.
-    ///
-    /// - Returns: A hexadecimal string representation of the MD5 hash.
-    func md5() -> String {
-        self.data(using: .utf8)?.md5Hash() ?? ""
+        let timestamp = Int(Date().timeIntervalSince1970)
+        let randomNumber = Int.random(in: 0 ... 10000)
+        let resultString = "\(timestamp)\(randomNumber)"
+        return resultString + UUID().uuidString
     }
 }
