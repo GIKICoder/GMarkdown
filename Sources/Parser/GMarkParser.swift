@@ -9,8 +9,8 @@ import Foundation
 import Markdown
 
 public class GMarkParser {
+    
     public init() {
-        // 初始化代码
     }
 
     public func parseMarkdownToMarkups(markdown: String) -> [Markup] {
@@ -48,9 +48,6 @@ public class GMarkParser {
 //        let pattern = "\\$\\$(.+?)\\$\\$|\\$(.+?)\\$|\\\\\\[((?:.|\\n)+?)\\\\\\]|\\\\\\(((?:.|\\n)+?)\\\\\\)"
         
         let pattern = "\\$\\$([\\s\\S]*?)\\$\\$|\\$([\\s\\S]*?)\\$|\\\\\\[([\\s\\S]*?)\\\\\\]|\\\\\\(([\\s\\S]*?)\\\\\\)"
-
-
-
         let regex = try! NSRegularExpression(pattern: pattern, options: [])
         let nsString = result as NSString
         let range = NSRange(location: 0, length: nsString.length)
@@ -70,8 +67,6 @@ public class GMarkParser {
                     let wrappedString = "<LaTex>\(matchedString)</LaTex>"
                     result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
                 }
-                
-            } else {
                 
             }
         }
