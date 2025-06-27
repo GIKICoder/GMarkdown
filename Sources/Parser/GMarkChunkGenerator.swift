@@ -388,49 +388,8 @@ extension GMarkChunk {
         textRender = MPITextRenderer(renderAttributes: renderAttributes, constrainedSize: CGSize(width: style.maxContainerWidth, height: CGFLOAT_MAX))
         
         itemSize = CGSize(width: style.maxContainerWidth, height: textRender?.size().height ?? 0.0)
-        if style.needTruncation {
-            let tbuilder = MPITextRenderAttributesBuilder()
-            tbuilder.attributedText = attr
-            tbuilder.maximumNumberOfLines = UInt(style.maximumNumberOfLines)
-            tbuilder.truncationAttributedText = generateTruncation()
-            let tRenderAttributes = MPITextRenderAttributes(builder: tbuilder)
-            truncationTextRender = MPITextRenderer(renderAttributes: tRenderAttributes, constrainedSize: CGSize(width: style.maxContainerWidth, height: CGFLOAT_MAX))
-            
-            truncationItemSize = CGSize(width: style.maxContainerWidth, height: truncationTextRender?.size().height ?? 0.0)
-        }
         
         updateHashKey()
-    }
-    
-    func generateTruncation() -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
-        let normalTextAttributes: [NSAttributedString.Key: Any] = [
-            .font: style.fonts.h6,
-            .foregroundColor: style.colors.current,
-        ]
-        let normalText = NSAttributedString(string: "...", attributes: normalTextAttributes)
-        attributedString.append(normalText)
-        
-        let expandTextAttributes: [NSAttributedString.Key: Any] = [
-            .font: style.fonts.current,
-            .foregroundColor: UIColor(red: 0, green: 0.439, blue: 0.788, alpha: 1),
-        ]
-        let expandText = NSAttributedString(string: "Expand".localized, attributes: expandTextAttributes)
-        attributedString.append(expandText)
-        
-        if let image = UIImage(named: "detail_chevron_down") {
-            let attachment = MPITextAttachment()
-            attachment.image = image
-            attachment.bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            let attachmentString = NSAttributedString(attachment: attachment)
-            attributedString.append(attachmentString)
-        }
-        
-        let mpiLink = MPITextLink()
-        mpiLink.value = "Truncation" as (any NSObjectProtocol)?
-        attributedString.addAttribute(.MPILink, value: mpiLink, range: NSRange(location: 3, length: attributedString.length - 3))
-        
-        return attributedString.copy() as! NSAttributedString
     }
 }
 
@@ -486,51 +445,3 @@ extension GMarkChunk {
     }
 }
 
-
-
-// MARK: - Localized
-
-extension String {
-    
-    /// Localized string
-    ///
-    /// Example:
-    /// ```
-    /// "Hello".localized
-    /// ```
-    var localized: String {
-        NSLocalizedString(self, comment: "")
-    }
-    
-    /// Localized string with arguments
-    ///
-    /// Example:
-    /// ```
-    /// "Hello, %@!".localized("World")
-    /// "Hey, %@, how are you? %d years to see".localized("John", 20)
-    /// ```
-    func localized(_ args: any CVarArg...) -> String {
-        return String(format: localized, args)
-    }
-    
-    /// Localized string with custom path
-    ///
-    /// Example:
-    /// ```
-    /// "Hello".localized(tableName: "Custom")
-    /// ```
-    func localize(
-        tableName: String? = nil,
-        bundle: Bundle = Bundle.main,
-        comment: String = ""
-    ) -> String {
-        return NSLocalizedString(
-            self,
-            tableName: tableName,
-            bundle: bundle,
-            value: "",
-            comment: comment
-        )
-    }
-    
-}
