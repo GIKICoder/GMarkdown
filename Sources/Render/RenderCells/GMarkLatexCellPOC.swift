@@ -138,8 +138,8 @@ class SVGRenderQueueManager {
 }
 
 // MARK: - GMarkLatexCell
-class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
-    static let reuseIdentifier = "GMarkLatexCell"
+class GMarkLatexCellPOC: UICollectionViewCell, ChunkCellConfigurable {
+    static let reuseIdentifier = "GMarkLatexCellPOC"
     
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()

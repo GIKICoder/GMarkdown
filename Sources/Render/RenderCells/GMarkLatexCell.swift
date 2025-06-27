@@ -10,7 +10,7 @@ import UIKit
 import MPITextKit
 import Macaw
 
-class GMarkLatexCellPOC: UICollectionViewCell, ChunkCellConfigurable {
+class GMarkLatexCell: UICollectionViewCell, ChunkCellConfigurable {
     static let reuseIdentifier = "GMarkLatexCell"
     private let scrollView: UIScrollView = {
         let sv = UIScrollView()
