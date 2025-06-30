@@ -11,7 +11,7 @@ import MPITextKit
 import SwiftMath
 import UIKit
 import Macaw
-
+import SVGKit
 
 public class LaTexMarkupHandler: MarkupHandler {
     public init() {}
@@ -67,6 +67,20 @@ extension GMarkChunk {
     
         do {
             let svgResult = try renderer.convert(trimText)
+           
+            let svgSource = SVGKSourceString.source(fromContentsOf: svgResult)
+            let svgImage = SVGKImage(source: svgSource)
+            // 获取 SVG 尺寸
+            var svgSize = svgImage?.size ?? .zero
+    
+
+            // 渲染成 UIImage
+            if let image = svgImage?.uiImage {
+                // image 可用于 UIImageView 显示
+                print("渲染成功，图像大小: \(image.size)")
+                return
+            }
+            
             // 使用渲染结果
             self.latexSvg = svgResult
             if let node = try? SVGParser.parse(text: svgResult),
