@@ -67,9 +67,9 @@ extension GMarkChunk {
     
         do {
             let svgResult = try renderer.convert(trimText)
-           
+#if DEBUG
             let svgSource = SVGKSourceString.source(fromContentsOf: svgResult)
-            let svgImage = SVGKImage(source: svgSource)
+            var svgImage = SVGKImage(source: svgSource)
             // 获取 SVG 尺寸
             var svgSize = svgImage?.size ?? .zero
     
@@ -80,6 +80,8 @@ extension GMarkChunk {
                 print("渲染成功，图像大小: \(image.size)")
                 return
             }
+#endif
+            
             
             // 使用渲染结果
             self.latexSvg = svgResult
@@ -114,7 +116,7 @@ extension GMarkChunk {
             itemSize = CGSize(width: style.maxContainerWidth, height: cached.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
             return
         }
-        
+ 
         var mImage = MathImage(latex: trimText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
         mImage.font = MathFont.xitsFont
         let (_, image, _) = mImage.asImage()
@@ -134,11 +136,25 @@ extension GMarkChunk {
     
     func trimBrackets(from string: String) -> String {
         let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedString.hasPrefix("[") && (trimmedString.hasSuffix("]")) {
+        
+        // 检查并去掉方括号
+        if trimmedString.hasPrefix("[") && trimmedString.hasSuffix("]") {
             return String(trimmedString.dropFirst().dropLast())
         }
+        
+        // 检查并去掉 $$ 符号
+        if trimmedString.hasPrefix("$$") && trimmedString.hasSuffix("$$") {
+            return String(trimmedString.dropFirst(2).dropLast(2))
+        }
+        
+        // 检查并去掉单个 $ 符号
+        if trimmedString.hasPrefix("$") && trimmedString.hasSuffix("$") {
+            return String(trimmedString.dropFirst().dropLast())
+        }
+        
         return trimmedString
     }
+
     
     func calculateLatexText() {
         let attr = attributedText
