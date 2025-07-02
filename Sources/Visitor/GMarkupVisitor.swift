@@ -224,7 +224,6 @@ public struct GMarkupVisitor: MarkupVisitor {
         let result = GMarkLaTexRender.renderLatexSmart(from: trimmedText, style: style)
         
         if result.success, let image = result.image {
-            print("LaTeX 渲染成功，图片尺寸: \(image.size)")
             let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
             let result = NSMutableAttributedString(string: "")
             if style.useMPTextKit {

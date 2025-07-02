@@ -51,7 +51,6 @@ extension GMarkChunk {
         let result = GMarkLaTexRender.renderLatexSmart(from: markup, style: style)
         
         if result.success, let image = result.image {
-            print("LaTeX 渲染成功，图片尺寸: \(image.size)")
             setupLatexImage(image)
         } else {
             print("LaTeX 渲染失败: \(result.error?.localizedDescription ?? "未知错误")")
