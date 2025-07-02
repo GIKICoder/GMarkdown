@@ -9,7 +9,7 @@ import Markdown
 import MPITextKit
 import UIKit
 
-
+/*
 
 public class GMarkdownMultiViewPOC: UIView {
     // MARK: - Properties
@@ -131,7 +131,7 @@ public class GMarkdownMultiViewPOC: UIView {
             let end = min(chunks.count - 1, indexPath.item + preloadRange)
             
             for i in start...end {
-                if let chunk = chunks[safe: i], chunk.latexNode != nil {
+                if let chunk = chunks[safe: i] {
                     chunksToPreload.append(chunk)
                 }
             }
@@ -262,3 +262,4 @@ public extension GMarkdownMultiViewPOC {
         return !isScrolling
     }
 }
+*/

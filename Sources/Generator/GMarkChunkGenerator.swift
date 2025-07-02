@@ -10,7 +10,6 @@ import Markdown
 import MPITextKit
 import SwiftMath
 import UIKit
-import Macaw
 
 // MARK: - Protocols
 

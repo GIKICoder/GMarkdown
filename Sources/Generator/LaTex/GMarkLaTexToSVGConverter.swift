@@ -8,7 +8,7 @@
 import UIKit
 import MathJaxSwift
 
-class GMarkLatexRender {
+class GMarkLaTexToSVGConverter {
     // A reference to our MathJax instance
     private var mathjax: MathJax
     
@@ -68,9 +68,9 @@ class GMarkLatexRender {
         display: true,
         em: 32,
         ex: 16,
-        containerWidth: -300, // Set container width to 600 units
+        containerWidth: 600, // Set container width to 600 units
         lineWidth: 16,       // Set line width to match container width
-        scale: 1.0            // Adjust scale as needed
+        scale: 3.0            // Adjust scale as needed
     )
     
     let documentOptions = DocumentOptions(
@@ -107,7 +107,7 @@ class GMarkLatexRender {
                                    css: false,
                                    assistiveMml: false,
                                    container: false,
-                                   styles: true,
+                                   styles: false,
                                    conversionOptions: conversionOptions,
                                    documentOptions: documentOptions,
                                    inputOptions: inputOptions,

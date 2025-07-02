@@ -15,7 +15,7 @@ import CryptoKit
 
 /// A class responsible for rendering a parsed Markdown table with various attributes.
 /// It processes headers and body content to generate text renderers and calculates the table's height.
-public final class GMarkTableRender {
+public final class GMarkTableLayout {
     
     // MARK: - Properties
     

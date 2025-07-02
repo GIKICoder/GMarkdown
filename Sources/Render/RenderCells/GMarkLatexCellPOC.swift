@@ -7,8 +7,8 @@
 import Foundation
 import UIKit
 import MPITextKit
-import Macaw
 
+/*
 // MARK: - SVG渲染队列管理器
 class SVGRenderQueueManager {
     static let shared = SVGRenderQueueManager()
@@ -379,6 +379,8 @@ extension SVGRenderQueueManager {
         }
     }
 }
+
+*/
 
 // MARK: - 使用示例
 /*

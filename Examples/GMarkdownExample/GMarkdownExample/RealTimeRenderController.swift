@@ -20,7 +20,7 @@ class RealTimeRenderController: UIViewController {
     private var currentIndex = 0
     private var currentContent = ""
     
-    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5"]
+    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -190,7 +190,8 @@ class RealTimeRenderController: UIViewController {
     private func parseMarkdown(_ content: String) async -> [GMarkChunk] {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                let style = MarkdownStyle.defaultStyle()
+                var style = MarkdownStyle.defaultStyle()
+                style.maxContainerWidth = UIScreen.main.bounds.size.width - 32
                 let generator = GMarkChunkGenerator()
                 generator.style = style
                 generator.imageLoader = self.imageloader
