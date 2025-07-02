@@ -372,7 +372,7 @@ extension GMarkSVGRender {
         var baseFontSize: CGFloat = 16.0        // 基础字体大小
         var maxWidth: CGFloat = UIScreen.main.bounds.width - 32  // 最大宽度（屏幕宽度-边距）
         var minWidth: CGFloat = 20             // 最小宽度
-        var scaleFactor: CGFloat = 5.0          // 额外缩放因子
+        var scaleFactor: CGFloat = 6.0          // 额外缩放因子
         var allowHorizontalScroll: Bool = true  // 是否允许水平滚动
         var backgroundColor: UIColor = .clear   // 背景色
         

@@ -221,15 +221,12 @@ public struct GMarkupVisitor: MarkupVisitor {
             return defaultAttribute(from: "")
         }
         let trimmedText = trimBrackets(from: text.plainText)
-        var mathImage = MathImage(latex: trimmedText, fontSize: style.fonts.current.pointSize, textColor: style.colors.current)
-        mathImage.font = MathFont.xitsFont
+        let result = GMarkLaTexRender.renderLatexSmart(from: trimmedText, style: style)
         
-        let (_, image, _) = mathImage.asImage()
-        
-        if let image = image {
+        if result.success, let image = result.image {
+            print("LaTeX 渲染成功，图片尺寸: \(image.size)")
             let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
             let result = NSMutableAttributedString(string: "")
-            
             if style.useMPTextKit {
                 // 使用 MPITextAttachment
                 let attachment = MPITextAttachment()
@@ -264,8 +261,13 @@ public struct GMarkupVisitor: MarkupVisitor {
             }
             
             return result
+        } else {
+            print("LaTeX 渲染失败: \(result.error?.localizedDescription ?? "未知错误")")
+            // 渲染失败时使用纯文本作为后备
+            return defaultAttribute(from: text.plainText)
         }
-        return defaultAttribute(from: text.plainText)
+        
+        
     }
     
     private mutating func renderLatexSynchronously(image: UIImage) -> NSAttributedString {
@@ -500,7 +502,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         } else {
             attributed.addAttribute(.backgroundColor, value: style.codeBlockStyle.backgroundColor)
         }
-    
+        
         if hasSuccessor {
             attributed.append(.singleNewline(withStyle: style))
         }
@@ -654,12 +656,12 @@ public struct GMarkupVisitor: MarkupVisitor {
             return resultString
         }
     }
-
+    
     // 原来的实例方法
     private func createImageAttributedString(source: String) -> NSAttributedString {
         return GMarkupVisitor.createImageAttributedStringStatic(source: source, style: self.style,imageLoader: imageLoader)
     }
-
+    
     // 静态方法，不需要访问实例属性
     private static func createImageAttributedStringStatic(source: String, style: Style, imageLoader:ImageLoader?) -> NSAttributedString {
         let result = NSMutableAttributedString()

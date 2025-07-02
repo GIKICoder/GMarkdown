@@ -8,7 +8,7 @@
 import UIKit
 import MathJaxSwift
 
-class GMarkLatexToSVGConverter {
+class GMarkLaTexToSVGConverter {
     // A reference to our MathJax instance
     private var mathjax: MathJax
     

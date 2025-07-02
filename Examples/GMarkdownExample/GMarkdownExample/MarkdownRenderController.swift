@@ -119,7 +119,8 @@ class MarkdownRenderController: UIViewController {
     private func parseMarkdown(_ content: String) async -> [GMarkChunk] {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
-                let style = MarkdownStyle.defaultStyle()
+                var style = MarkdownStyle.defaultStyle()
+                style.maxContainerWidth = UIScreen.main.bounds.size.width - 32
                 let generator = GMarkChunkGenerator()
                 generator.style = style
                 generator.imageLoader = self.imageloader

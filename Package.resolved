@@ -1,6 +1,15 @@
 {
-  "originHash" : "ebd8527064670b020bc9997a83f0fa6469dcc29a1c3d3990c0dd18ea4da180fb",
+  "originHash" : "d3846856d29406b7a9badf8acae99f91fa67950b226090c6e798c221d8109615",
   "pins" : [
+    {
+      "identity" : "cocoalumberjack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
+      "state" : {
+        "revision" : "4b8714a7fb84d42393314ce897127b3939885ec3",
+        "version" : "3.8.5"
+      }
+    },
     {
       "identity" : "macaw",
       "kind" : "remoteSourceControl",
@@ -35,6 +44,15 @@
       "state" : {
         "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a",
         "version" : "0.4.0"
+      }
+    },
+    {
+      "identity" : "swift-log",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-log",
+      "state" : {
+        "revision" : "3d8596ed08bd13520157f0355e35caed215ffbfa",
+        "version" : "1.6.3"
       }
     },
     {
