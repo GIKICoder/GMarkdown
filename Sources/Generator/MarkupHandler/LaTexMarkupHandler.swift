@@ -10,8 +10,7 @@ import Markdown
 import MPITextKit
 import SwiftMath
 import UIKit
-import Macaw
-import SVGKit
+
 
 public class LaTexMarkupHandler: MarkupHandler {
     public init() {}

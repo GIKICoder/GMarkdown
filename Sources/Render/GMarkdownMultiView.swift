@@ -69,7 +69,7 @@ class ChunkCellProviderFactory {
         case .Thematic:
             return DefaultChunkCellProvider<GMarkThematicCell>()
         case .Latex:
-            if chunk.latexImage != nil || chunk.latexNode != nil {
+            if chunk.latexImage != nil {
                 return DefaultChunkCellProvider<GMarkLatexCell>()
             } else {
                 return DefaultChunkCellProvider<GMarkTextCell>()

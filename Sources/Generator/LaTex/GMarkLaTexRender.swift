@@ -10,8 +10,6 @@ import Markdown
 import MPITextKit
 import SwiftMath
 import UIKit
-import Macaw
-import SVGKit
 
 /// 用于渲染 LaTeX 公式的专用类
 /// 

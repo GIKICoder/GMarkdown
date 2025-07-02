@@ -10,7 +10,6 @@ import Foundation
 import Markdown
 import MPITextKit
 import UIKit
-import Macaw
 
 // MARK: - ChunkType
 
@@ -87,7 +86,6 @@ public final class GMarkChunk: Hashable, Sendable {
     public var latexImage: UIImage?
     public var latexKey: String?
     public var latexSvg: String?
-    public var latexNode: Node?
     
     public var hashKey = UUID().uuidString
     

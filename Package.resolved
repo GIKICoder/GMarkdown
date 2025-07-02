@@ -1,24 +1,6 @@
 {
-  "originHash" : "d3846856d29406b7a9badf8acae99f91fa67950b226090c6e798c221d8109615",
+  "originHash" : "9982741be01a274044ebff3a9f1490b66b99b462e04254acf75872d4e9f7676c",
   "pins" : [
-    {
-      "identity" : "cocoalumberjack",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/CocoaLumberjack/CocoaLumberjack.git",
-      "state" : {
-        "revision" : "4b8714a7fb84d42393314ce897127b3939885ec3",
-        "version" : "3.8.5"
-      }
-    },
-    {
-      "identity" : "macaw",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/exyte/Macaw.git",
-      "state" : {
-        "revision" : "29ec199cbc9c814f8ceffc1a33b8775b7349dcdd",
-        "version" : "0.9.10"
-      }
-    },
     {
       "identity" : "mathjaxswift",
       "kind" : "remoteSourceControl",
@@ -47,15 +29,6 @@
       }
     },
     {
-      "identity" : "swift-log",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-log",
-      "state" : {
-        "revision" : "3d8596ed08bd13520157f0355e35caed215ffbfa",
-        "version" : "1.6.3"
-      }
-    },
-    {
       "identity" : "swift-markdown",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-markdown.git",
@@ -71,15 +44,6 @@
       "state" : {
         "revision" : "1e49ab4e85eeb0986d0a63d1ca68f8a4b0b964d5",
         "version" : "2.0.0"
-      }
-    },
-    {
-      "identity" : "swxmlhash",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/drmohundro/SWXMLHash",
-      "state" : {
-        "revision" : "6469881a3f30417c5bb02404ea4b69207f297592",
-        "version" : "6.0.0"
       }
     }
   ],
