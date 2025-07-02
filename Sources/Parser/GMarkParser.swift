@@ -10,23 +10,26 @@ import Markdown
 
 public class GMarkParser {
     
-    public init() {
+    private let preprocessor: GMarkPreprocessor
+    
+    public init(preprocessor: GMarkPreprocessor? = nil) {
+        self.preprocessor = preprocessor ?? GMarkPreprocessor()
     }
 
     public func parseMarkdownToMarkups(markdown: String) -> [Markup] {
-        let source = markdown
-        let document = parseMarkdown(from: source)
+        let document = parseMarkdown(from: markdown)
         let nodes = convertMarkups(document)
         return nodes
     }
 
     public func parseMarkdown(from markdown: String) -> Document {
-        let source = markdown
-        let process = preprocessing(source)
-        let document = Document(parsing: process)
+        let processedMarkdown = preprocessor.process(markdown)
+        let document = Document(parsing: processedMarkdown)
+        
         #if DEBUG
             print(document.debugDescription())
         #endif
+        
         return document
     }
 
@@ -36,47 +39,16 @@ public class GMarkParser {
         }
         return markups
     }
-
-    /// preprocess markdown
-    public func preprocessing(_ markdown: String) -> String {
-        
-        var result = markdown
-        
-        /// preprocess Latex
-        let pattern = "\\$\\$([\\s\\S]*?)\\$\\$|\\$([\\s\\S]*?)\\$|\\\\\\[([\\s\\S]*?)\\\\\\]|\\\\\\(([\\s\\S]*?)\\\\\\)"
-        let regex = try! NSRegularExpression(pattern: pattern, options: [])
-        let nsString = result as NSString
-        let range = NSRange(location: 0, length: nsString.length)
-
-        let matches = regex.matches(in: result, options: [], range: range).reversed()
-
-        for match in matches {
-            let matchRange = match.range
-            let matchedString = nsString.substring(with: matchRange)
-            if matchedString.count < 3000 {
-                let lines = matchedString.components(separatedBy: .newlines)
-                if lines.count > 1 || matchedString.count > 30 {
-                    /// Add a safeguard.
-                    let wrappedString = "\n <LaTex>\(matchedString)</LaTex> \n"
-                    result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
-                } else {
-                    let wrappedString = "<LaTex>\(matchedString)</LaTex>"
-                    result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
-                }
-                
-            }
-        }
-        
-        /// Ensure that each code block image stands alone on a separate line.
-        result = replaceSubstring(in: result, target: "```", replacement: "\n```")
-        result = replaceSubstring(in: result, target: "<img>", replacement: "\n\n ![](")
-        result = replaceSubstring(in: result, target: "</img>", replacement: ") \n\n")
-        
-        return result
+    
+    // MARK: - Preprocessor Management
+    
+    /// Add a custom preprocessor
+    public func addPreprocessor(_ processor: GMarkPreprocessorProtocol) {
+        preprocessor.addProcessor(processor)
     }
-
-    func replaceSubstring(in originalString: String, target: String, replacement: String) -> String {
-        let resultString = originalString.replacingOccurrences(of: target, with: replacement)
-        return resultString
+    
+    /// Remove a preprocessor by type
+    public func removePreprocessor<T: GMarkPreprocessorProtocol>(ofType type: T.Type) {
+        preprocessor.removeProcessor(ofType: type)
     }
 }
