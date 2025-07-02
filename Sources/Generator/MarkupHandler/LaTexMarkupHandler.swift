@@ -54,9 +54,9 @@ extension GMarkChunk {
         let trimText = trimBrackets(from: text)
 
         // 初始化渲染器
-        var renderer: GMarkLatexRender
+        var renderer: GMarkLatexToSVGConverter
         do {
-            renderer = try GMarkLatexRender()
+            renderer = try GMarkLatexToSVGConverter()
         } catch {
             // 处理渲染器初始化错误
             calculateLatexText()
@@ -68,21 +68,25 @@ extension GMarkChunk {
         do {
             let svgResult = try renderer.convert(trimText)
 #if DEBUG
-            let svgSource = SVGKSourceString.source(fromContentsOf: svgResult)
-            var svgImage = SVGKImage(source: svgSource)
-            // 获取 SVG 尺寸
-            var svgSize = svgImage?.size ?? .zero
-    
-
-            // 渲染成 UIImage
-            if let image = svgImage?.uiImage {
-                // image 可用于 UIImageView 显示
-                print("渲染成功，图像大小: \(image.size)")
-                return
-            }
+            print("svgResult: \(svgResult)")
 #endif
-            
-            
+            if let svgData = svgResult.data(using: .utf8) {
+                let renderer = GMarkSVGRender.shared
+                let options = GMarkSVGRender.RenderOptions(
+                    prefersBitmap: true,
+                    preserveAspectRatio: true, targetSize: CGSize(width: style.maxContainerWidth, height: 50)
+                )
+
+                if let image = renderer.renderLaTeXSVG(data: svgData) {
+                    print("SVG 渲染成功，使用图片")
+                    // 使用渲染后的图片
+                    latexSize = image.size
+                    latexImage = image
+                    itemSize = CGSize(width: style.maxContainerWidth, height: image.size.height + style.codeBlockStyle.padding.top + style.codeBlockStyle.padding.top)
+                    return
+                }
+            }
+            print("SVG 渲染失败，尝试使用 Macaw 解析")
             // 使用渲染结果
             self.latexSvg = svgResult
             if let node = try? SVGParser.parse(text: svgResult),
@@ -107,6 +111,7 @@ extension GMarkChunk {
 
     
     func generateLatexNormal(markup: Paragraph) {
+    
         var visitor = GMarkupStringifier()
         let text =  visitor.visit(markup)
         let trimText = trimBrackets(from: text)

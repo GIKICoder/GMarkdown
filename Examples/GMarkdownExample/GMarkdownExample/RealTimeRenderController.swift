@@ -20,7 +20,7 @@ class RealTimeRenderController: UIViewController {
     private var currentIndex = 0
     private var currentContent = ""
     
-    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5"]
+    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex"]
     
     override func viewDidLoad() {
         super.viewDidLoad()

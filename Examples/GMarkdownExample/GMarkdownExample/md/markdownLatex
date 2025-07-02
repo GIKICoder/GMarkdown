@@ -1,0 +1,345 @@
+# LaTeX 数学公式 Markdown 参考手册
+
+## 1. 基本数学符号
+
+### 1.1 基础运算符
+- 加法：$a + b$
+- 减法：$a - b$
+- 乘法：$a \times b$ 或 $a \cdot b$
+- 除法：$a \div b$ 或 $\frac{a}{b}$
+- 等于：$a = b$
+- 不等于：$a \neq b$
+- 约等于：$a \approx b$
+- 恒等于：$a \equiv b$
+- 正负：$\pm a$
+- 负正：$\mp a$
+
+### 1.2 比较符号
+- 小于：$a < b$
+- 大于：$a > b$
+- 小于等于：$a \leq b$ 或 $a \le b$
+- 大于等于：$a \geq b$ 或 $a \ge b$
+- 远小于：$a \ll b$
+- 远大于：$a \gg b$
+
+## 2. 上标和下标
+
+### 2.1 基本用法
+- 上标：$x^2$, $x^{n+1}$
+- 下标：$x_1$, $x_{i,j}$
+- 组合：$x_1^2$, $x_{i+1}^{n-1}$
+
+### 2.2 特殊情况
+- 导数：$f'(x)$, $f''(x)$, $f^{(n)}(x)$
+- 转置：$A^T$, $A^{\mathrm{T}}$
+- 逆矩阵：$A^{-1}$
+- 共轭：$z^*$
+
+## 3. 分数和根式
+
+### 3.1 分数
+- 基本分数：$\frac{1}{2}$, $\frac{a+b}{c+d}$
+- 连分数：$\cfrac{1}{1+\cfrac{1}{1+\cfrac{1}{1+\cdots}}}$
+- 二项式系数：$\binom{n}{k}$, $\dbinom{n}{k}$
+
+### 3.2 根式
+- 平方根：$\sqrt{x}$, $\sqrt{a+b}$
+- n次根：$\sqrt[n]{x}$, $\sqrt[3]{8}$
+- 复杂根式：$\sqrt{\frac{a+b}{c+d}}$
+
+## 4. 求和、积分和极限
+
+### 4.1 求和
+- 基本求和：$\sum_{i=1}^{n} x_i$
+- 双重求和：$\sum_{i=1}^{m} \sum_{j=1}^{n} a_{ij}$
+- 无穷求和：$\sum_{n=0}^{\infty} \frac{1}{n!}$
+
+### 4.2 积分
+- 不定积分：$\int f(x) dx$
+- 定积分：$\int_a^b f(x) dx$
+- 多重积分：$\iint_D f(x,y) dxdy$, $\iiint_V f(x,y,z) dxdydz$
+- 环路积分：$\oint_C f(z) dz$
+
+### 4.3 极限
+- 基本极限：$\lim_{x \to a} f(x)$
+- 无穷极限：$\lim_{n \to \infty} a_n$
+- 左右极限：$\lim_{x \to 0^+} f(x)$, $\lim_{x \to 0^-} f(x)$
+
+### 4.4 其他运算符
+- 乘积：$\prod_{i=1}^{n} x_i$
+- 并集：$\bigcup_{i=1}^{n} A_i$
+- 交集：$\bigcap_{i=1}^{n} A_i$
+
+## 5. 希腊字母
+
+### 5.1 小写希腊字母
+$\alpha$, $\beta$, $\gamma$, $\delta$, $\epsilon$, $\varepsilon$, $\zeta$, $\eta$, $\theta$, $\vartheta$, $\iota$, $\kappa$, $\lambda$, $\mu$, $\nu$, $\xi$, $\pi$, $\varpi$, $\rho$, $\varrho$, $\sigma$, $\varsigma$, $\tau$, $\upsilon$, $\phi$, $\varphi$, $\chi$, $\psi$, $\omega$
+
+### 5.2 大写希腊字母
+$\Gamma$, $\Delta$, $\Theta$, $\Lambda$, $\Xi$, $\Pi$, $\Sigma$, $\Upsilon$, $\Phi$, $\Psi$, $\Omega$
+
+## 6. 三角函数和对数
+
+### 6.1 三角函数
+- $\sin x$, $\cos x$, $\tan x$
+- $\csc x$, $\sec x$, $\cot x$
+- $\arcsin x$, $\arccos x$, $\arctan x$
+- $\sinh x$, $\cosh x$, $\tanh x$
+
+### 6.2 对数函数
+- 自然对数：$\ln x$, $\log x$
+- 常用对数：$\lg x$, $\log_{10} x$
+- 任意底数：$\log_a x$
+
+## 7. 矩阵和行列式
+
+### 7.1 矩阵
+```latex
+$$\begin{matrix}
+a & b \\
+c & d
+\end{matrix}$$
+```
+$$\begin{matrix}
+a & b \\
+c & d
+\end{matrix}$$
+
+```latex
+$$\begin{pmatrix}
+a & b \\
+c & d
+\end{pmatrix}$$
+```
+$$\begin{pmatrix}
+a & b \\
+c & d
+\end{pmatrix}$$
+
+```latex
+$$\begin{bmatrix}
+a & b \\
+c & d
+\end{bmatrix}$$
+```
+$$\begin{bmatrix}
+a & b \\
+c & d
+\end{bmatrix}$$
+
+```latex
+$$\begin{vmatrix}
+a & b \\
+c & d
+\end{vmatrix}$$
+```
+$$\begin{vmatrix}
+a & b \\
+c & d
+\end{vmatrix}$$
+
+### 7.2 大型矩阵
+```latex
+$$\begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}$$
+```
+$$\begin{pmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{pmatrix}$$
+
+## 8. 方程组和分段函数
+
+### 8.1 方程组
+```latex
+$$\begin{cases}
+x + y = 1 \\
+x - y = 0
+\end{cases}$$
+```
+$$\begin{cases}
+x + y = 1 \\
+x - y = 0
+\end{cases}$$
+
+### 8.2 分段函数
+```latex
+$$f(x) = \begin{cases}
+x^2, & \text{if } x \geq 0 \\
+-x^2, & \text{if } x < 0
+\end{cases}$$
+```
+$$f(x) = \begin{cases}
+x^2, & \text{if } x \geq 0 \\
+-x^2, & \text{if } x < 0
+\end{cases}$$
+
+## 9. 集合论符号
+
+### 9.1 基本集合符号
+- 属于：$x \in A$
+- 不属于：$x \notin A$
+- 包含：$A \subset B$, $A \subseteq B$
+- 真包含：$A \subsetneq B$
+- 包含于：$A \supset B$, $A \supseteq B$
+- 并集：$A \cup B$
+- 交集：$A \cap B$
+- 差集：$A \setminus B$
+- 空集：$\emptyset$ 或 $\varnothing$
+
+### 9.2 特殊集合
+- 自然数：$\mathbb{N}$
+- 整数：$\mathbb{Z}$
+- 有理数：$\mathbb{Q}$
+- 实数：$\mathbb{R}$
+- 复数：$\mathbb{C}$
+
+## 10. 逻辑符号
+
+- 逻辑与：$\land$ 或 $\wedge$
+- 逻辑或：$\lor$ 或 $\vee$
+- 逻辑非：$\neg$ 或 $\lnot$
+- 蕴含：$\Rightarrow$, $\implies$
+- 等价：$\Leftrightarrow$, $\iff$
+- 存在：$\exists$
+- 任意：$\forall$
+
+## 11. 箭头符号
+
+### 11.1 基本箭头
+- $\leftarrow$, $\rightarrow$, $\leftrightarrow$
+- $\Leftarrow$, $\Rightarrow$, $\Leftrightarrow$
+- $\uparrow$, $\downarrow$, $\updownarrow$
+- $\Uparrow$, $\Downarrow$, $\Updownarrow$
+
+### 11.2 特殊箭头
+- $\mapsto$, $\longmapsto$
+- $\hookleftarrow$, $\hookrightarrow$
+- $\leftharpoonup$, $\rightharpoonup$
+- $\leftharpoondown$, $\rightharpoondown$
+
+## 12. 微积分符号
+
+### 12.1 导数
+- 一阶导数：$f'(x)$, $\frac{df}{dx}$, $\frac{d}{dx}f(x)$
+- 高阶导数：$f''(x)$, $f^{(n)}(x)$, $\frac{d^n f}{dx^n}$
+- 偏导数：$\frac{\partial f}{\partial x}$, $\frac{\partial^2 f}{\partial x \partial y}$
+
+### 12.2 积分
+- 不定积分：$\int f(x) dx$
+- 定积分：$\int_a^b f(x) dx$
+- 二重积分：$\iint_D f(x,y) dA$
+- 三重积分：$\iiint_V f(x,y,z) dV$
+- 线积分：$\int_C f(x,y) ds$
+- 面积分：$\iint_S f(x,y,z) dS$
+
+## 13. 概率统计符号
+
+- 概率：$P(A)$, $\Pr(A)$
+- 条件概率：$P(A|B)$
+- 期望：$E[X]$, $\mathbb{E}[X]$
+- 方差：$\text{Var}(X)$, $\sigma^2$
+- 标准差：$\sigma$
+- 协方差：$\text{Cov}(X,Y)$
+- 相关系数：$\rho$
+- 分布：$X \sim N(\mu, \sigma^2)$
+
+## 14. 特殊函数
+
+### 14.1 常见特殊函数
+- 阶乘：$n!$
+- 伽马函数：$\Gamma(x)$
+- 贝塔函数：$B(x,y)$
+- 误差函数：$\text{erf}(x)$
+- 符号函数：$\text{sgn}(x)$
+
+### 14.2 取整函数
+- 向下取整：$\lfloor x \rfloor$
+- 向上取整：$\lceil x \rceil$
+- 最近整数：$\lfloor x \rceil$
+
+## 15. 复杂公式示例
+
+### 15.1 欧拉公式
+$$e^{i\pi} + 1 = 0$$
+
+### 15.2 二次公式
+$$x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}$$
+
+### 15.3 泰勒级数
+$$f(x) = \sum_{n=0}^{\infty} \frac{f^{(n)}(a)}{n!}(x-a)^n$$
+
+### 15.4 傅里叶变换
+$$F(\omega) = \int_{-\infty}^{\infty} f(t) e^{-i\omega t} dt$$
+
+### 15.5 薛定谔方程
+$$i\hbar \frac{\partial \psi}{\partial t} = \hat{H} \psi$$
+
+### 15.6 麦克斯韦方程组
+$$\begin{align}
+\nabla \cdot \mathbf{E} &= \frac{\rho}{\epsilon_0} \\
+\nabla \cdot \mathbf{B} &= 0 \\
+\nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
+\nabla \times \mathbf{B} &= \mu_0 \mathbf{J} + \mu_0 \epsilon_0 \frac{\partial \mathbf{E}}{\partial t}
+\end{align}$$
+
+### 15.7 爱因斯坦场方程
+$$G_{\mu\nu} + \Lambda g_{\mu\nu} = \frac{8\pi G}{c^4} T_{\mu\nu}$$
+
+## 16. 字体和样式
+
+### 16.1 数学字体
+- 正体：$\mathrm{d}x$, $\mathrm{sin}$
+- 粗体：$\mathbf{A}$, $\boldsymbol{\alpha}$
+- 斜体：$\mathit{text}$
+- 花体：$\mathcal{A}$, $\mathscr{B}$
+- 黑板粗体：$\mathbb{R}$, $\mathbb{C}$
+- 哥特体：$\mathfrak{A}$, $\mathfrak{B}$
+
+### 16.2 文本
+- 普通文本：$\text{这是文本}$
+- 罗马体：$\mathrm{Roman}$
+- 打字机字体：$\texttt{typewriter}$
+
+## 17. 空格和对齐
+
+### 17.1 空格
+- 小空格：$a\,b$
+- 中等空格：$a\:b$
+- 大空格：$a\;b$
+- 四分之一空格：$a\!b$
+
+### 17.2 多行公式对齐
+```latex
+\begin{align}
+f(x) &= ax^2 + bx + c \\
+&= a(x^2 + \frac{b}{a}x) + c \\
+&= a(x + \frac{b}{2a})^2 - \frac{b^2}{4a} + c
+\end{align}
+```
+
+## 18. 特殊符号和装饰
+
+### 18.1 装饰符号
+- 帽子：$\hat{a}$, $\widehat{abc}$
+- 波浪：$\tilde{a}$, $\widetilde{abc}$
+- 横线：$\bar{a}$, $\overline{abc}$
+- 下划线：$\underline{abc}$
+- 向量：$\vec{a}$, $\overrightarrow{AB}$
+- 点：$\dot{a}$, $\ddot{a}$
+
+### 18.2 括号
+- 圆括号：$(a)$, $\left(\frac{a}{b}\right)$
+- 方括号：$[a]$, $\left[\frac{a}{b}\right]$
+- 花括号：$\{a\}$, $\left\{\frac{a}{b}\right\}$
+- 角括号：$\langle a \rangle$, $\left\langle\frac{a}{b}\right\rangle$
+- 绝对值：$|a|$, $\left|\frac{a}{b}\right|$
+- 范数：$\|a\|$, $\left\|\frac{a}{b}\right\|$
+
+这个参考手册涵盖了 LaTeX 数学公式的大部分常用符号和用法。在实际使用时，可以根据需要选择合适的符号和格式。

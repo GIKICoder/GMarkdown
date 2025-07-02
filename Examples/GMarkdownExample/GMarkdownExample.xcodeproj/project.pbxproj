@@ -16,6 +16,7 @@
 		2B052D042D82B65500BAE956 /* NukeExtensions in Frameworks */ = {isa = PBXBuildFile; productRef = 2B052D032D82B65500BAE956 /* NukeExtensions */; };
 		2B052D052D82B70500BAE956 /* markdown in Resources */ = {isa = PBXBuildFile; fileRef = 114640C16E263162F58A1B43 /* markdown */; };
 		2B052D062D82B70500BAE956 /* markdownv2 in Resources */ = {isa = PBXBuildFile; fileRef = 66BC7B35F5F1709820DC6394 /* markdownv2 */; };
+		2B64E00C2E1552A0002B71C2 /* markdownLatex in Resources */ = {isa = PBXBuildFile; fileRef = 2B64E00B2E155290002B71C2 /* markdownLatex */; };
 		2B6C0D2D2E0F0B8A00F6D641 /* RealTimeRenderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */; };
 		2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2E2E0F102900F6D641 /* markdownv5 */; };
 		2B78F42F2DBE534B00ABE9B6 /* markdownv4 in Resources */ = {isa = PBXBuildFile; fileRef = 2B78F42E2DBE534B00ABE9B6 /* markdownv4 */; };
@@ -29,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		114640C16E263162F58A1B43 /* markdown */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdown; sourceTree = "<group>"; };
+		2B64E00B2E155290002B71C2 /* markdownLatex */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownLatex; sourceTree = "<group>"; };
 		2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeRenderController.swift; sourceTree = "<group>"; };
 		2B6C0D2E2E0F102900F6D641 /* markdownv5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv5; sourceTree = "<group>"; };
 		2B78F42E2DBE534B00ABE9B6 /* markdownv4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv4; sourceTree = "<group>"; };
@@ -65,6 +67,7 @@
 		2BD9E4732DB73F00005638D0 /* md */ = {
 			isa = PBXGroup;
 			children = (
+				2B64E00B2E155290002B71C2 /* markdownLatex */,
 				114640C16E263162F58A1B43 /* markdown */,
 				66BC7B35F5F1709820DC6394 /* markdownv2 */,
 				2BD9E4742DB73F23005638D0 /* markdownv3 */,
@@ -179,6 +182,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B052D052D82B70500BAE956 /* markdown in Resources */,
+				2B64E00C2E1552A0002B71C2 /* markdownLatex in Resources */,
 				2B052D062D82B70500BAE956 /* markdownv2 in Resources */,
 				2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */,
 				179DAE4E4169B30B188FDB4A /* Assets.xcassets in Resources */,
