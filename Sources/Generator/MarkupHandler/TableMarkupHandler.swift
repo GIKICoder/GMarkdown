@@ -51,7 +51,7 @@ extension GMarkChunk {
         guard let table = table else {
             return
         }
-        tableRender = GMarkTableRender(markTable: table, style: style)
+        tableRender = GMarkTableLayout(markTable: table, style: style)
         itemSize = CGSize(width: style.maxContainerWidth, height: tableRender?.tableHeight ?? 0)
     }
 }

@@ -62,7 +62,7 @@ public final class GMarkChunk: Hashable, Sendable {
     public var style: Style = MarkdownStyle.defaultStyle()
     
     /// The table renderer, if the chunk is a table.
-    public var tableRender: GMarkTableRender?
+    public var tableRender: GMarkTableLayout?
     
     /// The programming language, if the chunk is a code block.
     public var language: String = ""
