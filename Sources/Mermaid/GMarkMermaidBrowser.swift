@@ -62,42 +62,27 @@ class GMarkMermaidBrowser: UIViewController {
     }
     
     private func loadMermaidContent() {
-        let escapedMermaidCode = mermaidCode.replacingOccurrences(of: "'", with: "\'").replacingOccurrences(of: "\n", with: "\\n")
+        let escapedMermaidCode = mermaidCode.replacingOccurrences(of: "'", with: "\'")
+                                            .replacingOccurrences(of: "\n", with: "\\n")
         
-        let htmlContent = """
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Mermaid Diagram</title>
-            <script src="mermaid/mermaid.min.js"></script>
-            <script>
-                mermaid.initialize({ startOnLoad: false });
-                
-                document.addEventListener('DOMContentLoaded', () => {
-                    const insertSvg = function(svgCode, bindFunctions) {
-                        document.getElementById('mermaid-diagram').innerHTML = svgCode;
-                        window.webkit.messageHandlers.debug.postMessage('Mermaid图表已插入DOM');
-                    };
-                    mermaid.mermaidAPI.render('mermaid-diagram', '\(escapedMermaidCode)', insertSvg);
-                });
-            </script>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-                #mermaid-diagram { width: 100%; height: auto; }
-            </style>
-        </head>
-        <body>
-            <div id="mermaid-diagram"></div>
-        </body>
-        </html>
-        """
+        #if SWIFT_PACKAGE
+        let bundle = Bundle.module
+        #else
+        let bundle = Bundle(for: GMarkMermaidBrowser.self)
+        #endif
         
-        if let bundleURL = Bundle.main.resourceURL?.appendingPathComponent("Assets") {
-            webView.loadHTMLString(htmlContent, baseURL: bundleURL)
+        if let htmlURL = bundle.url(forResource: "mermaid", withExtension: "html") {
+            let htmlString = try? String(contentsOf: htmlURL, encoding: .utf8)
+            let updatedHtmlString = htmlString?.replacingOccurrences(of: "MERMAID_CODE_PLACEHOLDER", with: escapedMermaidCode)
+            
+            if let bundleURL = bundle.resourceURL?.appendingPathComponent("Assets") {
+                webView.loadHTMLString(updatedHtmlString ?? "", baseURL: bundleURL)
+            } else {
+                webView.loadHTMLString(updatedHtmlString ?? "", baseURL: nil)
+            }
         } else {
-            webView.loadHTMLString(htmlContent, baseURL: nil)
+            print("Error: mermaid.html not found in Assets/mermaid")
+            showAlert(title: "加载失败", message: "无法找到 mermaid.html 文件")
         }
     }
     
@@ -111,13 +96,6 @@ extension GMarkMermaidBrowser: WKNavigationDelegate, WKScriptMessageHandler {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
         print("WebView加载完成")
-        
-        webView.evaluateJavaScript("console.log('Mermaid渲染开始'); mermaid.mermaidAPI.render('mermaid-diagram', document.getElementById('mermaid-diagram').textContent, function(svgCode) { document.getElementById('mermaid-diagram').innerHTML = svgCode; window.webkit.messageHandlers.debug.postMessage('Mermaid图表已渲染'); });") { _, error in
-            if let error = error {
-                print("JavaScript执行错误：\(error.localizedDescription)")
-                self.showAlert(title: "渲染错误", message: error.localizedDescription)
-            }
-        }
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
