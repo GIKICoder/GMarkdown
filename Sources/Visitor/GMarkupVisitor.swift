@@ -140,7 +140,18 @@ public struct GMarkupVisitor: MarkupVisitor {
         return NSAttributedString.singleNewline(withStyle: style)
     }
     
-    // MARK: - Helper Methods
+   
+    // MARK: - Block Quote Configuration
+    
+    private struct BlockQuoteConfig {
+        let baseLeftMargin: CGFloat
+        let depthOffset: CGFloat
+        let maxDepth: Int
+    }
+}
+
+// MARK: - Helper Methods Extension
+extension GMarkupVisitor {
     
     private mutating func processChildren(of markup: Markup) -> NSMutableAttributedString {
         let result = NSMutableAttributedString()
@@ -217,11 +228,7 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     private mutating func handleLatexText(_ text: Text) -> NSAttributedString {
-        guard text.plainText != "[" && text.plainText != "]" else {
-            return defaultAttribute(from: "")
-        }
-        let trimmedText = trimBrackets(from: text.plainText)
-        let result = GMarkLaTexRender.renderLatexSmart(from: trimmedText, style: style)
+        let result = GMarkLaTexRender.renderLatexSmart(from: text.plainText, style: style)
         
         if result.success, let image = result.image {
             let resizedImage = image.resized(toMaxWidth: style.maxContainerWidth - 40)
@@ -261,52 +268,9 @@ public struct GMarkupVisitor: MarkupVisitor {
             
             return result
         } else {
-            print("LaTeX 渲染失败: \(result.error?.localizedDescription ?? "未知错误")")
             // 渲染失败时使用纯文本作为后备
             return defaultAttribute(from: text.plainText)
         }
-        
-        
-    }
-    
-    private mutating func renderLatexSynchronously(image: UIImage) -> NSAttributedString {
-        let result = NSMutableAttributedString()
-        if image.size.width > style.maxContainerWidth {
-            let sv = UIScrollView()
-            sv.contentSize = image.size
-            let iv = UIImageView(image: image)
-            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            sv.addSubview(iv)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = sv
-            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
-            attachment.verticalAligment = .center
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            applyDefaultParagraphStyle(to: attrString)
-            result.append(attrString)
-        } else {
-            let attachment = MPITextAttachment()
-            attachment.image = image
-            attachment.contentSize = image.size
-            attachment.contentMode = .left
-            attachment.verticalAligment = .center
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            applyDefaultParagraphStyle(to: attrString)
-            result.append(attrString)
-        }
-        return result
-    }
-    
-    private mutating func renderLatexAsynchronously(image: UIImage) -> NSAttributedString {
-        let semaphore = DispatchSemaphore(value: 0)
-        let result = NSMutableAttributedString()
-        loadLatexAsync(from: image, style: style) { attrString in
-            result.append(attrString)
-            semaphore.signal()
-        }
-        semaphore.wait()
-        return result
     }
     
     private mutating func handleSupTag(from text: Text) -> NSAttributedString {
@@ -723,45 +687,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         result.append(attrString)
         return result
     }
-    
-    private func loadLatexAsync(from image: UIImage, style: Style, completion: @escaping (NSAttributedString) -> Void) {
-        DispatchQueue.main.async {
-            let sv = UIScrollView()
-            sv.contentSize = image.size
-            let iv = UIImageView(image: image)
-            iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-            sv.addSubview(iv)
-            
-            let attachment = MPITextAttachment()
-            attachment.content = sv
-            attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
-            attachment.verticalAligment = .center
-            
-            let attrString = NSMutableAttributedString(attachment: attachment)
-            let paragraphStyle = NSMutableParagraphStyle()
-            paragraphStyle.lineSpacing = 25 - style.fonts.current.pointSize
-            paragraphStyle.paragraphSpacing = 16
-            attrString.addAttribute(.paragraphStyle, value: paragraphStyle)
-            attrString.addAttribute(.font, value: style.fonts.current)
-            attrString.addAttribute(.foregroundColor, value: style.colors.current)
-            completion(attrString)
-        }
-    }
-    
-    func trimBrackets(from string: String) -> String {
-        let trimmedString = string.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmedString.hasPrefix("[") && (trimmedString.hasSuffix("]")) {
-            return String(trimmedString.dropFirst().dropLast())
-        }
-        if trimmedString.hasPrefix("(") && (trimmedString.hasSuffix(")")) {
-            return String(trimmedString.dropFirst().dropLast())
-        }
-        return trimmedString
-    }
-    
-    private func calculateWidth(of text: String, withFont font: UIFont) -> CGFloat {
-        return (text as NSString).size(withAttributes: [.font: font]).width
-    }
+
     
     // MARK: - Rendering Helpers
     
@@ -771,35 +697,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         }
         return defaultAttribute(from: String(data: htmlData, encoding: .utf8) ?? "")
     }
-    
-    private mutating func renderLatexImage(_ image: UIImage) -> NSAttributedString {
-        let attachment = MPITextAttachment()
-        attachment.image = image
-        attachment.contentSize = image.size
-        attachment.contentMode = .left
-        attachment.verticalAligment = .center
-        
-        let attrString = NSMutableAttributedString(attachment: attachment)
-        applyDefaultParagraphStyle(to: attrString)
-        return attrString
-    }
-    
-    private mutating func renderLatexScrollView(_ image: UIImage) -> NSAttributedString {
-        let sv = UIScrollView()
-        sv.contentSize = image.size
-        let iv = UIImageView(image: image)
-        iv.frame = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
-        sv.addSubview(iv)
-        
-        let attachment = MPITextAttachment()
-        attachment.content = sv
-        attachment.contentSize = CGSize(width: style.maxContainerWidth, height: image.size.height)
-        attachment.verticalAligment = .center
-        
-        let attrString = NSMutableAttributedString(attachment: attachment)
-        applyDefaultParagraphStyle(to: attrString)
-        return attrString
-    }
+
     
     private mutating func applyDefaultParagraphStyle(to attributedString: NSMutableAttributedString) {
         let paragraphStyle = NSMutableParagraphStyle()
@@ -814,15 +712,7 @@ public struct GMarkupVisitor: MarkupVisitor {
         
     }
     
-    // MARK: - Block Quote Configuration
-    
-    private struct BlockQuoteConfig {
-        let baseLeftMargin: CGFloat
-        let depthOffset: CGFloat
-        let maxDepth: Int
-    }
 }
-
 
 // MARK: - Public Attribute Implementation
 extension GMarkupVisitor {
@@ -972,79 +862,6 @@ extension UIFont {
 }
 
 
-extension ListItemContainer {
-    var listDepth: Int {
-        var depth = 0
-        var current = parent
-        while let currentElement = current {
-            if currentElement is ListItemContainer {
-                depth += 1
-            }
-            current = currentElement.parent
-        }
-        return depth
-    }
-}
-
-extension BlockQuote {
-    var quoteDepth: Int {
-        var depth = 0
-        var current = parent
-        while let currentElement = current {
-            if currentElement is BlockQuote {
-                depth += 1
-            }
-            current = currentElement.parent
-        }
-        return depth
-    }
-}
-
-extension Markup {
-    var hasSuccessor: Bool {
-        let siblingIndex = indexInParent
-        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return false }
-        guard let nextSibling = parent.child(at: siblingIndex + 1) else { return false }
-        return !isSplitPoint(nextSibling)
-    }
-    
-    var isContainedInList: Bool {
-        var current = parent
-        while let currentElement = current {
-            if currentElement is ListItemContainer {
-                return true
-            }
-            current = currentElement.parent
-        }
-        return false
-    }
-    
-    var subTag: String? {
-        let siblingIndex = indexInParent
-        guard let parent = parent, siblingIndex < parent.childCount - 1 else { return nil }
-        let nextSibling = parent.child(at: siblingIndex + 1)
-        if let inlineHTML = nextSibling as? InlineHTML, inlineHTML.plainText == "<sup>",
-           let tagText = parent.child(at: siblingIndex + 2) as? Text {
-            return tagText.plainText
-        }
-        return nil
-    }
-    
-    func isSplitPoint(_ item: Markup) -> Bool {
-        switch item {
-        case is Table, is CodeBlock, is ThematicBreak, is Image:
-            return true
-        case let paragraph as Paragraph:
-            if paragraph.child(at: 0) is Image { return true }
-            if let inlineHTML = paragraph.child(at: 0) as? InlineHTML, inlineHTML.plainText == "<LaTex>" {
-                return true
-            }
-            return false
-        default:
-            return false
-        }
-    }
-}
 
 extension UIImage {
     /// 根据给定的最大宽度调整图片大小，同时保持比例不变。
