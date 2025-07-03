@@ -1,5 +1,6 @@
 import UIKit
 import WebKit
+import Photos
 
 class GMarkMermaidBrowser: UIViewController {
     
@@ -46,6 +47,7 @@ class GMarkMermaidBrowser: UIViewController {
         
         let contentController = WKUserContentController()
         contentController.add(self, name: "debug")
+        contentController.add(self, name: "saveImage")
         webConfiguration.userContentController = contentController
         
         webView = WKWebView(frame: view.bounds, configuration: webConfiguration)
@@ -111,8 +113,48 @@ extension GMarkMermaidBrowser: WKNavigationDelegate, WKScriptMessageHandler {
     }
     
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
-        if message.name == "debug" {
+        switch message.name {
+        case "debug":
             print("WebView调试信息：\(message.body)")
+        case "saveImage":
+            if let pngData = message.body as? String {
+                saveImageToPhotoLibrary(pngData)
+            }
+        default:
+            break
+        }
+    }
+
+    private func saveImageToPhotoLibrary(_ pngDataString: String) {
+        guard let imageData = Data(base64Encoded: String(pngDataString.split(separator: ",")[1]), options: .ignoreUnknownCharacters) else {
+            showAlert(title: "保存失败", message: "无法解析图片数据")
+            return
+        }
+
+        PHPhotoLibrary.requestAuthorization { status in
+            DispatchQueue.main.async {
+                switch status {
+                case .authorized,.limited:
+                    PHPhotoLibrary.shared().performChanges({
+                        let creationRequest = PHAssetCreationRequest.forAsset()
+                        creationRequest.addResource(with: .photo, data: imageData, options: nil)
+                    }) { success, error in
+                        DispatchQueue.main.async {
+                            if success {
+                                self.showAlert(title: "保存成功", message: "图片已保存到相册")
+                            } else {
+                                self.showAlert(title: "保存失败", message: error?.localizedDescription ?? "未知错误")
+                            }
+                        }
+                    }
+                case .denied, .restricted:
+                    self.showAlert(title: "无法访问相册", message: "请在设置中允许访问相册")
+                case .notDetermined:
+                    self.showAlert(title: "无法访问相册", message: "请重试并允许访问相册")
+                @unknown default:
+                    self.showAlert(title: "保存失败", message: "未知错误")
+                }
+            }
         }
     }
     
