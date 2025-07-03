@@ -1,5 +1,7 @@
 # GMarkdown
 
+**语言**: [English](README.md) | [中文](https://github.com/GIKICoder/GMarkdown/blob/main/README-zh.md)
+
 [GMarkdown](https://github.com/GIKICoder/GMarkdown.git) is a powerful and versatile Markdown rendering library designed for Swift developers. Built on top of the swift-markdown parser, GMarkdown offers pure native rendering capabilities, ensuring seamless integration and high performance for your iOS applications.
 
 GMarkdown is currently in the testing phase. Although efforts have been made to support different styles of markdown, some code-level optimizations and modifications are still needed to make the GMarkdown architecture more reasonable. If time permits, part of the code logic will be redesigned in the future.
