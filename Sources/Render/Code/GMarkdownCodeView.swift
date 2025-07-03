@@ -82,6 +82,8 @@ open class GMarkdownCodeView: UIView {
         codeCopyButton.setTitleColor(UIColor(hex: "#666666"), for: .normal)
         codeCopyButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
         codeCopyButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        codeCopyButton.titleEdgeInsets = UIEdgeInsets(top: 0, left: 2, bottom: 0, right: -2)
+        codeCopyButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -2, bottom: 0, right: 2)
         codeCopyButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         topView.addSubview(codeCopyButton)
 
@@ -137,7 +139,7 @@ open class GMarkdownCodeView: UIView {
             playButton.widthAnchor.constraint(equalToConstant: 24),
             playButton.heightAnchor.constraint(equalToConstant: 24),
             playButton.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
-            playButton.leftAnchor.constraint(equalTo: languageLabel.rightAnchor, constant: 8),
+            playButton.leftAnchor.constraint(equalTo: languageLabel.rightAnchor, constant: 2),
         ])
     }
 
