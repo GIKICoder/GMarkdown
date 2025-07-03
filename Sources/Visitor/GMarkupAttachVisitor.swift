@@ -598,39 +598,71 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         let font = style.fonts.current
         
         for listItem in unorderedList.listItems {
-            
             let listItemAttributedString = visit(listItem).mutableCopy() as! NSMutableAttributedString
             let isRTL = isRTLLanguage(text: listItemAttributedString.string)
             
+            // 确定列表项前缀符号
+            let bulletSymbol: String
+            if let checkBox = listItem.checkbox {
+                switch checkBox {
+                case .checked:
+                    bulletSymbol = "☑" // 选中状态
+                case .unchecked:
+                    bulletSymbol = "☐" // 未选中状态
+                }
+            } else {
+                bulletSymbol = "•" // 普通列表项
+            }
+            
+            // 设置段落样式
             var listItemAttributes: [NSAttributedString.Key: Any] = [:]
             let listItemParagraphStyle = NSMutableParagraphStyle()
             listItemParagraphStyle.lineSpacing = 25 - font.pointSize
             listItemParagraphStyle.paragraphSpacing = 14
+            
+            // 计算缩进和间距
             let baseLeftMargin: CGFloat = 5.0
             let leftMarginOffset = baseLeftMargin + (20.0 * CGFloat(unorderedList.listDepth))
             let spacingFromIndex: CGFloat = 8.0
-            let bulletWidth = ceil(NSAttributedString(string: "•", attributes: [.font: font, .foregroundColor: style.colors.current]).size().width)
+            
+            // 根据实际符号计算宽度
+            let bulletWidth = ceil(NSAttributedString(
+                string: bulletSymbol,
+                attributes: [.font: font, .foregroundColor: style.colors.current]
+            ).size().width)
+            
             let firstTabLocation = leftMarginOffset + bulletWidth
             let secondTabLocation = firstTabLocation + spacingFromIndex
             
+            // 设置制表符位置
             listItemParagraphStyle.tabStops = [
                 NSTextTab(textAlignment: .right, location: firstTabLocation),
                 NSTextTab(textAlignment: .left, location: secondTabLocation),
             ]
+            
+            // 设置文本方向和对齐
             listItemParagraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
             listItemParagraphStyle.alignment = isRTL ? .right : .left
             listItemParagraphStyle.headIndent = secondTabLocation
+            
+            // 应用样式属性
             listItemAttributes[.paragraphStyle] = listItemParagraphStyle
             listItemAttributes[.font] = font
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = unorderedList.listDepth
             
+            // 插入符号和制表符
             let taps = isRTL ? " " : "\t"
-            listItemAttributedString.insert(NSAttributedString(string: "\t•\(taps)", attributes: listItemAttributes), at: 0)
+            let prefixString = "\t\(bulletSymbol)\(taps)"
+            listItemAttributedString.insert(
+                NSAttributedString(string: prefixString, attributes: listItemAttributes),
+                at: 0
+            )
             
             result.append(listItemAttributedString)
         }
         
+        // 如果有后续内容，添加双换行
         if unorderedList.hasSuccessor {
             result.append(.doubleNewline(withStyle: style))
         }
@@ -640,8 +672,8 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
     
     private func handleImage(source: String) -> NSAttributedString {
         
-        let provider = AsyncImageAttachedProvider(url: source)
-        let attachment = SubviewTextAttachment(viewProvider: provider)
+        let provider = MDAsyncImageAttachedProvider(url: source)
+        let attachment = MarkdownAttachment(viewProvider: provider)
         
         let attributed = defaultAttribute(from: "")
         let separatorString = NSAttributedString(string: .paragraphSeparator)
@@ -650,41 +682,6 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         attributed.append(separatorString)
         
         return attributed
-    }
-
-    // 原来的实例方法
-    private func createImageAttributedString(source: String) -> NSAttributedString {
-        return GMarkupAttachVisitor.createImageAttributedStringStatic(source: source, style: self.style,imageLoader: imageLoader)
-    }
-
-    // 静态方法，不需要访问实例属性
-    private static func createImageAttributedStringStatic(source: String, style: Style, imageLoader:ImageLoader?) -> NSAttributedString {
-        let result = NSMutableAttributedString()
-        
-        let imageView = UIImageView()
-        imageView.backgroundColor = style.imageStyle.backgroundColor
-        imageView.layer.cornerRadius = style.imageStyle.cornerRadius
-        imageView.clipsToBounds = true
-        imageView.contentMode = style.imageStyle.contentMode
-        
-        imageLoader?.loadImage(from: source, into: imageView)
-        
-        let attachment = MPITextAttachment()
-        attachment.content = imageView
-        attachment.contentSize = style.imageStyle.size
-        attachment.contentInsets = style.imageStyle.padding
-        attachment.verticalAligment = .center
-        
-        let attrString = NSMutableAttributedString(attachment: attachment)
-        if let url = URL(string: source) {
-            attrString.addAttribute(.link, value: url)
-            let mpiLink = MPITextLink()
-            mpiLink.value = url as any NSObjectProtocol
-            attrString.addAttribute(.MPILink, value: mpiLink)
-        }
-        
-        result.append(attrString)
-        return result
     }
     
     private func loadLatexAsync(from image: UIImage, style: Style, completion: @escaping (NSAttributedString) -> Void) {

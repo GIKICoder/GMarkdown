@@ -9,13 +9,12 @@ import UIKit
 
 /// 专门用于Markdown渲染的TextView
 /// 负责接收AttributedString并进行高性能渲染，支持SubviewAttaching
-@available(iOS 13.4, *)
 open class MarkdownTextView: UITextView {
     
     // MARK: - Properties
     
     /// SubviewAttaching行为管理器
-    private let attachmentBehavior = MarkdownSubviewAttachingBehavior()
+    private let attachmentBehavior = MarkdownAttachingBehavior()
     
     /// 是否启用SubviewAttaching功能
     public var isSubviewAttachingEnabled: Bool = true {
