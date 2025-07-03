@@ -41,22 +41,6 @@ extension ChunkCellConfigurable {
 // MARK: - CellProvider Factory
 
 class ChunkCellProviderFactory {
-    static func provider(for chunkType: ChunkType) -> ChunkCellProvider {
-        switch chunkType {
-        case .Text:
-            return DefaultChunkCellProvider<GMarkTextCell>()
-        case .Code:
-            return DefaultChunkCellProvider<GMarkCodeCell>()
-        case .Table:
-            return DefaultChunkCellProvider<GMarkTableCell>()
-        case .Thematic:
-            return DefaultChunkCellProvider<GMarkThematicCell>()
-        case .Latex:
-            return DefaultChunkCellProvider<GMarkLatexCell>()
-        default:
-            return DefaultChunkCellProvider<GMarkTextCell>()
-        }
-    }
     
     static func provider(for chunk: GMarkChunk) -> ChunkCellProvider {
         switch chunk.chunkType {

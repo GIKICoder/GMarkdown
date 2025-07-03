@@ -167,7 +167,7 @@ extension GMarkMermaidBrowser: WKNavigationDelegate, WKScriptMessageHandler {
 
 // MARK: - Public API
 extension GMarkMermaidBrowser {
-    static func present(from viewController: UIViewController? = nil, mermaidCode: String) {
+    public static func modal(with mermaidCode: String, in viewController: UIViewController? = nil) {
         let mermaidBrowser = GMarkMermaidBrowser(mermaidCode: mermaidCode)
         let navigationController = UINavigationController(rootViewController: mermaidBrowser)
         navigationController.modalPresentationStyle = .formSheet

@@ -185,7 +185,7 @@ open class GMarkdownCodeView: UIView {
         guard let markChunk = markChunk else { return }
         let language = markChunk.language.lowercased()
         if language == "mermaid" {
-            GMarkMermaidBrowser.present(mermaidCode: markChunk.codeSource)
+            GMarkMermaidBrowser.modal(with: markChunk.codeSource)
         } else if language == "html" {
             GMarkHtmlBrowser.modal(with: markChunk.codeSource)
         }
