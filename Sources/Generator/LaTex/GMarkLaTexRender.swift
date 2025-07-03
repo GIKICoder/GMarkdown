@@ -12,15 +12,15 @@ import SwiftMath
 import UIKit
 
 /// 用于渲染 LaTeX 公式的专用类
-/// 
+///
 /// 使用示例：
 /// ```swift
 /// // 智能渲染（推荐）- 内部会自动选择最佳渲染策略
 /// let result = GMarkLaTexRender.renderLatexSmart(from: "x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}", style: style)
-/// 
+///
 /// // 手动指定渲染方法
 /// let result = GMarkLaTexRender.renderLatex(from: text, style: style, method: .fast)
-/// 
+///
 /// // 便捷的图片渲染
 /// let result = GMarkLaTexRender.renderLatexImage("E = mc^2", fontSize: 20, textColor: .black)
 /// ```
@@ -55,7 +55,7 @@ public class GMarkLaTexRender {
     ///   - style: 渲染样式
     ///   - method: 渲染方法，默认为快速渲染
     /// - Returns: 渲染结果
-    public static func renderLatex(from markup: Paragraph, 
+    public static func renderLatex(from markup: Paragraph,
                                    style: Style,
                                    method: RenderMethod = .fast) -> RenderResult {
         var visitor = GMarkupStringifier()
@@ -139,14 +139,17 @@ public class GMarkLaTexRender {
                 return result
             } else {
                 // 快速渲染失败，自动切换到 SVG
+                
+#if DEBUG
                 print("SwiftMath 渲染失败，自动切换到 SVG 渲染")
+#endif
                 return renderWithSVG(trimmedText, style: style)
             }
         case .svgFallback:
             return renderWithSVG(trimmedText, style: style)
         }
     }
-
+    
     
     // MARK: - Smart Rendering Strategy
     
@@ -181,21 +184,21 @@ public class GMarkLaTexRender {
         if hasComplexFeatures {
             // 包含复杂特征，优先使用 SVG
             selectedMethod = .svgFallback
-            #if DEBUG
+#if DEBUG
             print("LaTeX 智能渲染：检测到复杂特征，选择 SVG 渲染")
-            #endif
+#endif
         } else if isLongFormula && specialCharDensity > 0.3 {
             // 长公式且特殊字符密度高，使用 SVG
             selectedMethod = .svgFallback
-            #if DEBUG
+#if DEBUG
             print("LaTeX 智能渲染：长公式且复杂度高，选择 SVG 渲染")
-            #endif
+#endif
         } else {
             // 简单公式，使用快速渲染
             selectedMethod = .fast
-            #if DEBUG
+#if DEBUG
             print("LaTeX 智能渲染：简单公式，选择 SwiftMath 快速渲染")
-            #endif
+#endif
         }
         
         return selectedMethod
@@ -269,9 +272,9 @@ public class GMarkLaTexRender {
             let converter = try GMarkLaTexToSVGConverter()
             let svgResult = try converter.convert(text)
             
-            #if DEBUG
+#if DEBUG
             print("SVG 渲染结果: \(svgResult)")
-            #endif
+#endif
             
             if let svgData = svgResult.data(using: .utf8) {
                 let svgRenderer = GMarkSVGRender.shared
