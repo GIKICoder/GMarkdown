@@ -1,9 +1,8 @@
 //
-//  SubviewTextAttachment.swift
-//  SubviewAttachingTextView
+//  MarkdownAttachment.swift
+//  GMarkdown
 //
-//  Created by Vlas Voloshin on 29/1/17.
-//  Copyright © 2017 Vlas Voloshin. All rights reserved.
+//  Created by 巩柯 on 2025/7/3.
 //
 
 import UIKit
@@ -11,17 +10,17 @@ import UIKit
 /**
  Describes a custom text attachment object containing a view. SubviewAttachingTextViewBehavior tracks attachments of this class and automatically manages adding and removing subviews in its text view.
  */
-@objc(VVSubviewTextAttachment)
-open class SubviewTextAttachment: NSTextAttachment {
+@objc(MarkdownAttachment)
+open class MarkdownAttachment: NSTextAttachment {
 
     @objc
-    public let viewProvider: TextAttachedViewProvider
+    public let viewProvider: MarkdownAttachedViewProvider
 
     /**
      Initialize the attachment with a view provider.
      */
     @objc
-    public init(viewProvider: TextAttachedViewProvider) {
+    public init(viewProvider: MarkdownAttachedViewProvider) {
         self.viewProvider = viewProvider
         super.init(data: nil, ofType: nil)
     }
@@ -32,7 +31,7 @@ open class SubviewTextAttachment: NSTextAttachment {
      */
     @objc
     public convenience init(view: UIView, size: CGSize) {
-        let provider = DirectTextAttachedViewProvider(view: view)
+        let provider = UIViewAttachedViewProvider(view: view)
         self.init(viewProvider: provider)
         self.bounds = CGRect(origin: .zero, size: size)
     }
@@ -60,36 +59,17 @@ open class SubviewTextAttachment: NSTextAttachment {
     // MARK: NSCoding
 
     public required init?(coder aDecoder: NSCoder) {
-        fatalError("SubviewTextAttachment cannot be decoded.")
+        fatalError("MarkdownAttachment cannot be decoded.")
     }
 
 }
 
-// MARK: - Internal view provider
-
-final internal class DirectTextAttachedViewProvider: TextAttachedViewProvider {
-
-    let view: UIView
-
-    init(view: UIView) {
-        self.view = view
-    }
-
-    func instantiateView(for attachment: SubviewTextAttachment, in behavior: SubviewAttachingTextViewBehavior) -> UIView {
-        return self.view
-    }
-
-    func bounds(for attachment: SubviewTextAttachment, textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint) -> CGRect {
-        return attachment.bounds
-    }
-
-}
 
 // MARK: - Extensions
 
 private extension UIView {
 
-    @objc(vv_attachmentFittingSize)
+    @objc(md_attachmentFittingSize)
     var textAttachmentFittingSize: CGSize {
         let fittingSize = self.systemLayoutSizeFitting(UIView.layoutFittingCompressedSize)
         if fittingSize.width > 1e-3 && fittingSize.height > 1e-3 {

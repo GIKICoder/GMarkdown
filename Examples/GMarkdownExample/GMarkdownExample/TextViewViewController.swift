@@ -10,7 +10,7 @@ import GMarkdown
 
 class TextViewViewController: UIViewController {
     
-    let markdownView = SubviewAttachingTextView()
+    let markdownView = MarkdownTextView()
     
     override func viewDidLoad() {
         super.viewDidLoad()
