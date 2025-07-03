@@ -172,10 +172,7 @@ extension GMarkMermaidBrowser {
         let navigationController = UINavigationController(rootViewController: mermaidBrowser)
         navigationController.modalPresentationStyle = .formSheet
         
-        if let presentingViewController = viewController ?? UIApplication.shared.keyWindow?.rootViewController {
-            presentingViewController.present(navigationController, animated: true, completion: nil)
-        } else {
-            print("Error: Unable to find a view controller to present from.")
-        }
+        let presentingVC = viewController ?? UIApplication.shared.windows.first?.rootViewController
+        presentingVC?.present(navigationController, animated: true, completion: nil)
     }
 }

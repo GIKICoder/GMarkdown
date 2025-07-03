@@ -35,7 +35,7 @@ open class GMarkdownCodeView: UIView {
             let frame = adjustedFrame(frame: bounds, withInsets: markChunk.style.codeBlockStyle.padding)
             container.frame = frame
 
-            playButton.isHidden = markChunk.language != "mermaid"
+            playButton.isHidden = !(["mermaid", "html"].contains(markChunk.language.lowercased()))
         }
     }
 
@@ -183,8 +183,11 @@ open class GMarkdownCodeView: UIView {
 
     @objc private func playButtonAction() {
         guard let markChunk = markChunk else { return }
-        if markChunk.language == "mermaid" {
+        let language = markChunk.language.lowercased()
+        if language == "mermaid" {
             GMarkMermaidBrowser.present(mermaidCode: markChunk.codeSource)
+        } else if language == "html" {
+            GMarkHtmlBrowser.modal(with: markChunk.codeSource)
         }
     }
 

@@ -600,45 +600,78 @@ public struct GMarkupVisitor: MarkupVisitor {
         let font = style.fonts.current
         
         for listItem in unorderedList.listItems {
-            
             let listItemAttributedString = visit(listItem).mutableCopy() as! NSMutableAttributedString
             let isRTL = isRTLLanguage(text: listItemAttributedString.string)
             
+            // 确定列表项前缀符号
+            let bulletSymbol: String
+            if let checkBox = listItem.checkbox {
+                switch checkBox {
+                case .checked:
+                    bulletSymbol = "☑" // 选中状态
+                case .unchecked:
+                    bulletSymbol = "☐" // 未选中状态
+                }
+            } else {
+                bulletSymbol = "•" // 普通列表项
+            }
+            
+            // 设置段落样式
             var listItemAttributes: [NSAttributedString.Key: Any] = [:]
             let listItemParagraphStyle = NSMutableParagraphStyle()
             listItemParagraphStyle.lineSpacing = 25 - font.pointSize
             listItemParagraphStyle.paragraphSpacing = 14
+            
+            // 计算缩进和间距
             let baseLeftMargin: CGFloat = 5.0
             let leftMarginOffset = baseLeftMargin + (20.0 * CGFloat(unorderedList.listDepth))
             let spacingFromIndex: CGFloat = 8.0
-            let bulletWidth = ceil(NSAttributedString(string: "•", attributes: [.font: font, .foregroundColor: style.colors.current]).size().width)
+            
+            // 根据实际符号计算宽度
+            let bulletWidth = ceil(NSAttributedString(
+                string: bulletSymbol,
+                attributes: [.font: font, .foregroundColor: style.colors.current]
+            ).size().width)
+            
             let firstTabLocation = leftMarginOffset + bulletWidth
             let secondTabLocation = firstTabLocation + spacingFromIndex
             
+            // 设置制表符位置
             listItemParagraphStyle.tabStops = [
                 NSTextTab(textAlignment: .right, location: firstTabLocation),
                 NSTextTab(textAlignment: .left, location: secondTabLocation),
             ]
+            
+            // 设置文本方向和对齐
             listItemParagraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
             listItemParagraphStyle.alignment = isRTL ? .right : .left
             listItemParagraphStyle.headIndent = secondTabLocation
+            
+            // 应用样式属性
             listItemAttributes[.paragraphStyle] = listItemParagraphStyle
             listItemAttributes[.font] = font
             listItemAttributes[.foregroundColor] = style.colors.current
             listItemAttributes[.listDepth] = unorderedList.listDepth
             
+            // 插入符号和制表符
             let taps = isRTL ? " " : "\t"
-            listItemAttributedString.insert(NSAttributedString(string: "\t•\(taps)", attributes: listItemAttributes), at: 0)
+            let prefixString = "\t\(bulletSymbol)\(taps)"
+            listItemAttributedString.insert(
+                NSAttributedString(string: prefixString, attributes: listItemAttributes),
+                at: 0
+            )
             
             result.append(listItemAttributedString)
         }
         
+        // 如果有后续内容，添加双换行
         if unorderedList.hasSuccessor {
             result.append(.doubleNewline(withStyle: style))
         }
         
         return result
     }
+
     
     private func handleImage(source: String) -> NSAttributedString {
         if Thread.isMainThread {

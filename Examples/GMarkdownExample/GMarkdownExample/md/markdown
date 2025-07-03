@@ -175,5 +175,150 @@ flowchart TD;
     end
 
 ```
+### 16. Html Integration
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.5em;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            margin: 0 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .feature {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            font-size: 0.9em;
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌟 欢迎访问</h1>
+        <p>这是一个精美的HTML页面示例，展示了现代网页设计的基本元素和样式。</p>
+        
+        <button class="btn" onclick="showAlert()">点击我</button>
+        <button class="btn" onclick="changeColor()">改变颜色</button>
+        
+        <div class="features">
+            <div class="feature">
+                <h3>📱 响应式设计</h3>
+                <p>适配各种设备屏幕</p>
+            </div>
+            <div class="feature">
+                <h3>🎨 现代样式</h3>
+                <p>美观的渐变和阴影</p>
+            </div>
+            <div class="feature">
+                <h3>⚡ 交互功能</h3>
+                <p>JavaScript增强体验</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showAlert() {
+            alert('你好！欢迎使用这个页面！');
+        }
+
+        function changeColor() {
+            const container = document.querySelector('.container');
+            const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57'];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            container.style.borderLeft = `5px solid ${randomColor}`;
+        }
+
+        // 页面加载动画
+        window.addEventListener('load', function() {
+            const container = document.querySelector('.container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(30px)';
+            container.style.transition = 'all 0.6s ease';
+            
+            setTimeout(() => {
+                container.style.opacity = '1';
+                container.style.transform = 'translateY(0)';
+            }, 100);
+        });
+    </script>
+</body>
+</html>
+```
 
 This comprehensive example showcases various Markdown features and formatting options. Note that some features might require specific Markdown processors or extensions to work properly.
