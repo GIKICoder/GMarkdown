@@ -157,5 +157,9 @@ open class GMarkdownCodeView: UIView {
         if let text = markChunk?.attributedText.string {
             onCopy?(text)
         }
+        guard let markChunk = markChunk else { return }
+        if markChunk.language == "mermaid" {
+            GMarkMermaidBrowser.present(mermaidCode: markChunk.codeSource)
+        }
     }
 }

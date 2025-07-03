@@ -137,5 +137,43 @@ graph TD;
     B-->D;
     C-->D;
 ```
+```mermaid
+flowchart TD;
+    A["第1章 绪论"] --> B["第2章 相关概念与主要理论"];
+    B --> C["第3章 影响因素分析"];
+    C --> D["第4章 指标评价分析"];
+    D --> E["第5章 问题与成因"];
+    E --> F["第6章 主要对策"];
+    F --> G["第7章 结论与展望"];
+    
+    subgraph Chapter1["第1章 绪论"]
+        A1["1.1 研究背景"] --> A2["1.2 国内外研究现状"];
+    end
+    
+    subgraph Chapter2["第2章 相关概念与主要理论"]
+        B1["2.1 相关概念"] --> B2["2.2 主要理论"];
+    end
+    
+    subgraph Chapter3["第3章 影响因素分析"]
+        C1["3.1 案例概况"] --> C2["3.2 问卷调查"];
+    end
+    
+    subgraph Chapter4["第4章 指标评价分析"]
+        D1["4.1 指标体系"] --> D2["4.2 层次分析法"];
+    end
+    
+    subgraph Chapter5["第5章 问题与成因"]
+        E1["5.1 主要问题"] --> E2["5.2 资产端问题成因"];
+    end
+    
+    subgraph Chapter6["第6章 主要对策"]
+        F1["6.1 资产端优化策略"] --> F2["6.2 REITs模式创新"];
+    end
+    
+    subgraph Chapter7["第7章 结论与展望"]
+        G1["7.1 结论"] --> G2["7.2 展望"];
+    end
+
+```
 
 This comprehensive example showcases various Markdown features and formatting options. Note that some features might require specific Markdown processors or extensions to work properly.

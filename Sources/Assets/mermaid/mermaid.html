@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Mermaid Diagram Centered</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--            <script type="module">-->
+<!--                  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';-->
+<!--            </script>-->
+                <!--    <script type="text/javascript" src="./mermaid.min.js"></script>-->
+                <style>
+                    html, body {
+                        margin: 0;
+                        width: 100%;
+                        height: 100%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: start;
+                    }
+                    .mermaid {
+                        display: inline-block;
+                        background-color:#00ff00;
+                        width: 100%;  /*Adjust width as needed */
+                        justify-content: center;
+                        margin-top: 20px; /* Adjust top margin as needed */
+                        box-sizing: border-box;
+                    }
+                </style>
+                <script>
+                    function sendSVGData(svgData) {
+                        window.webkit.messageHandlers.svgHandler.postMessage(svgData);
+                        mermaid.initialize({ startOnLoad: false });
+                        window.webkit.messageHandlers.svgHandler.postMessage("svgHandler is xxxx");
+                         // Example of using the render function
+                         const drawDiagram = async function () {
+                           element = document.querySelector('#graphDiv');
+                           const graphDefinition = 'graph TB\na-->b';
+                           const { svg } = await mermaid.render('graphDiv', graphDefinition);
+                           element.innerHTML = svg;
+                         };
+
+                         await drawDiagram();
+                         window.webkit.messageHandlers.svgHandler.postMessage("svgHandler is 122");
+                       
+                    }
+                  
+                </script>
+            </head>
+    <body>
+        <pre class="mermaid">
+        </pre>
+    </body>
+</html>
