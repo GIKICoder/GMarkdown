@@ -15,6 +15,7 @@ open class GMarkdownCodeView: UIView {
     public var scrollView: UIScrollView!
     public var codeCopyButton: UIButton!
     public var codeLabel: MPILabel!
+    public var playButton: UIButton!
 
     @objc public var onCopy: ((String) -> Void)?
 
@@ -33,6 +34,8 @@ open class GMarkdownCodeView: UIView {
 
             let frame = adjustedFrame(frame: bounds, withInsets: markChunk.style.codeBlockStyle.padding)
             container.frame = frame
+
+            playButton.isHidden = markChunk.language != "mermaid"
         }
     }
 
@@ -75,11 +78,12 @@ open class GMarkdownCodeView: UIView {
 
         codeCopyButton = UIButton(type: .custom)
         codeCopyButton.addTarget(self, action: #selector(codeCopyAction), for: .touchUpInside)
-        codeCopyButton.setTitle("Copy Code", for: .normal)
+        codeCopyButton.setTitle("Copy", for: .normal)
         codeCopyButton.setTitleColor(UIColor(hex: "#666666"), for: .normal)
         codeCopyButton.titleLabel?.font = UIFont.systemFont(ofSize: 12)
+        codeCopyButton.contentEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+        codeCopyButton.setContentCompressionResistancePriority(.required, for: .horizontal)
         topView.addSubview(codeCopyButton)
-        codeCopyButton.setImage(UIImage(named: "code_copy"), for: .normal)
 
         scrollView = UIScrollView()
         container.addSubview(scrollView)
@@ -88,8 +92,14 @@ open class GMarkdownCodeView: UIView {
         codeLabel.numberOfLines = 0
         scrollView.addSubview(codeLabel)
 
+        playButton = UIButton(type: .custom)
+        playButton.addTarget(self, action: #selector(playButtonAction), for: .touchUpInside)
+        playButton.isHidden = true
+        topView.addSubview(playButton)
+
         setupConstraints()
-         setDefaultCopyImage()
+        setDefaultCopyImage()
+        setDefaultPlayImage()
     }
 
     private func setupConstraints() {
@@ -110,10 +120,10 @@ open class GMarkdownCodeView: UIView {
         ])
         codeCopyButton.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            codeCopyButton.widthAnchor.constraint(equalToConstant: 86),
             codeCopyButton.heightAnchor.constraint(equalToConstant: 32),
             codeCopyButton.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
             codeCopyButton.rightAnchor.constraint(equalTo: topView.rightAnchor, constant: -8),
+            codeCopyButton.widthAnchor.constraint(greaterThanOrEqualToConstant: 60)
         ])
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -121,6 +131,13 @@ open class GMarkdownCodeView: UIView {
             scrollView.leftAnchor.constraint(equalTo: container.leftAnchor, constant: 8),
             scrollView.bottomAnchor.constraint(equalTo: container.bottomAnchor, constant: -8),
             scrollView.rightAnchor.constraint(equalTo: container.rightAnchor, constant: -8),
+        ])
+        playButton.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            playButton.widthAnchor.constraint(equalToConstant: 24),
+            playButton.heightAnchor.constraint(equalToConstant: 24),
+            playButton.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
+            playButton.leftAnchor.constraint(equalTo: languageLabel.rightAnchor, constant: 8),
         ])
     }
 
@@ -147,19 +164,43 @@ open class GMarkdownCodeView: UIView {
     }
 
     private func setDefaultCopyImage() {
-        let base64String = "iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAIdJREFUOE9jZKAQMGLTHxKR4fCX4W89PrOZGZgb16yYcQCrAYERqfsZGRgd/jP8P4DNEJjc+hWzHXEaANIIUoDNAJAFMHmsBhAKFgwDSPEzyHAMA0jxM04DiPXzwBuA7F14NCIHCqFog6lFSUikGIBuATgdUMUAYpMuVheQmpCQDSErKSMbAADIwosRSoQbzQAAAABJRU5ErkJggg=="
+        let base64String = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAK5JREFUSEvtlUEOhCAMRVsuNq4b7uTMnQhrvBg1kmAYQW2EmUgia+ijj/SD8OOFS32t9eC9H2pZSilnjHFpnQAgojcAjLUAAPhYa5da6/o/ABEdM0/SbhDxxcxRr6iDbNMRbKO3c0BJb+mRaxRlNvsCJIrWmWrdQdBLRBxdPYBtjt1AUYssOntkac6V9okUtQfs/WhpFEvUxR8tU7R35bMoPjj3PWhCwCV1YZK7Bszzbc5HrUgLQwAAAABJRU5ErkJggg=="
         if let image = imageFromBase64(base64String: base64String) {
-            codeCopyButton.setImage(image, for: .normal)
+            let resizedImage = image.resized(to: CGSize(width: 12, height: 12))
+            codeCopyButton.setImage(resizedImage, for: .normal)
         }
     }
 
-    @objc private func codeCopyAction() {
-        if let text = markChunk?.attributedText.string {
-            onCopy?(text)
+    private func setDefaultPlayImage() {
+        let base64String = "iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAAW5JREFUSEu1VttxxCAMDBSD3UVylSWu7JwubIpBiTTIs2DxyNyED/tuAO3qtbJ766x1XT94m4g+81v+O+d2Ivrm3zHGr54NZ22yYTZKRGJwYm0toBsAG08pPdGoMvbe7yklBBXPYN2ACoAQAruLl5rM1OjozgWAB5mxc247jmOfCI8cWZblqSH13j/0LgKQJvA8z8esYTxngQgAskf0V0A4CkxUAYT9bwWaMQ8h8P4wH2wAi4TJOmQfYzTLNgMIAa6kUW40VDVAkyEAaNS63iiAFAsk5i8AXSANkwCg+61uNDyo81+QwzxcAL3q6QFYPVMA/HuIMCGtBqs90Bpv9QlU5ubQnVGZzkoIRqUAaDUTX5jVprqvpLFQQ1pezMpGnVMBKLKeNWTWIJ6zVOGShmrQTOlOyziG+uWBY4zXgtxN3IwJJSLHDxY6ZV1/COT9a9DoOVM96xkxykevfJsA1czlT5V3HYlsME8/8awn3z9KOVH6hlcOVgAAAABJRU5ErkJggg=="
+        if let image = imageFromBase64(base64String: base64String) {
+            let resizedImage = image.resized(to: CGSize(width: 12, height: 12))
+            playButton.setImage(resizedImage, for: .normal)
         }
+    }
+
+    @objc private func playButtonAction() {
         guard let markChunk = markChunk else { return }
         if markChunk.language == "mermaid" {
             GMarkMermaidBrowser.present(mermaidCode: markChunk.codeSource)
         }
+    }
+
+    @objc private func codeCopyAction() {
+        guard let markChunk = markChunk else { return }
+        UIPasteboard.general.string = markChunk.codeSource
+        if  markChunk.codeSource.isEmpty {
+            onCopy?(markChunk.codeSource)
+        }
+    }
+}
+
+// Add this extension to UIImage
+extension UIImage {
+    func resized(to newSize: CGSize) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        draw(in: CGRect(origin: .zero, size: newSize))
+        return UIGraphicsGetImageFromCurrentImageContext() ?? self
     }
 }
