@@ -12,6 +12,8 @@ GMarkdown is currently in the testing phase. Although efforts have been made to 
 - **Code Blocks**: Display code with syntax highlighting, making it easy to present and read code snippets.
 - **Tables**: Create and render tables to organize your data effectively.
 - **LaTeX Math Formulas**: Render complex mathematical equations using LaTeX, perfect for academic and scientific content.
+- **Mermaid Diagrams**: Create beautiful flowcharts, sequence diagrams, and other visual representations using Mermaid syntax.
+- **HTML Preview**: Seamlessly preview and render HTML content within your markdown documents for enhanced formatting flexibility.
 
 ## Requirements
 
