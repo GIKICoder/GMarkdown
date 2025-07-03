@@ -191,7 +191,7 @@ class RealTimeRenderController: UIViewController {
         return await withCheckedContinuation { continuation in
             DispatchQueue.global(qos: .userInitiated).async {
                 var style = MarkdownStyle.defaultStyle()
-                style.maxContainerWidth = UIScreen.main.bounds.size.width - 32
+                style.maxContainerWidth = UIScreen.main.bounds.size.width - 32*2
                 let generator = GMarkChunkGenerator()
                 generator.style = style
                 generator.imageLoader = self.imageloader

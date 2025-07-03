@@ -45,7 +45,7 @@
 		AA1727BC9EC0B761FAAF53EE /* MarkdownRenderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarkdownRenderController.swift; sourceTree = "<group>"; };
 		C37204880976EB9FA71F02D3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C668D18BDBB1E7F3E2ACCD51 /* NukeImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NukeImageLoader.swift; sourceTree = "<group>"; };
-		CA2DB0AC5C73C8C37CFA439F /* GMarkdownExample.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GMarkdownExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA2DB0AC5C73C8C37CFA439F /* GMarkdownExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GMarkdownExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D76B57722F3D40404987BA64 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		DB231D7527DBBE4BA252BC18 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -304,6 +304,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GMarkdownExample/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GMarkdown;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "我们需要访问您的相册以保存生成的图表";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "我们需要访问您的相册以保存生成的图表";
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -325,6 +327,8 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = GMarkdownExample/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GMarkdown;
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "我们需要访问您的相册以保存生成的图表";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "我们需要访问您的相册以保存生成的图表";
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

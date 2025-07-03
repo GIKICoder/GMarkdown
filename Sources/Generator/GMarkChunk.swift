@@ -67,6 +67,8 @@ public final class GMarkChunk: Hashable, Sendable {
     /// The programming language, if the chunk is a code block.
     public var language: String = ""
     
+    public var codeSource: String = ""
+    
     /// The source code or content of the chunk.
     public var source: String = ""
     

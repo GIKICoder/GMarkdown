@@ -46,6 +46,7 @@ extension GMarkChunk {
         }
         
         language = markup.language ?? ""
+        codeSource = markup.code
         style.codeBlockStyle.customRender = true
         var visitor = GMarkupVisitor(style: style)
         

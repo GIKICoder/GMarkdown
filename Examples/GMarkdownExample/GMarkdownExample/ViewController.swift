@@ -120,7 +120,7 @@ class ViewController: UIViewController {
         ExampleItem(
             title: "TextView Integration",
             description: "Shows how to integrate Markdown rendering capabilities into UITextView",
-            icon: "text.alignleft",
+            icon: "doc.text",
             viewController: TextViewViewController.self
         )
     ]
@@ -132,7 +132,7 @@ class ViewController: UIViewController {
     }
     
     private func setupNavigationBar() {
-        title = "GMarkdown 示例"
+        title = "GMarkdown Examples"
         navigationController?.navigationBar.prefersLargeTitles = true
         navigationItem.largeTitleDisplayMode = .always
         
