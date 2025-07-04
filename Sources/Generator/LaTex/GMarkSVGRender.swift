@@ -382,13 +382,17 @@ extension GMarkSVGRender {
     /// 渲染LaTeX SVG为适合屏幕显示的图片
     func renderLaTeXSVG(data: Data, options: LaTeXRenderOptions = .default) -> UIImage? {
         guard let originalSize = getSVGOriginalSize(from: data) else { return nil }
-        
+        debugPrint("SVG Original  Size: \(originalSize)")
         // 计算合适的显示尺寸
         let targetSize = calculateLaTeXDisplaySize(
             originalSize: originalSize,
             options: options
         )
-        
+        if targetSize.height > 1000 || targetSize.width > 1000 {
+            debugPrint("SVG target Size is too large, using original size: \(originalSize)")
+            return nil
+        }
+        debugPrint("SVG target Size: \(targetSize)")
         let renderOptions = RenderOptions(
             prefersBitmap: true,
             preserveAspectRatio: true, targetSize: targetSize

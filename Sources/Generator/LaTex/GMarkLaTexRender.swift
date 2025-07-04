@@ -279,6 +279,8 @@ public class GMarkLaTexRender {
             if let svgData = svgResult.data(using: .utf8) {
                 let svgRenderer = GMarkSVGRender.shared
                 if let image = svgRenderer.renderLaTeXSVG(data: svgData) {
+                    // 检查渲染结果是否有效
+                    debugPrint("SVG 渲染结果尺寸: \(image.size)")
                     // 缓存结果
                     GMarkCachedManager.shared.setLatexCache(image, for: text)
                     return RenderResult(
