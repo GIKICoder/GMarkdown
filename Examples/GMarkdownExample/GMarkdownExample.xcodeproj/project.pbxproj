@@ -19,7 +19,7 @@
 		2B64E00C2E1552A0002B71C2 /* markdownLatex in Resources */ = {isa = PBXBuildFile; fileRef = 2B64E00B2E155290002B71C2 /* markdownLatex */; };
 		2B6C0D2D2E0F0B8A00F6D641 /* RealTimeRenderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */; };
 		2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */ = {isa = PBXBuildFile; fileRef = 2B6C0D2E2E0F102900F6D641 /* markdownv5 */; };
-		2B6C0D312E182DA900F6D641 /* markdownLatex2 in Resources */ = {isa = PBXBuildFile; fileRef = 2B6C0D302E182D9C00F6D641 /* markdownLatex2 */; };
+		2B6C0D312E182DA900F6D641 /* markdownTemp in Resources */ = {isa = PBXBuildFile; fileRef = 2B6C0D302E182D9C00F6D641 /* markdownTemp */; };
 		2B78F42F2DBE534B00ABE9B6 /* markdownv4 in Resources */ = {isa = PBXBuildFile; fileRef = 2B78F42E2DBE534B00ABE9B6 /* markdownv4 */; };
 		2BD9E4752DB73F23005638D0 /* markdownv3 in Resources */ = {isa = PBXBuildFile; fileRef = 2BD9E4742DB73F23005638D0 /* markdownv3 */; };
 		3990ACD55BC5C22064C6B29D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5793B2B7A2BD113C658AC6D4 /* AppDelegate.swift */; };
@@ -34,7 +34,7 @@
 		2B64E00B2E155290002B71C2 /* markdownLatex */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownLatex; sourceTree = "<group>"; };
 		2B6C0D2C2E0F0B8A00F6D641 /* RealTimeRenderController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealTimeRenderController.swift; sourceTree = "<group>"; };
 		2B6C0D2E2E0F102900F6D641 /* markdownv5 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv5; sourceTree = "<group>"; };
-		2B6C0D302E182D9C00F6D641 /* markdownLatex2 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownLatex2; sourceTree = "<group>"; };
+		2B6C0D302E182D9C00F6D641 /* markdownTemp */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownTemp; sourceTree = "<group>"; };
 		2B78F42E2DBE534B00ABE9B6 /* markdownv4 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv4; sourceTree = "<group>"; };
 		2BD9E4742DB73F23005638D0 /* markdownv3 */ = {isa = PBXFileReference; lastKnownFileType = text; path = markdownv3; sourceTree = "<group>"; };
 		4085333849BD4098ECAE248B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -70,7 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				2B64E00B2E155290002B71C2 /* markdownLatex */,
-				2B6C0D302E182D9C00F6D641 /* markdownLatex2 */,
+				2B6C0D302E182D9C00F6D641 /* markdownTemp */,
 				114640C16E263162F58A1B43 /* markdown */,
 				66BC7B35F5F1709820DC6394 /* markdownv2 */,
 				2BD9E4742DB73F23005638D0 /* markdownv3 */,
@@ -185,7 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B052D052D82B70500BAE956 /* markdown in Resources */,
-				2B6C0D312E182DA900F6D641 /* markdownLatex2 in Resources */,
+				2B6C0D312E182DA900F6D641 /* markdownTemp in Resources */,
 				2B64E00C2E1552A0002B71C2 /* markdownLatex in Resources */,
 				2B052D062D82B70500BAE956 /* markdownv2 in Resources */,
 				2B6C0D2F2E0F102900F6D641 /* markdownv5 in Resources */,
