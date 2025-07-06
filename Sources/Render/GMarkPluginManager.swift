@@ -21,13 +21,3 @@ public protocol ReferLoader {
     func referImage(from source: String, style: Style) -> NSAttributedString
 }
 
-// GMarkPluginManager with handler chain
-public class GMarkPluginManager {
-    public static let shared = GMarkPluginManager()
-
-    private init() {}
-
-    public var imageLoader: ImageLoader?
-
-    public var referLoader: ReferLoader?
-}

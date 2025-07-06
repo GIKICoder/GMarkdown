@@ -15,7 +15,6 @@ class TextViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .lightGray
-//        GMarkPluginManager.shared.imageLoader = NukeImageLoader()
         markdownView.isEditable = false
         markdownView.isScrollEnabled = true
         markdownView.isSelectable = true
@@ -37,9 +36,9 @@ class TextViewViewController: UIViewController {
         var style = MarkdownStyle.defaultStyle()
         style.useMPTextKit = false
         style.codeBlockStyle.customRender = false
-        var vistor = GMarkupAttachVisitor(style: style)
-        let attributedText = vistor.visit(document)
-        self.markdownView.attributedText = attributedText
+//        var vistor = GMarkupAttachVisitor(style: style)
+//        let attributedText = vistor.visit(document)
+//        self.markdownView.attributedText = attributedText
     }
 
 }
