@@ -136,16 +136,36 @@ public class DefaultHTMLBlockPlugin: GMarkupPlugin {
 public class DefaultInlineHTMLPlugin: GMarkupPlugin {
     public var identifier: String { "default.inlinehtml" }
     
+    private var beginLaTex:Bool = false
+    
     public func canHandle(_ markup: Markup) -> Bool {
-        return markup is InlineHTML
+        return markup is InlineHTML || beginLaTex
     }
     
     public func handle(_ markup: Markup, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
+        let style = visitor.visitorStyle
+        if beginLaTex, let text = markup as? Text {
+            let renderResult = GMarkLaTexRender.renderLatexSmart(from: text.plainText, style: style)
+            if renderResult.success, let image = renderResult.image {
+                let provider = MDLaTexAttachedProvider(laTexImage: image, style: style)
+                let attachment = MarkdownAttachment(viewProvider: provider)
+                return NSAttributedString(attachment: attachment)
+            } else {
+                return nil
+            }
+        }
         guard let inlineHTML = markup as? InlineHTML else { return nil }
         return handleInlineHTML(inlineHTML, visitor: &visitor)
     }
     
     public func handleInlineHTML(_ inlineHTML: InlineHTML, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
+        if inlineHTML.rawHTML.contains("<LaTex>") {
+            beginLaTex = true
+            return NSAttributedString(string: "")
+        } else if inlineHTML.rawHTML.contains("</LaTex>") {
+            beginLaTex = false
+            return NSAttributedString(string: "")
+        }
         let style = visitor.visitorStyle
         let rawHTML = inlineHTML.rawHTML.trimmingCharacters(in: .whitespacesAndNewlines)
         let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: rawHTML, style: style)

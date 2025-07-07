@@ -16,6 +16,7 @@ import SwiftMath
 public struct GMarkupAttachVisitor: MarkupVisitor {
     public typealias Result = NSAttributedString
     
+    public var imageLoader: ImageLoader?
     // 插件管理器
     private let pluginManager: GMarkupPluginManager
     private let style: Style
