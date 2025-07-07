@@ -38,17 +38,22 @@ public class DefaultCodePlugin: GMarkupPlugin {
     
     public func handleCodeBlock(_ codeBlock: CodeBlock, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
         let style = visitor.visitorStyle
-        let code = codeBlock.code
+        let code = codeBlock.code.trimmingCharacters(in: .whitespacesAndNewlines)
         let language = codeBlock.language
         if style.codeBlockStyle.useHighlight {
             if let highlighted = GMarkCodeHighlight.shared.generateAttributeText(code, language: language ?? ""),
                !highlighted.string.hasPrefix("undefined") {
                 let attributed = NSMutableAttributedString(attributedString: highlighted)
                 attributed.addAttribute(.font, value: style.codeBlockStyle.font)
-                return attributed
+                let attachment = MarkdownAttachment(viewProvider: MDCodeAttachedProvider(markup: codeBlock, style: style, attributedText: attributed))
+                return NSAttributedString(attachment: attachment)
             }
         }
-        return nil
+        let attributedString = MarkdownStyleProcessor.buildDefaultAttributedString(from: code, style: style)
+        attributedString.addAttribute(.font, value: style.codeBlockStyle.font)
+        attributedString.addAttribute(.foregroundColor, value: style.codeBlockStyle.foregroundColor)
+        let attachment = MarkdownAttachment(viewProvider: MDCodeAttachedProvider(markup: codeBlock, style: style, attributedText: attributedString))
+        return NSAttributedString(attachment: attachment)
     }
 }
 
@@ -119,15 +124,11 @@ public class DefaultHTMLBlockPlugin: GMarkupPlugin {
     }
     
     public func handleHTMLBlock(_ htmlBlock: HTMLBlock, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
-        let rawHTML = htmlBlock.rawHTML
-        
-        // 简单的HTML处理，实际应用中可能需要更复杂的解析
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: UIColor.systemGray
-        ]
-        
-        return NSAttributedString(string: rawHTML, attributes: attributes)
+        let style = visitor.visitorStyle
+        let rawHTML = htmlBlock.rawHTML.trimmingCharacters(in: .whitespacesAndNewlines)
+        let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: rawHTML, style: style)
+        MarkdownStyleProcessor.appendBreakIfNeeded(for: htmlBlock, to: result, style: style)
+        return result
     }
 }
 
@@ -145,24 +146,10 @@ public class DefaultInlineHTMLPlugin: GMarkupPlugin {
     }
     
     public func handleInlineHTML(_ inlineHTML: InlineHTML, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
-        let rawHTML = inlineHTML.rawHTML
-        
-        // 检查是否是LaTeX标签
-        if rawHTML.contains("<LaTex>") || rawHTML.contains("</LaTex>") {
-            // 处理LaTeX内容
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-                .foregroundColor: UIColor.systemGreen
-            ]
-            return NSAttributedString(string: "[LaTeX]", attributes: attributes)
-        }
-        
-        // 普通HTML处理
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: UIColor.systemGray
-        ]
-        
-        return NSAttributedString(string: rawHTML, attributes: attributes)
+        let style = visitor.visitorStyle
+        let rawHTML = inlineHTML.rawHTML.trimmingCharacters(in: .whitespacesAndNewlines)
+        let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: rawHTML, style: style)
+        MarkdownStyleProcessor.appendBreakIfNeeded(for: inlineHTML, to: result, style: style)
+        return result
     }
 }
