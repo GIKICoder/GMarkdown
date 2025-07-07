@@ -36,9 +36,9 @@ class TextViewViewController: UIViewController {
         var style = MarkdownStyle.defaultStyle()
         style.useMPTextKit = false
         style.codeBlockStyle.customRender = false
-//        var vistor = GMarkupAttachVisitor(style: style)
-//        let attributedText = vistor.visit(document)
-//        self.markdownView.attributedText = attributedText
+        var vistor = GMarkupAttachVisitor(style: style)
+        let attributedText = vistor.visit(document)
+        self.markdownView.attributedText = attributedText
     }
 
 }

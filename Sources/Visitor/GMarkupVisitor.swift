@@ -23,15 +23,7 @@ public struct GMarkupVisitor: MarkupVisitor {
     private let style: Style
     public var referLoader: ReferLoader?
     public var imageLoader: ImageLoader?
-    
-    private lazy var listProcessor: MarkdownListProcessor = {
-        let processor = MarkdownListProcessor(
-            style: style,
-            visitor: self
-        )
-        return processor
-    }()
-    
+     
     public init(style: Style) {
         self.style = style
     }
@@ -118,11 +110,23 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     public mutating func visitUnorderedList(_ unorderedList: UnorderedList) -> NSAttributedString {
-        return listProcessor.processUnorderedList(unorderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processUnorderedList(
+            unorderedList,
+            style: style,
+            visitor: &visitor
+        )
+        return result
     }
     
     public mutating func visitOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
-        return listProcessor.processOrderedList(orderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processOrderedList(
+            orderedList,
+            style: style,
+            visitor: &visitor
+        )
+        return result
     }
 
     public mutating func visitListItem(_ listItem: ListItem) -> NSAttributedString {
@@ -521,52 +525,5 @@ private struct Renderer {
 }
 
 
-// MARK: - Helper Extensions
 
-extension UIFont {
-    var italic: UIFont? {
-        return apply(newTraits: .traitItalic)
-    }
-    
-    var bold: UIFont? {
-        return apply(newTraits: .traitBold)
-    }
-    
-    func apply(newTraits: UIFontDescriptor.SymbolicTraits) -> UIFont? {
-        var existingTraits = self.fontDescriptor.symbolicTraits
-        existingTraits.insert(newTraits)
-        
-        guard let newDescriptor = self.fontDescriptor.withSymbolicTraits(existingTraits) else { return nil }
-        return UIFont(descriptor: newDescriptor, size: self.pointSize)
-    }
-}
-
-
-
-extension UIImage {
-    /// 根据给定的最大宽度调整图片大小，同时保持比例不变。
-    /// - Parameter maxWidth: 图片的最大宽度。
-    /// - Returns: 调整后的UIImage实例。如果原始宽度小于或等于maxWidth，则返回原图。
-    func resized(toMaxWidth maxWidth: CGFloat) -> UIImage {
-        // 检查是否需要调整大小
-        if self.size.width <= maxWidth {
-            return self
-        }
-        
-        // 计算缩放比例以保持纵横比
-        let scaleFactor = maxWidth / self.size.width
-        let newHeight = self.size.height * scaleFactor
-        let newSize = CGSize(width: maxWidth, height: newHeight)
-        
-        // 开始图形上下文并绘制调整后的图片
-        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-        self.draw(in: CGRect(origin: .zero, size: newSize))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        if let resizedImage {
-            return resizedImage
-        }
-        return self
-    }
-}
 

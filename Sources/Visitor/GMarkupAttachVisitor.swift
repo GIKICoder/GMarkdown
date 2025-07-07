@@ -18,13 +18,18 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
     
     // 插件管理器
     private let pluginManager: GMarkupPluginManager
-
+    private let style: Style
     // 初始化方法
-    public init(pluginManager: GMarkupPluginManager = GMarkupPluginManager.shared) {
+    public init(style: Style = MarkdownStyle.defaultStyle(),pluginManager: GMarkupPluginManager = GMarkupPluginManager.shared) {
+        self.style = style
         self.pluginManager = pluginManager
     }
     
     public mutating func defaultVisit(_ markup: Markup) -> NSAttributedString {
+        // 尝试使用插件处理
+        if let pluginResult = pluginManager.handle(markup, visitor: &self) {
+            return pluginResult
+        }
         let result = NSMutableAttributedString()
         for child in markup.children {
             result.append(visit(child))
@@ -35,9 +40,11 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
     public mutating func visit(_ markup: Markup) -> Result {
         return markup.accept(&self)
     }
+    
     public mutating func visitBlockQuote(_ blockQuote: BlockQuote) -> Result {
-        return defaultVisit(blockQuote)
+        return MarkdownBlockQuoteProcessor.processBlockQuote(blockQuote,style: style, visitor:self)
     }
+    
     public mutating func visitCodeBlock(_ codeBlock: CodeBlock) -> Result {
         // 尝试使用插件处理
         if let pluginResult = pluginManager.handle(codeBlock, visitor: &self) {
@@ -46,18 +53,26 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         // 使用默认处理
         return defaultVisit(codeBlock)
     }
+    
     public mutating func visitCustomBlock(_ customBlock: CustomBlock) -> Result {
         return defaultVisit(customBlock)
     }
+    
     public mutating func visitDocument(_ document: Document) -> Result {
         return defaultVisit(document)
     }
+    
     public mutating func visitHeading(_ heading: Heading) -> Result {
-        return defaultVisit(heading)
+        let attributedString = defaultVisitForMutable(heading)
+        MarkdownStyleProcessor.applyHeadingStyle(to: attributedString, heading: heading, style: style)
+        MarkdownStyleProcessor.appendNewlineIfNeeded(for: heading, to: attributedString, style: style)
+        return attributedString
     }
+    
     public mutating func visitThematicBreak(_ thematicBreak: ThematicBreak) -> Result {
         return defaultVisit(thematicBreak)
     }
+    
     public mutating func visitHTMLBlock(_ html: HTMLBlock) -> Result {
         // 尝试使用插件处理
         if let pluginResult = pluginManager.handle(html, visitor: &self) {
@@ -67,29 +82,56 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         return defaultVisit(html)
     }
     public mutating func visitListItem(_ listItem: ListItem) -> Result {
-        return defaultVisit(listItem)
+        let attributedString = defaultVisitForMutable(listItem)
+        MarkdownStyleProcessor.appendNewlineIfNeeded(for: listItem, to: attributedString, style: style)
+        return attributedString
     }
+    
     public mutating func visitOrderedList(_ orderedList: OrderedList) -> Result {
-        return defaultVisit(orderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processOrderedList(
+            orderedList,
+            style: style,
+            visitor: &visitor
+        )
+        return result
     }
+    
     public mutating func visitUnorderedList(_ unorderedList: UnorderedList) -> Result {
-        return defaultVisit(unorderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processUnorderedList(
+            unorderedList,
+            style: style,
+            visitor: &visitor
+        )
+        return result
     }
     public mutating func visitParagraph(_ paragraph: Paragraph) -> Result {
-        return defaultVisit(paragraph)
+        let attributedString = defaultVisitForMutable(paragraph)
+        MarkdownStyleProcessor.appendNewlineIfNeeded(for: paragraph, to: attributedString, style: style)
+        return attributedString
     }
+    
     public mutating func visitBlockDirective(_ blockDirective: BlockDirective) -> Result {
         return defaultVisit(blockDirective)
     }
+    
     public mutating func visitInlineCode(_ inlineCode: InlineCode) -> Result {
-        return defaultVisit(inlineCode)
+        let attributedString = createDefaultAttributedString(from: inlineCode.code)
+        MarkdownStyleProcessor.applyInlineCodeStyle(to: attributedString, style: style)
+        return attributedString
     }
+    
     public mutating func visitCustomInline(_ customInline: CustomInline) -> Result {
         return defaultVisit(customInline)
     }
+    
     public mutating func visitEmphasis(_ emphasis: Emphasis) -> Result {
-        return defaultVisit(emphasis)
+        let attributedString = defaultVisitForMutable(emphasis)
+        MarkdownStyleProcessor.applyItalicFont(to: attributedString)
+        return attributedString
     }
+    
     public mutating func visitImage(_ image: Image) -> Result {
         // 尝试使用插件处理
         if let pluginResult = pluginManager.handle(image, visitor: &self) {
@@ -98,6 +140,7 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         // 使用默认处理
         return defaultVisit(image)
     }
+    
     public mutating func visitInlineHTML(_ inlineHTML: InlineHTML) -> Result {
         // 尝试使用插件处理
         if let pluginResult = pluginManager.handle(inlineHTML, visitor: &self) {
@@ -106,23 +149,38 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         // 使用默认处理
         return defaultVisit(inlineHTML)
     }
+    
     public mutating func visitLineBreak(_ lineBreak: LineBreak) -> Result {
-        return defaultVisit(lineBreak)
+        return createDefaultAttributedString(from: lineBreak.plainText)
     }
+    
     public mutating func visitLink(_ link: Link) -> Result {
-        return defaultVisit(link)
+        let attributedString = defaultVisitForMutable(link)
+        MarkdownStyleProcessor.applyLinkStyle(to: attributedString,
+                                              destination: link.destination,
+                                              linkColor: style.colors.link,
+                                              useMPTextKit: style.useMPTextKit)
+        return attributedString
     }
+    
     public mutating func visitSoftBreak(_ softBreak: SoftBreak) -> Result {
-        return defaultVisit(softBreak)
+        return NSAttributedString.singleNewline(withStyle: style)
     }
+    
     public mutating func visitStrong(_ strong: Strong) -> Result {
-        return defaultVisit(strong)
+        let attributedString = defaultVisitForMutable(strong)
+        MarkdownStyleProcessor.applyBoldFont(to: attributedString)
+        return attributedString
     }
+    
     public mutating func visitText(_ text: Text) -> Result {
-        return defaultVisit(text)
+        return createDefaultAttributedString(from: text.plainText)
     }
+    
     public mutating func visitStrikethrough(_ strikethrough: Strikethrough) -> Result {
-        return defaultVisit(strikethrough)
+        let attributedString = defaultVisitForMutable(strikethrough)
+        attributedString.addAttribute(.strikethroughStyle, value: NSUnderlineStyle.single.rawValue)
+        return attributedString
     }
     
     public mutating func visitTable(_ table: Table) -> Result {
@@ -158,4 +216,20 @@ public struct GMarkupAttachVisitor: MarkupVisitor {
         return defaultVisit(doxygenReturns)
     }
     
+}
+
+// MARK: - Child Processing
+extension GMarkupAttachVisitor {
+    
+    private mutating func defaultVisitForMutable(_ markup: Markup) -> NSMutableAttributedString {
+        let result = NSMutableAttributedString()
+        for child in markup.children {
+            result.append(visit(child))
+        }
+        return result
+    }
+    
+    private func createDefaultAttributedString(from text: String) -> NSMutableAttributedString {
+        return MarkdownStyleProcessor.buildDefaultAttributedString(from: text, style: style)
+    }
 }
