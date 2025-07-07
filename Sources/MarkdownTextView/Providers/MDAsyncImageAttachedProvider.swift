@@ -6,22 +6,21 @@
 //
 
 import UIKit
+import Markdown
 
 class MDAsyncImageAttachedProvider: MarkdownAttachedViewProvider {
 
     let url:String
     
-    let imageView = UIImageView()
+    lazy var imageView = UIImageView()
     
-    var chunk: GMarkChunk?
+    var markup: Image?
+    var style:Style?
     
-    init(url: String) {
-        self.url = url
-    }
-    
-    init(chunk: GMarkChunk) {
-        self.url = chunk.source
-        self.chunk = chunk
+    init(markup: Image, style:Style) {
+        self.url = markup.source ?? ""
+        self.markup = markup
+        self.style = style
     }
     
     func instantiateView(for attachment: MarkdownAttachment, in behavior: MarkdownAttachingBehavior) -> UIView {
@@ -30,9 +29,9 @@ class MDAsyncImageAttachedProvider: MarkdownAttachedViewProvider {
     }
 
     func bounds(for attachment: MarkdownAttachment, textContainer: NSTextContainer?, proposedLineFragment lineFrag: CGRect, glyphPosition position: CGPoint) -> CGRect {
-        guard let chunk = self.chunk else {
+        guard let style = self.style else {
             return CGRect(origin: .zero, size: CGSize(width: 100, height: 100))
         }
-        return CGRect(origin: .zero, size: chunk.itemSize)
+        return CGRect(origin: .zero, size: CGSize(width: style.maxContainerWidth, height: style.maxContainerWidth))
     }
 }

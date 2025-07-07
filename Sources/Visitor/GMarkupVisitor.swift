@@ -73,14 +73,14 @@ public struct GMarkupVisitor: MarkupVisitor {
     
     public mutating func visitParagraph(_ paragraph: Paragraph) -> NSAttributedString {
         let attributedString = processMarkupChildren(paragraph)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: paragraph, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: paragraph, to: attributedString, style: style)
         return attributedString
     }
     
     public mutating func visitHeading(_ heading: Heading) -> NSAttributedString {
         let attributedString = processMarkupChildren(heading)
         MarkdownStyleProcessor.applyHeadingStyle(to: attributedString, heading: heading, style: style)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: heading, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: heading, to: attributedString, style: style)
         return attributedString
     }
     
@@ -116,6 +116,7 @@ public struct GMarkupVisitor: MarkupVisitor {
             style: style,
             visitor: &visitor
         )
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: unorderedList, to: result, style: style)
         return result
     }
     
@@ -126,17 +127,20 @@ public struct GMarkupVisitor: MarkupVisitor {
             style: style,
             visitor: &visitor
         )
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: orderedList, to: result, style: style)
         return result
     }
 
     public mutating func visitListItem(_ listItem: ListItem) -> NSAttributedString {
         let attributedString = processMarkupChildren(listItem)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: listItem, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: listItem, to: attributedString, style: style)
         return attributedString
     }
     
     public mutating func visitBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
-        return MarkdownBlockQuoteProcessor.processBlockQuote(blockQuote,style: style, visitor:self)
+        let attributedString = MarkdownBlockQuoteProcessor.processBlockQuote(blockQuote,style: style, visitor:self)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: blockQuote, to: attributedString, style: style)
+        return attributedString
     }
     
     public mutating func visitInlineHTML(_ inlineHTML: InlineHTML) -> Result {
@@ -275,10 +279,10 @@ extension GMarkupVisitor {
         }
         
         if style.codeBlockStyle.useHighlight {
-            return renderHighlightedCodeBlock(code, language: codeBlock.language, hasSuccessor: codeBlock.hasSuccessor)
+            return renderHighlightedCodeBlock(code, language: codeBlock.language, hasSuccessor: codeBlock.hasSuccessorForSplit)
         }
         
-        return renderPlainCodeBlock(code, hasSuccessor: codeBlock.hasSuccessor)
+        return renderPlainCodeBlock(code, hasSuccessor: codeBlock.hasSuccessorForSplit)
     }
     
     private mutating func renderCustomCodeBlock(_ code: String, language: String?) -> NSAttributedString {
@@ -337,65 +341,6 @@ extension GMarkupVisitor {
         } else {
             attributed.addAttribute(.backgroundColor, value: style.codeBlockStyle.backgroundColor)
         }
-    }
-}
-
-// MARK: - Block Quote Processing
-extension GMarkupVisitor {
-    
-    private struct BlockQuoteConfig {
-        let baseLeftMargin: CGFloat
-        let depthOffset: CGFloat
-        let maxDepth: Int
-    }
-    
-    private mutating func processBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
-        let config = BlockQuoteConfig(baseLeftMargin: 15.0, depthOffset: 20.0, maxDepth: 5)
-        
-        for child in blockQuote.children {
-            let attributes = createBlockQuoteAttributes(depth: blockQuote.quoteDepth, config: config)
-            if let childAttributed = processBlockQuoteChild(child, attributes: attributes) {
-                attributedString.append(childAttributed)
-            }
-        }
-        
-        if blockQuote.hasSuccessor {
-            attributedString.append(blockQuote.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
-        }
-        
-        return attributedString
-    }
-    
-    private func createBlockQuoteAttributes(depth: Int, config: BlockQuoteConfig) -> [NSAttributedString.Key: Any] {
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        let paragraphStyle = NSMutableParagraphStyle()
-        
-        let effectiveDepth = min(depth, config.maxDepth)
-        let leftIndent = config.baseLeftMargin + (config.depthOffset * CGFloat(effectiveDepth))
-        
-        paragraphStyle.firstLineHeadIndent = leftIndent
-        paragraphStyle.headIndent = leftIndent
-        paragraphStyle.lineSpacing = max(5, 25 - style.fonts.current.pointSize)
-        paragraphStyle.paragraphSpacing = 16
-        
-        attributes[.paragraphStyle] = paragraphStyle
-        attributes[.font] = style.blockquoteStyle.font
-        attributes[.foregroundColor] = style.blockquoteStyle.textColor
-        attributes[.quoteDepth] = depth
-        
-        return attributes
-    }
-    
-    private mutating func processBlockQuoteChild(_ child: Markup,
-                                                 attributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
-        guard let childAttributed = visit(child) as? NSMutableAttributedString else { return nil }
-        
-        let range = NSRange(location: 0, length: childAttributed.length)
-        childAttributed.addAttributes(attributes, range: range)
-        
-        MarkdownStyleProcessor.applyQuoteStyle(to: childAttributed, style: style)
-        return childAttributed
     }
 }
 

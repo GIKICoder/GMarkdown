@@ -184,30 +184,3 @@ public class GMarkupPluginManager {
     }
 }
 
-/// 插件管理器扩展 - 提供便捷的插件注册方法
-extension GMarkupPluginManager {
-    /// 注册代码块插件
-    public func registerCodePlugin(_ plugin: GMarkupCodePlugin) {
-        register(plugin)
-    }
-    
-    /// 注册表格插件
-    public func registerTablePlugin(_ plugin: GMarkupTablePlugin) {
-        register(plugin)
-    }
-    
-    /// 注册图片插件
-    public func registerImagePlugin(_ plugin: GMarkupImagePlugin) {
-        register(plugin)
-    }
-    
-    /// 注册HTML块插件
-    public func registerHTMLBlockPlugin(_ plugin: GMarkupHTMLBlockPlugin) {
-        register(plugin)
-    }
-    
-    /// 注册内联HTML插件
-    public func registerInlineHTMLPlugin(_ plugin: GMarkupInlineHTMLPlugin) {
-        register(plugin)
-    }
-}

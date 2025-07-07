@@ -36,7 +36,18 @@ public struct MarkdownStyleProcessor {
         return attributedString
     }
     
-    public static func appendNewlineIfNeeded(for markup: Markup,
+    public static func appendSplitBreakIfNeeded(for markup: Markup,
+                                            to attributedString: NSMutableAttributedString,
+                                            style: Style) {
+        if markup.hasSuccessorForSplit {
+            let newline = markup.isContainedInList ?
+                NSAttributedString.singleNewline(withStyle: style) :
+                NSAttributedString.singleNewline(withStyle: style)
+            attributedString.append(newline)
+        }
+    }
+    
+    public static func appendBreakIfNeeded(for markup: Markup,
                                             to attributedString: NSMutableAttributedString,
                                             style: Style) {
         if markup.hasSuccessor {

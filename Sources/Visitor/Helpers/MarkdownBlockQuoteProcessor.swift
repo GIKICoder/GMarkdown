@@ -33,7 +33,7 @@ public struct MarkdownBlockQuoteProcessor {
     public static func processBlockQuote(_ blockQuote: BlockQuote,
                                          style:Style,
                                          visitor: (any MarkupVisitor),
-                                       config: Config = .default) -> NSAttributedString {
+                                       config: Config = .default) -> NSMutableAttributedString {
         let attributedString = NSMutableAttributedString()
         
         for child in blockQuote.children {
@@ -52,13 +52,6 @@ public struct MarkdownBlockQuoteProcessor {
                 attributedString.append(childAttributed)
             }
         }
-        
-        if blockQuote.hasSuccessor {
-            attributedString.append(blockQuote.isContainedInList
-                ? .singleNewline(withStyle: style)
-                : .doubleNewline(withStyle: style))
-        }
-        
         return attributedString
     }
     

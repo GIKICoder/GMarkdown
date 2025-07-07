@@ -8,9 +8,6 @@
 import Foundation
 import Markdown
 import UIKit
-#if canImport(MPITextKit)
-import MPITextKit
-#endif
 import SwiftMath
 
 /// 插件协议，用于处理不同类型的Markup元素
@@ -25,33 +22,9 @@ public protocol GMarkupPlugin {
     func handle(_ markup: Markup, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
 }
 
-/// 代码块插件
-public protocol GMarkupCodePlugin: GMarkupPlugin {
-    func handleCodeBlock(_ codeBlock: CodeBlock, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
-}
-
-/// 表格插件
-public protocol GMarkupTablePlugin: GMarkupPlugin {
-    func handleTable(_ table: Table, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
-}
-
-/// 图片插件
-public protocol GMarkupImagePlugin: GMarkupPlugin {
-    func handleImage(_ image: Image, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
-}
-
-/// HTML块插件
-public protocol GMarkupHTMLBlockPlugin: GMarkupPlugin {
-    func handleHTMLBlock(_ htmlBlock: HTMLBlock, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
-}
-
-/// 内联HTML插件
-public protocol GMarkupInlineHTMLPlugin: GMarkupPlugin {
-    func handleInlineHTML(_ inlineHTML: InlineHTML, visitor: inout GMarkupAttachVisitor) -> NSAttributedString?
-}
 
 /// 默认代码块插件实现
-public class DefaultCodePlugin: GMarkupCodePlugin {
+public class DefaultCodePlugin: GMarkupPlugin {
     public var identifier: String { "default.code" }
     
     public func canHandle(_ markup: Markup) -> Bool {
@@ -64,36 +37,23 @@ public class DefaultCodePlugin: GMarkupCodePlugin {
     }
     
     public func handleCodeBlock(_ codeBlock: CodeBlock, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
+        let style = visitor.visitorStyle
         let code = codeBlock.code
         let language = codeBlock.language
-        
-        // 这里可以添加语法高亮逻辑
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.monospacedSystemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: UIColor.label,
-            .backgroundColor: UIColor.systemGray6
-        ]
-        
-        let attributedString = NSMutableAttributedString(string: code, attributes: attributes)
-        
-        // 添加语言标识
-        if let language = language {
-            let languageAttr = NSAttributedString(
-                string: "[\(language)]\n",
-                attributes: [
-                    .font: UIFont.systemFont(ofSize: 12, weight: .medium),
-                    .foregroundColor: UIColor.secondaryLabel
-                ]
-            )
-            attributedString.insert(languageAttr, at: 0)
+        if style.codeBlockStyle.useHighlight {
+            if let highlighted = GMarkCodeHighlight.shared.generateAttributeText(code, language: language ?? ""),
+               !highlighted.string.hasPrefix("undefined") {
+                let attributed = NSMutableAttributedString(attributedString: highlighted)
+                attributed.addAttribute(.font, value: style.codeBlockStyle.font)
+                return attributed
+            }
         }
-        
-        return attributedString
+        return nil
     }
 }
 
 /// 默认表格插件实现
-public class DefaultTablePlugin: GMarkupTablePlugin {
+public class DefaultTablePlugin: GMarkupPlugin {
     public var identifier: String { "default.table" }
     
     public func canHandle(_ markup: Markup) -> Bool {
@@ -123,7 +83,7 @@ public class DefaultTablePlugin: GMarkupTablePlugin {
 }
 
 /// 默认图片插件实现
-public class DefaultImagePlugin: GMarkupImagePlugin {
+public class DefaultImagePlugin: GMarkupPlugin {
     public var identifier: String { "default.image" }
     
     public func canHandle(_ markup: Markup) -> Bool {
@@ -136,23 +96,17 @@ public class DefaultImagePlugin: GMarkupImagePlugin {
     }
     
     public func handleImage(_ image: Image, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
-        let title = image.title ?? ""
-        let source = image.source ?? ""
-        
-        // 创建图片占位符
-        let placeholderText = "[Image: \(title.isEmpty ? source : title)]"
-        let attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont.systemFont(ofSize: 14, weight: .regular),
-            .foregroundColor: UIColor.systemBlue,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
-        ]
-        
-        return NSAttributedString(string: placeholderText, attributes: attributes)
+        guard image.source != nil else {
+            return nil
+        }
+        let imageProvider = MDAsyncImageAttachedProvider(markup: image, style: visitor.visitorStyle)
+        let attachment = MarkdownAttachment(viewProvider: imageProvider)
+        return NSAttributedString(attachment: attachment)
     }
 }
 
 /// 默认HTML块插件实现
-public class DefaultHTMLBlockPlugin: GMarkupHTMLBlockPlugin {
+public class DefaultHTMLBlockPlugin: GMarkupPlugin {
     public var identifier: String { "default.htmlblock" }
     
     public func canHandle(_ markup: Markup) -> Bool {
@@ -178,7 +132,7 @@ public class DefaultHTMLBlockPlugin: GMarkupHTMLBlockPlugin {
 }
 
 /// 默认内联HTML插件实现
-public class DefaultInlineHTMLPlugin: GMarkupInlineHTMLPlugin {
+public class DefaultInlineHTMLPlugin: GMarkupPlugin {
     public var identifier: String { "default.inlinehtml" }
     
     public func canHandle(_ markup: Markup) -> Bool {

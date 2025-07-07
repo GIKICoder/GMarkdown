@@ -16,7 +16,7 @@ public struct MarkdownListProcessor {
     
     public static func processOrderedList(_ orderedList: OrderedList,
                                         style: Style,
-                                        visitor: inout any MarkupVisitor) -> NSAttributedString {
+                                        visitor: inout any MarkupVisitor) -> NSMutableAttributedString {
         let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: "", style: style)
         
         for (index, listItem) in orderedList.listItems.enumerated() {
@@ -30,18 +30,13 @@ public struct MarkdownListProcessor {
             result.append(listItemString)
         }
         
-        if orderedList.hasSuccessor {
-            result.append(orderedList.isContainedInList
-                ? .singleNewline(withStyle: style)
-                : .doubleNewline(withStyle: style))
-        }
-        
+    
         return result
     }
     
     public static func processUnorderedList(_ unorderedList: UnorderedList,
                                           style: Style,
-                                          visitor: inout any MarkupVisitor) -> NSAttributedString {
+                                          visitor: inout any MarkupVisitor) -> NSMutableAttributedString {
         let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: "", style: style)
         
         for listItem in unorderedList.listItems {
@@ -53,11 +48,6 @@ public struct MarkdownListProcessor {
             )
             result.append(listItemString)
         }
-        
-        if unorderedList.hasSuccessor {
-            result.append(.doubleNewline(withStyle: style))
-        }
-        
         return result
     }
     
