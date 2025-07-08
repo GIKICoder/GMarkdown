@@ -60,7 +60,6 @@ public class DefaultCodePlugin: GMarkupPlugin {
 /// 默认表格插件实现
 public class DefaultTablePlugin: GMarkupPlugin {
     public var identifier: String { "default.table" }
-    
     public func canHandle(_ markup: Markup) -> Bool {
         return markup is Table
     }
@@ -72,17 +71,14 @@ public class DefaultTablePlugin: GMarkupPlugin {
     
     public func handleTable(_ table: Table, visitor: inout GMarkupAttachVisitor) -> NSAttributedString? {
         let result = NSMutableAttributedString()
-        
-//        // 处理表头
-//        if let head = table.head {
-//            result.append(visitor.visitTableHead(head))
-//        }
-//        
-//        // 处理表体
-//        if let body = table.body {
-//            result.append(visitor.visitTableBody(body))
-//        }
-        
+        var style = visitor.visitorStyle
+        style.useMPTextKit = true
+        style.imageStyle.size = CGSize(width: 60, height: 60)
+        var visitor = GMarkupTableVisitor(style: style)
+        let table = visitor.visit(table)
+        let provider = MDTableAttachedProvider(markTable: table, style: style)
+        let attachment = MarkdownAttachment(viewProvider: provider)
+        result.append(NSAttributedString(attachment: attachment))
         return result
     }
 }
