@@ -43,7 +43,7 @@ struct TableSection {
     var rect: CGRect
 }
 
-public protocol GMarkTableViewDataSource: NSObjectProtocol {
+public protocol GMarkTableViewDataSource: AnyObject {
     func numberOfRows(in table: GMarkTableView) -> Int
     func numberOfCols(in table: GMarkTableView) -> Int
     func numberOfLockingRows(in table: GMarkTableView) -> Int

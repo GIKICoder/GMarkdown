@@ -9,65 +9,55 @@ import Foundation
 import UIKit
 import Markdown
 
-
 // MARK: - List Processor
 public struct MarkdownListProcessor {
     
-    public let style: Style
-    public var visitor: any MarkupVisitor
+    // MARK: - Public Static Methods
     
-    public init(style: Style,
-                visitor: any MarkupVisitor) {
-        self.style = style
-        self.visitor = visitor
-    }
-    
-    // MARK: - Public Methods
-    
-    public mutating func processOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
+    public static func processOrderedList(_ orderedList: OrderedList,
+                                        style: Style,
+                                        visitor: inout any MarkupVisitor) -> NSMutableAttributedString {
         let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: "", style: style)
         
         for (index, listItem) in orderedList.listItems.enumerated() {
             let listItemString = createOrderedListItemString(
                 listItem: listItem,
                 index: index,
-                orderedList: orderedList
+                orderedList: orderedList,
+                style: style,
+                visitor: &visitor
             )
             result.append(listItemString)
         }
         
-        if orderedList.hasSuccessor {
-            result.append(orderedList.isContainedInList
-                ? .singleNewline(withStyle: style)
-                : .doubleNewline(withStyle: style))
-        }
-        
+    
         return result
     }
     
-    public mutating func processUnorderedList(_ unorderedList: UnorderedList) -> NSAttributedString {
+    public static func processUnorderedList(_ unorderedList: UnorderedList,
+                                          style: Style,
+                                          visitor: inout any MarkupVisitor) -> NSMutableAttributedString {
         let result = MarkdownStyleProcessor.buildDefaultAttributedString(from: "", style: style)
         
         for listItem in unorderedList.listItems {
             let listItemString = createUnorderedListItemString(
                 listItem: listItem,
-                depth: unorderedList.listDepth
+                depth: unorderedList.listDepth,
+                style: style,
+                visitor: &visitor
             )
             result.append(listItemString)
         }
-        
-        if unorderedList.hasSuccessor {
-            result.append(.doubleNewline(withStyle: style))
-        }
-        
         return result
     }
     
-    // MARK: - Private Methods
+    // MARK: - Private Static Methods
     
-    private mutating func createOrderedListItemString(listItem: ListItem,
-                                           index: Int,
-                                           orderedList: OrderedList) -> NSAttributedString {
+    private static func createOrderedListItemString(listItem: ListItem,
+                                                  index: Int,
+                                                  orderedList: OrderedList,
+                                                  style: Style,
+                                                  visitor: inout any MarkupVisitor) -> NSAttributedString {
         
         let listItemAttributedString = (visitor.visit(listItem) as AnyObject).mutableCopy() as! NSMutableAttributedString
         
@@ -77,22 +67,26 @@ public struct MarkdownListProcessor {
             depth: orderedList.listDepth,
             isRTL: isRTL,
             isOrdered: true,
-            highestNumber: orderedList.childCount
+            highestNumber: orderedList.childCount,
+            style: style
         )
         
         let numberPrefix = createOrderedListPrefix(
             index: index,
             startIndex: orderedList.startIndex,
             isRTL: isRTL,
-            attributes: listItemAttributes
+            attributes: listItemAttributes,
+            style: style
         )
         
         listItemAttributedString.insert(numberPrefix, at: 0)
         return listItemAttributedString
     }
     
-    private mutating func createUnorderedListItemString(listItem: ListItem,
-                                             depth: Int) -> NSAttributedString {
+    private static func createUnorderedListItemString(listItem: ListItem,
+                                                    depth: Int,
+                                                    style: Style,
+                                                    visitor: inout any MarkupVisitor) -> NSAttributedString {
         let listItemAttributedString = (visitor.visit(listItem) as AnyObject).mutableCopy() as! NSMutableAttributedString
         let isRTL = TextDirectionDetector.isRTLLanguage(text: listItemAttributedString.string)
         
@@ -102,7 +96,8 @@ public struct MarkdownListProcessor {
             depth: depth,
             isRTL: isRTL,
             isOrdered: false,
-            bulletSymbol: bulletSymbol
+            bulletSymbol: bulletSymbol,
+            style: style
         )
         
         let bulletPrefix = createBulletPrefix(
@@ -115,7 +110,7 @@ public struct MarkdownListProcessor {
         return listItemAttributedString
     }
     
-    private func getBulletSymbol(for listItem: ListItem) -> String {
+    private static func getBulletSymbol(for listItem: ListItem) -> String {
         if let checkBox = listItem.checkbox {
             switch checkBox {
             case .checked:
@@ -128,11 +123,12 @@ public struct MarkdownListProcessor {
         }
     }
     
-    private func createListItemAttributes(depth: Int,
-                                        isRTL: Bool,
-                                        isOrdered: Bool,
-                                        highestNumber: Int = 0,
-                                        bulletSymbol: String = "•") -> [NSAttributedString.Key: Any] {
+    private static func createListItemAttributes(depth: Int,
+                                               isRTL: Bool,
+                                               isOrdered: Bool,
+                                               highestNumber: Int = 0,
+                                               bulletSymbol: String = "•",
+                                               style: Style) -> [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [:]
         let paragraphStyle = NSMutableParagraphStyle()
         
@@ -174,10 +170,11 @@ public struct MarkdownListProcessor {
         return attributes
     }
     
-    private func createOrderedListPrefix(index: Int,
-                                       startIndex: UInt,
-                                       isRTL: Bool,
-                                       attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+    private static func createOrderedListPrefix(index: Int,
+                                              startIndex: UInt,
+                                              isRTL: Bool,
+                                              attributes: [NSAttributedString.Key: Any],
+                                              style: Style) -> NSAttributedString {
         var numberAttributes = attributes
         numberAttributes[.font] = style.listStyle.bulletFont
         numberAttributes[.foregroundColor] = style.colors.current
@@ -187,9 +184,9 @@ public struct MarkdownListProcessor {
         return NSAttributedString(string: "\t\(number).\(taps)", attributes: numberAttributes)
     }
     
-    private func createBulletPrefix(symbol: String,
-                                  isRTL: Bool,
-                                  attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
+    private static func createBulletPrefix(symbol: String,
+                                         isRTL: Bool,
+                                         attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
         let taps = isRTL ? " " : "\t"
         return NSAttributedString(string: "\t\(symbol)\(taps)", attributes: attributes)
     }

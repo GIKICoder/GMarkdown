@@ -23,15 +23,7 @@ public struct GMarkupVisitor: MarkupVisitor {
     private let style: Style
     public var referLoader: ReferLoader?
     public var imageLoader: ImageLoader?
-    
-    private lazy var listProcessor: MarkdownListProcessor = {
-        let processor = MarkdownListProcessor(
-            style: style,
-            visitor: self
-        )
-        return processor
-    }()
-    
+     
     public init(style: Style) {
         self.style = style
     }
@@ -81,14 +73,14 @@ public struct GMarkupVisitor: MarkupVisitor {
     
     public mutating func visitParagraph(_ paragraph: Paragraph) -> NSAttributedString {
         let attributedString = processMarkupChildren(paragraph)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: paragraph, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: paragraph, to: attributedString, style: style)
         return attributedString
     }
     
     public mutating func visitHeading(_ heading: Heading) -> NSAttributedString {
         let attributedString = processMarkupChildren(heading)
         MarkdownStyleProcessor.applyHeadingStyle(to: attributedString, heading: heading, style: style)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: heading, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: heading, to: attributedString, style: style)
         return attributedString
     }
     
@@ -118,29 +110,37 @@ public struct GMarkupVisitor: MarkupVisitor {
     }
     
     public mutating func visitUnorderedList(_ unorderedList: UnorderedList) -> NSAttributedString {
-        return listProcessor.processUnorderedList(unorderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processUnorderedList(
+            unorderedList,
+            style: style,
+            visitor: &visitor
+        )
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: unorderedList, to: result, style: style)
+        return result
     }
     
     public mutating func visitOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
-        return listProcessor.processOrderedList(orderedList)
+        var visitor: any MarkupVisitor = self
+        let result = MarkdownListProcessor.processOrderedList(
+            orderedList,
+            style: style,
+            visitor: &visitor
+        )
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: orderedList, to: result, style: style)
+        return result
     }
-    /*
-     public mutating func visitUnorderedList(_ unorderedList: UnorderedList) -> NSAttributedString {
-     return processUnorderedList(unorderedList)
-     }
-     
-     public mutating func visitOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
-     return processOrderedList(orderedList)
-     }
-     */
+
     public mutating func visitListItem(_ listItem: ListItem) -> NSAttributedString {
         let attributedString = processMarkupChildren(listItem)
-        MarkdownStyleProcessor.appendNewlineIfNeeded(for: listItem, to: attributedString, style: style)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: listItem, to: attributedString, style: style)
         return attributedString
     }
     
     public mutating func visitBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
-        return processBlockQuote(blockQuote)
+        let attributedString = MarkdownBlockQuoteProcessor.processBlockQuote(blockQuote,style: style, visitor:self)
+        MarkdownStyleProcessor.appendSplitBreakIfNeeded(for: blockQuote, to: attributedString, style: style)
+        return attributedString
     }
     
     public mutating func visitInlineHTML(_ inlineHTML: InlineHTML) -> Result {
@@ -279,10 +279,10 @@ extension GMarkupVisitor {
         }
         
         if style.codeBlockStyle.useHighlight {
-            return renderHighlightedCodeBlock(code, language: codeBlock.language, hasSuccessor: codeBlock.hasSuccessor)
+            return renderHighlightedCodeBlock(code, language: codeBlock.language, hasSuccessor: codeBlock.hasSuccessorForSplit)
         }
         
-        return renderPlainCodeBlock(code, hasSuccessor: codeBlock.hasSuccessor)
+        return renderPlainCodeBlock(code, hasSuccessor: codeBlock.hasSuccessorForSplit)
     }
     
     private mutating func renderCustomCodeBlock(_ code: String, language: String?) -> NSAttributedString {
@@ -341,231 +341,6 @@ extension GMarkupVisitor {
         } else {
             attributed.addAttribute(.backgroundColor, value: style.codeBlockStyle.backgroundColor)
         }
-    }
-}
-
-// MARK: - List Processing
-
-extension GMarkupVisitor {
-    
-    private mutating func processOrderedList(_ orderedList: OrderedList) -> NSAttributedString {
-        let result = createDefaultAttributedString(from: "")
-        
-        for (index, listItem) in orderedList.listItems.enumerated() {
-            let listItemString = createOrderedListItemString(
-                listItem: listItem,
-                index: index,
-                orderedList: orderedList
-            )
-            result.append(listItemString)
-        }
-        
-        if orderedList.hasSuccessor {
-            result.append(orderedList.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
-        }
-        
-        return result
-    }
-    
-    private mutating func createOrderedListItemString(listItem: ListItem,
-                                                      index: Int,
-                                                      orderedList: OrderedList) -> NSAttributedString {
-        let listItemAttributedString = visit(listItem).mutableCopy() as! NSMutableAttributedString
-        let isRTL = TextDirectionDetector.isRTLLanguage(text: listItemAttributedString.string)
-        
-        let listItemAttributes = createListItemAttributes(
-            depth: orderedList.listDepth,
-            isRTL: isRTL,
-            isOrdered: true,
-            highestNumber: orderedList.childCount
-        )
-        
-        let numberPrefix = createOrderedListPrefix(
-            index: index,
-            startIndex: orderedList.startIndex,
-            isRTL: isRTL,
-            attributes: listItemAttributes
-        )
-        
-        listItemAttributedString.insert(numberPrefix, at: 0)
-        return listItemAttributedString
-    }
-    
-    private mutating func processUnorderedList(_ unorderedList: UnorderedList) -> NSAttributedString {
-        let result = createDefaultAttributedString(from: "")
-        
-        for listItem in unorderedList.listItems {
-            let listItemString = createUnorderedListItemString(
-                listItem: listItem,
-                depth: unorderedList.listDepth
-            )
-            result.append(listItemString)
-        }
-        
-        if unorderedList.hasSuccessor {
-            result.append(.doubleNewline(withStyle: style))
-        }
-        
-        return result
-    }
-    
-    private mutating func createUnorderedListItemString(listItem: ListItem, depth: Int) -> NSAttributedString {
-        let listItemAttributedString = visit(listItem).mutableCopy() as! NSMutableAttributedString
-        let isRTL = TextDirectionDetector.isRTLLanguage(text: listItemAttributedString.string)
-        
-        let bulletSymbol = getBulletSymbol(for: listItem)
-        
-        let listItemAttributes = createListItemAttributes(
-            depth: depth,
-            isRTL: isRTL,
-            isOrdered: false,
-            bulletSymbol: bulletSymbol
-        )
-        
-        let bulletPrefix = createBulletPrefix(
-            symbol: bulletSymbol,
-            isRTL: isRTL,
-            attributes: listItemAttributes
-        )
-        
-        listItemAttributedString.insert(bulletPrefix, at: 0)
-        return listItemAttributedString
-    }
-    
-    private func getBulletSymbol(for listItem: ListItem) -> String {
-        if let checkBox = listItem.checkbox {
-            switch checkBox {
-            case .checked:
-                return "☑"
-            case .unchecked:
-                return "☐"
-            }
-        } else {
-            return "•"
-        }
-    }
-    
-    private func createListItemAttributes(depth: Int,
-                                          isRTL: Bool,
-                                          isOrdered: Bool,
-                                          highestNumber: Int = 0,
-                                          bulletSymbol: String = "•") -> [NSAttributedString.Key: Any] {
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        let paragraphStyle = NSMutableParagraphStyle()
-        
-        let font = style.fonts.current
-        paragraphStyle.lineSpacing = 25 - font.pointSize
-        paragraphStyle.paragraphSpacing = 14
-        paragraphStyle.baseWritingDirection = isRTL ? .rightToLeft : .leftToRight
-        paragraphStyle.alignment = isRTL ? .right : .left
-        
-        let baseLeftMargin: CGFloat = 5.0
-        let leftMarginOffset = baseLeftMargin + (20.0 * CGFloat(depth))
-        let spacingFromIndex: CGFloat = 8.0
-        
-        let markerWidth: CGFloat
-        if isOrdered {
-            let numeralFont = style.listStyle.bulletFont
-            markerWidth = ceil(NSAttributedString(string: "\(highestNumber).", attributes: [.font: numeralFont]).size().width)
-        } else {
-            markerWidth = ceil(NSAttributedString(string: bulletSymbol, attributes: [.font: font]).size().width)
-        }
-        
-        let firstTabLocation = leftMarginOffset + markerWidth
-        let secondTabLocation = firstTabLocation + spacingFromIndex
-        
-        paragraphStyle.tabStops = [
-            NSTextTab(textAlignment: .right, location: firstTabLocation),
-            NSTextTab(textAlignment: .left, location: secondTabLocation),
-        ]
-        
-        paragraphStyle.headIndent = secondTabLocation
-        
-        attributes[.paragraphStyle] = paragraphStyle
-        attributes[.font] = font
-        attributes[.foregroundColor] = style.colors.current
-        attributes[.listDepth] = depth
-        
-        return attributes
-    }
-    
-    private func createOrderedListPrefix(index: Int,
-                                         startIndex: UInt,
-                                         isRTL: Bool,
-                                         attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
-        var numberAttributes = attributes
-        numberAttributes[.font] = style.listStyle.bulletFont
-        numberAttributes[.foregroundColor] = style.colors.current
-        
-        let taps = isRTL ? " " : "\t"
-        let number = Int(startIndex) > 0 ? Int(startIndex) + index : index + 1
-        return NSAttributedString(string: "\t\(number).\(taps)", attributes: numberAttributes)
-    }
-    
-    private func createBulletPrefix(symbol: String,
-                                    isRTL: Bool,
-                                    attributes: [NSAttributedString.Key: Any]) -> NSAttributedString {
-        let taps = isRTL ? " " : "\t"
-        return NSAttributedString(string: "\t\(symbol)\(taps)", attributes: attributes)
-    }
-}
-
-// MARK: - Block Quote Processing
-extension GMarkupVisitor {
-    
-    private struct BlockQuoteConfig {
-        let baseLeftMargin: CGFloat
-        let depthOffset: CGFloat
-        let maxDepth: Int
-    }
-    
-    private mutating func processBlockQuote(_ blockQuote: BlockQuote) -> NSAttributedString {
-        let attributedString = NSMutableAttributedString()
-        let config = BlockQuoteConfig(baseLeftMargin: 15.0, depthOffset: 20.0, maxDepth: 5)
-        
-        for child in blockQuote.children {
-            let attributes = createBlockQuoteAttributes(depth: blockQuote.quoteDepth, config: config)
-            if let childAttributed = processBlockQuoteChild(child, attributes: attributes) {
-                attributedString.append(childAttributed)
-            }
-        }
-        
-        if blockQuote.hasSuccessor {
-            attributedString.append(blockQuote.isContainedInList ? .singleNewline(withStyle: style) : .doubleNewline(withStyle: style))
-        }
-        
-        return attributedString
-    }
-    
-    private func createBlockQuoteAttributes(depth: Int, config: BlockQuoteConfig) -> [NSAttributedString.Key: Any] {
-        var attributes: [NSAttributedString.Key: Any] = [:]
-        let paragraphStyle = NSMutableParagraphStyle()
-        
-        let effectiveDepth = min(depth, config.maxDepth)
-        let leftIndent = config.baseLeftMargin + (config.depthOffset * CGFloat(effectiveDepth))
-        
-        paragraphStyle.firstLineHeadIndent = leftIndent
-        paragraphStyle.headIndent = leftIndent
-        paragraphStyle.lineSpacing = max(5, 25 - style.fonts.current.pointSize)
-        paragraphStyle.paragraphSpacing = 16
-        
-        attributes[.paragraphStyle] = paragraphStyle
-        attributes[.font] = style.blockquoteStyle.font
-        attributes[.foregroundColor] = style.blockquoteStyle.textColor
-        attributes[.quoteDepth] = depth
-        
-        return attributes
-    }
-    
-    private mutating func processBlockQuoteChild(_ child: Markup,
-                                                 attributes: [NSAttributedString.Key: Any]) -> NSMutableAttributedString? {
-        guard let childAttributed = visit(child) as? NSMutableAttributedString else { return nil }
-        
-        let range = NSRange(location: 0, length: childAttributed.length)
-        childAttributed.addAttributes(attributes, range: range)
-        
-        MarkdownStyleProcessor.applyQuoteStyle(to: childAttributed, style: style)
-        return childAttributed
     }
 }
 
@@ -695,52 +470,5 @@ private struct Renderer {
 }
 
 
-// MARK: - Helper Extensions
 
-extension UIFont {
-    var italic: UIFont? {
-        return apply(newTraits: .traitItalic)
-    }
-    
-    var bold: UIFont? {
-        return apply(newTraits: .traitBold)
-    }
-    
-    func apply(newTraits: UIFontDescriptor.SymbolicTraits) -> UIFont? {
-        var existingTraits = self.fontDescriptor.symbolicTraits
-        existingTraits.insert(newTraits)
-        
-        guard let newDescriptor = self.fontDescriptor.withSymbolicTraits(existingTraits) else { return nil }
-        return UIFont(descriptor: newDescriptor, size: self.pointSize)
-    }
-}
-
-
-
-extension UIImage {
-    /// 根据给定的最大宽度调整图片大小，同时保持比例不变。
-    /// - Parameter maxWidth: 图片的最大宽度。
-    /// - Returns: 调整后的UIImage实例。如果原始宽度小于或等于maxWidth，则返回原图。
-    func resized(toMaxWidth maxWidth: CGFloat) -> UIImage {
-        // 检查是否需要调整大小
-        if self.size.width <= maxWidth {
-            return self
-        }
-        
-        // 计算缩放比例以保持纵横比
-        let scaleFactor = maxWidth / self.size.width
-        let newHeight = self.size.height * scaleFactor
-        let newSize = CGSize(width: maxWidth, height: newHeight)
-        
-        // 开始图形上下文并绘制调整后的图片
-        UIGraphicsBeginImageContextWithOptions(newSize, false, self.scale)
-        self.draw(in: CGRect(origin: .zero, size: newSize))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        if let resizedImage {
-            return resizedImage
-        }
-        return self
-    }
-}
 

@@ -36,7 +36,13 @@ extension BlockQuote {
 }
 
 extension Markup {
+    
     var hasSuccessor: Bool {
+        guard let childCount = parent?.childCount else { return false }
+        return indexInParent < childCount - 1
+    }
+    
+    var hasSuccessorForSplit: Bool {
         let siblingIndex = indexInParent
         guard let parent = parent, siblingIndex < parent.childCount - 1 else { return false }
         guard let nextSibling = parent.child(at: siblingIndex + 1) else { return false }
