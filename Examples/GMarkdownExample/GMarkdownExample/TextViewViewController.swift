@@ -18,7 +18,7 @@ class TextViewViewController: UIViewController {
     private var currentIndex = 0
     private var currentContent = ""
     
-    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex"]
+    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex","markdownTemp"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -169,8 +169,10 @@ class TextViewViewController: UIViewController {
         style.codeBlockStyle.customRender = false
         style.maxContainerWidth = view.bounds.width - 32
         var visitor = GMarkupAttachVisitor(style: style)
+        visitor.imageLoader = NukeImageLoader()
         let attributedText = visitor.visit(document)
-        
+        let height = attributedText.height(withWidth: style.maxContainerWidth)
+        print("Markdown content height: \(height)")
         await MainActor.run {
             self.markdownView.attributedText = attributedText
         }
