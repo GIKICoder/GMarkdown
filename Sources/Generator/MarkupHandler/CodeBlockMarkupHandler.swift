@@ -11,6 +11,7 @@ import MPITextKit
 import SwiftMath
 import UIKit
 public class CodeBlockMarkupHandler: MarkupHandler {
+
     public init() {
         // 初始化代码
     }
@@ -19,7 +20,7 @@ public class CodeBlockMarkupHandler: MarkupHandler {
         return markup is CodeBlock
     }
     
-    public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
+    public func handle(_ markup: Markup, style: Style?, imageLoader: (any ImageLoader)?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Code, children: [markup])
         if let style = style {
             chunk.style = style

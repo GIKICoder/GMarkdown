@@ -29,7 +29,7 @@ public class LaTexMarkupHandler: MarkupHandler {
         return false
     }
     
-    public func handle(_ markup: Markup, style: Style?) -> GMarkChunk {
+    public func handle(_ markup: Markup, style: Style?, imageLoader: (any ImageLoader)?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Latex, children: [markup])
         if let style = style {
             chunk.style = style

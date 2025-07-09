@@ -24,7 +24,7 @@ public class BlockQuoteMarkupHandler: MarkupHandler {
         return false
     }
     
-    public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
+    public func handle(_ markup: Markup, style _: Style?, imageLoader: (any ImageLoader)?) -> GMarkChunk {
         return GMarkChunk(chunkType: .BlockQuote, children: [markup])
     }
 }
@@ -38,7 +38,7 @@ public class ThematicBreakHandler: MarkupHandler {
         return markup is ThematicBreak
     }
     
-    public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
+    public func handle(_ markup: Markup, style _: Style?, imageLoader: (any ImageLoader)?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Thematic, children: [markup])
         chunk.itemSize = CGSize(width: chunk.style.maxContainerWidth, height: 30)
         return chunk

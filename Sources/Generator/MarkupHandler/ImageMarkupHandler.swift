@@ -24,7 +24,7 @@ public class ImageMarkupHandler: MarkupHandler {
         return markup is Markdown.Image
     }
     
-    public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
+    public func handle(_ markup: Markup, style _: Style?, imageLoader: (any ImageLoader)?) -> GMarkChunk {
         let chunk = GMarkChunk(chunkType: .Image, children: [markup])
         var imgSource: String?
         if markup is Paragraph {

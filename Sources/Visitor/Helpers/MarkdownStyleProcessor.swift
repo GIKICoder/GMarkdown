@@ -157,8 +157,13 @@ public struct MarkdownStyleProcessor {
         imageView.layer.cornerRadius = style.imageStyle.cornerRadius
         imageView.clipsToBounds = true
         imageView.contentMode = style.imageStyle.contentMode
+        print("Loading image from source: \(source)")
+        if let imageLoader {
+            imageLoader.loadImage(from: source, into: imageView)
+        } else {
+            print("No image loader provided, loading image from URL directly.")
+        }
         
-        imageLoader?.loadImage(from: source, into: imageView)
         
         let attachment = MPITextAttachment()
         attachment.content = imageView

@@ -19,7 +19,7 @@ public protocol ChunkGenerator {
 
 public protocol MarkupHandler {
     func canHandle(_ markup: Markup) -> Bool
-    func handle(_ markup: Markup, style: Style?) -> GMarkChunk
+    func handle(_ markup: Markup, style: Style?, imageLoader:ImageLoader?) -> GMarkChunk
 }
 
 // MARK: - ChunkGenerator Implementation
@@ -64,7 +64,7 @@ public class GMarkChunkGenerator: ChunkGenerator {
                         currentChunk.style = chunkStyle
                     }
                 }
-                let chunk = handler.handle(markup, style: style)
+                let chunk = handler.handle(markup, style: style, imageLoader:imageLoader)
                 chunk.identifier = identifier
                 chunk.updateHashKey()
                 chunks.append(chunk)
@@ -103,33 +103,6 @@ public class GMarkChunkGenerator: ChunkGenerator {
 
 // MARK: - MarkupHandler Implementations
 
-
-public class LaTexHandler: MarkupHandler {
-    public init() {}
-    
-    public func canHandle(_ markup: Markup) -> Bool {
-        if markup is Paragraph {
-            let markSub = markup.child(at: 0)
-            let markSubLast = markup.child(at: markup.childCount - 1)
-            
-            if let latex = markSub as? InlineHTML, latex.plainText == "<LaTex>" {
-                if let latexs = markSubLast as? InlineHTML, latexs.plainText == "</LaTex>" {
-                    return true
-                }
-            }
-        }
-        return false
-    }
-    
-    public func handle(_ markup: Markup, style _: Style?) -> GMarkChunk {
-        let chunk = GMarkChunk(chunkType: .Latex, children: [markup])
-        guard let markup = markup as! Paragraph? else {
-            return chunk
-        }
-        chunk.generateLatexNormal(markup: markup)
-        return chunk
-    }
-}
 
 
 // MARK: - Latex Chunk
