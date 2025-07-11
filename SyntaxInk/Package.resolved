@@ -1,0 +1,15 @@
+{
+  "originHash" : "2dcb2238f37e814e57b2f9a8e7e2d9276f3ed8fe14de40dce639f54a5c815750",
+  "pins" : [
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "f99ae8aa18f0cf0d53481901f88a0991dc3bd4a2",
+        "version" : "601.0.1"
+      }
+    }
+  ],
+  "version" : 3
+}

@@ -17,6 +17,8 @@ let package = Package(
     .package(url: "https://github.com/meitu/MPITextKit.git", from: "0.1.13"),
     .package(url: "https://github.com/colinc86/MathJaxSwift.git", from: "3.4.0"),
     .package(url: "https://github.com/GIKICoder/SwiftMath.git", from: "2.0.0"),
+    .package(path: "./Syntect"),
+    .package(path: "./SyntaxInk")
   ],
   targets: [
     .target(
@@ -26,6 +28,8 @@ let package = Package(
         .product(name: "MPITextKit", package: "MPITextKit"),
         .product(name: "SwiftMath", package: "SwiftMath"),
         .product(name: "MathJaxSwift", package: "MathJaxSwift"),
+        "Syntect",
+        "SyntaxInk"
       ],
       resources: [
         .copy("Assets/mermaid/mermaid.min.js"),

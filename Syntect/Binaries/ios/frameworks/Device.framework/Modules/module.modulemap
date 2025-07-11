@@ -1,0 +1,6 @@
+framework module SyntectCore {
+    umbrella header "syntect.h"
+    
+    export *
+    module * { export * }
+}

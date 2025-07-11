@@ -16,7 +16,7 @@ class MarkdownRenderController: UIViewController {
     private let containerView = UIView()
     private var currentMarkdownFile = "markdown"
     
-    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex"]
+    private let markdownFiles = ["markdown", "markdownv2", "markdownv3", "markdownv4", "markdownv5","markdownLatex","markdownCode"]
     
     override func viewDidLoad() {
         super.viewDidLoad()

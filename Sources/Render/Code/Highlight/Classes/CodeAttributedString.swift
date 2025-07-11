@@ -14,6 +14,7 @@ import Foundation
     import UIKit
 #endif
 
+
 /// Highlighting Delegate
 @objc public protocol HighlightDelegate {
     /**
