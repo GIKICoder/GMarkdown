@@ -6,6 +6,15 @@
 
 GMarkdown is currently in the testing phase. Although efforts have been made to support different styles of markdown, some code-level optimizations and modifications are still needed to make the GMarkdown architecture more reasonable. If time permits, part of the code logic will be redesigned in the future.
 
+## ✨ What's New
+
+### 🎉 CocoaPods Support Now Available!
+GMarkdown can now be easily integrated into your project using CocoaPods. Simply add the following to your Podfile:
+
+```ruby
+pod 'GMarkdown'
+```
+
 ## Features
 
 - **Pure Native Rendering**: Enjoy the benefits of pure native rendering for all your markdown content, ensuring fast and efficient performance.
@@ -28,9 +37,10 @@ GMarkdown is currently in the testing phase. Although efforts have been made to 
 
 ## Installation
 
-### Swift Package Manager
 
-GMarkdown is available through Swift Package Manager. To include it in your project, add the following to your `Package.swift`:
+### Swift Package Manager (Recommended)
+
+GMarkdown is also available through Swift Package Manager. To include it in your project, add the following to your `Package.swift`:
 
 ```swift
 dependencies: [
@@ -38,13 +48,20 @@ dependencies: [
 ]
 ```
 
-### CocoaPods
+### CocoaPods 
 
-If you prefer using CocoaPods, you can integrate GMarkdown via [cocoapods-spm](https://github.com/kronenthaler/cocoapods-spm):
+GMarkdown is available through [CocoaPods](https://cocoapods.org). To install it, simply add the following line to your Podfile:
 
 ```ruby
-spm_pkg "GMarkdown", :url => "https://github.com/GIKICoder/GMarkdown.git", :branch => "main"
+pod 'GMarkdown'
 ```
+
+Then run:
+
+```bash
+pod install
+```
+
 
 ## Usage
 
