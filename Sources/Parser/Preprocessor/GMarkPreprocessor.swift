@@ -59,8 +59,25 @@ public class LaTeXPreprocessor: GMarkPreprocessorProtocol {
     private func processLaTeX(_ markdown: String) -> String {
         var result = markdown
         
-        // LaTeX pattern: $$...$$, $...$, \[...\], \(...\)
-        let pattern = "\\$\\$([\\s\\S]*?)\\$\\$|\\$([\\s\\S]*?)\\$|\\\\\\[([\\s\\S]*?)\\\\\\]|\\\\\\(([\\s\\S]*?)\\\\\\)"
+        // Process in two passes:
+        // First pass: Match display math ($$...$$) and bracket notation
+        // Second pass: Match inline math ($...$) but not where it conflicts with $$
+        
+        // Pass 1: Display math with $$, \[...\], \(...\)
+        let displayPattern = "\\$\\$([\\s\\S]*?)\\$\\$|\\\\\\[([\\s\\S]*?)\\\\\\]|\\\\\\(([\\s\\S]*?)\\\\\\)"
+        result = processPattern(displayPattern, in: result, alwaysAccept: true)
+        
+        // Pass 2: Inline math with single $, but use markers to avoid conflicts
+        // We use negative lookbehind and lookahead to ensure $ is not preceded or followed by $
+        // The pattern [^$\n]+? ensures content doesn't contain $ or newlines
+        let inlinePattern = "(?<!\\$)\\$(?!\\$)([^$\\n]+?)\\$(?!\\$)"
+        result = processPattern(inlinePattern, in: result, alwaysAccept: false)
+        
+        return result
+    }
+    
+    private func processPattern(_ pattern: String, in markdown: String, alwaysAccept: Bool) -> String {
+        var result = markdown
         
         guard let regex = try? NSRegularExpression(pattern: pattern, options: []) else {
             return result
@@ -77,11 +94,80 @@ public class LaTeXPreprocessor: GMarkPreprocessorProtocol {
             // Skip if content is too large (potential security issue)
             guard matchedString.count < 3000 else { continue }
             
+            // Skip if already wrapped (from previous pass)
+            if matchedString.contains("<LaTex>") {
+                continue
+            }
+            
+            // For display math, always accept. For inline math, validate
+            guard alwaysAccept || isValidLaTeX(matchedString) else { continue }
+            
             let wrappedString = wrapLaTeX(matchedString)
             result = (result as NSString).replacingCharacters(in: matchRange, with: wrappedString)
         }
         
         return result
+    }
+    
+    private func isValidLaTeX(_ content: String) -> Bool {
+        // For inline math ($...$), apply validation
+        // The content here should already have delimiters
+        let innerContent: Substring
+        if content.hasPrefix("$") && content.hasSuffix("$") {
+            innerContent = content.dropFirst().dropLast()
+        } else {
+            // For other formats, just use the content as-is
+            return true
+        }
+        
+        // If empty or just whitespace, not valid LaTeX
+        guard !innerContent.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return false
+        }
+        
+        // If content contains table cell delimiters (|), it's very unlikely to be valid inline LaTeX
+        if innerContent.contains("|") {
+            return false
+        }
+        
+        // Currency pattern: Just digits possibly with decimal point, currency symbols, or simple separators
+        // Examples to reject: $20/月, $10, $5.99, $1,000
+        // Note: \u4e00-\u9fff represents CJK (Chinese, Japanese, Korean) Unified Ideographs
+        let currencyPattern = "^\\s*\\d+([.,]\\d+)?\\s*[/\\-a-zA-Z\\u4e00-\\u9fff]*\\s*$"
+        if let currencyRegex = try? NSRegularExpression(pattern: currencyPattern, options: []),
+           currencyRegex.firstMatch(in: String(innerContent), options: [], range: NSRange(location: 0, length: innerContent.utf16.count)) != nil {
+            return false
+        }
+        
+        // Valid LaTeX should contain at least one of these indicators:
+        // - Backslash (LaTeX commands like \alpha, \frac, etc.)
+        // - Superscript/subscript (^, _)
+        // - Common math operators in context (+, -, *, =, <, > when with letters)
+        // - Greek letters or special symbols
+        // - Parentheses/brackets with operators
+        let hasBackslash = innerContent.contains("\\")
+        let hasSuperSubScript = innerContent.contains("^") || innerContent.contains("_")
+        let hasLetters = innerContent.rangeOfCharacter(from: CharacterSet.letters) != nil
+        
+        // If it has backslash (LaTeX command) or super/subscript, it's likely LaTeX
+        if hasBackslash || hasSuperSubScript {
+            return true
+        }
+        
+        // If it has letters and is not just a simple number/currency, it might be LaTeX
+        // This catches expressions like "x + y", "a = b", etc.
+        if hasLetters {
+            // Check if it contains math-like patterns
+            // Note: - is placed at the end of character class to avoid escaping issues
+            let mathPattern = "[a-zA-Z]\\s*[+*/=<>-]|[+*/=<>-]\\s*[a-zA-Z]|[a-zA-Z]\\s*\\^|\\^\\s*[a-zA-Z]"
+            if let mathRegex = try? NSRegularExpression(pattern: mathPattern, options: []),
+               mathRegex.firstMatch(in: String(innerContent), options: [], range: NSRange(location: 0, length: innerContent.utf16.count)) != nil {
+                return true
+            }
+        }
+        
+        // Default to false for safety - don't treat as LaTeX unless we're confident
+        return false
     }
     
     private func wrapLaTeX(_ content: String) -> String {
