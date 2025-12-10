@@ -69,7 +69,8 @@ public class LaTeXPreprocessor: GMarkPreprocessorProtocol {
         
         // Pass 2: Inline math with single $, but use markers to avoid conflicts
         // We use negative lookbehind and lookahead to ensure $ is not preceded or followed by $
-        let inlinePattern = "(?<!\\$)\\$(?!\\$)([^$\\n]+?)(?<!\\$)\\$(?!\\$)"
+        // The pattern [^$\n]+? ensures content doesn't contain $ or newlines
+        let inlinePattern = "(?<!\\$)\\$(?!\\$)([^$\\n]+?)\\$(?!\\$)"
         result = processPattern(inlinePattern, in: result, alwaysAccept: false)
         
         return result
@@ -131,6 +132,7 @@ public class LaTeXPreprocessor: GMarkPreprocessorProtocol {
         
         // Currency pattern: Just digits possibly with decimal point, currency symbols, or simple separators
         // Examples to reject: $20/月, $10, $5.99, $1,000
+        // Note: \u4e00-\u9fff represents CJK (Chinese, Japanese, Korean) Unified Ideographs
         let currencyPattern = "^\\s*\\d+([.,]\\d+)?\\s*[/\\-a-zA-Z\\u4e00-\\u9fff]*\\s*$"
         if let currencyRegex = try? NSRegularExpression(pattern: currencyPattern, options: []),
            currencyRegex.firstMatch(in: String(innerContent), options: [], range: NSRange(location: 0, length: innerContent.utf16.count)) != nil {
@@ -156,7 +158,8 @@ public class LaTeXPreprocessor: GMarkPreprocessorProtocol {
         // This catches expressions like "x + y", "a = b", etc.
         if hasLetters {
             // Check if it contains math-like patterns
-            let mathPattern = "[a-zA-Z]\\s*[+\\-*/=<>]|[+\\-*/=<>]\\s*[a-zA-Z]|[a-zA-Z]\\s*\\^|\\^\\s*[a-zA-Z]"
+            // Note: - is placed at the end of character class to avoid escaping issues
+            let mathPattern = "[a-zA-Z]\\s*[+*/=<>-]|[+*/=<>-]\\s*[a-zA-Z]|[a-zA-Z]\\s*\\^|\\^\\s*[a-zA-Z]"
             if let mathRegex = try? NSRegularExpression(pattern: mathPattern, options: []),
                mathRegex.firstMatch(in: String(innerContent), options: [], range: NSRange(location: 0, length: innerContent.utf16.count)) != nil {
                 return true
